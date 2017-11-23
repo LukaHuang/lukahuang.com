@@ -1,3 +1,4 @@
+<script src="{{ '/assets/js/jquery.min.js' | absolute_url }}"></script>
 {% if site.footer_scripts %}
   {% for script in site.footer_scripts %}
     {% if script contains "://" %}
@@ -14,6 +15,21 @@
 {% if page.layout == 'search' %}
   <script src="{{ '/assets/js/lunr.min.js' | absolute_url }}"></script>
   <script src="{{ '/assets/js/lunr-en.js' | absolute_url }}"></script>
+{% endif %}
+
+{% if page.title == 'Tags' %}
+  <script src="{{ '/assets/js/jquery.tagcloud.js' | absolute_url }}"></script>
+  <script>
+    $(function() {
+      if($('#tag_cloud').length !== 0){
+        $.fn.tagcloud.defaults = {
+            //size: {start: 1, end: 1, unit: 'em'},
+            color: {start: '#bbbbee', end: '#0085a1'},
+        };
+        $('#tag_cloud a').tagcloud();
+    }
+    });
+  </script>
 {% endif %}
 
 {% include analytics.html %}
