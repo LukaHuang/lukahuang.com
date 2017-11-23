@@ -83,11 +83,11 @@ analytics:
 
 # Site Author
 author:
-  name             : "Your Name"
-  avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "I am an amazing person."
-  location         : "Somewhere"
-  email            :
+  name             : Huang
+  avatar           : "/assets/images/steventtud.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  bio              : Rubyist from Taiwan
+  location         : Taipei
+  email            : szteven3@gmail.com
   uri              :
   bitbucket        :
   codepen          :
@@ -95,7 +95,7 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           :
+  github           : StevenTTuD
   gitlab           :
   google_plus      :
   keybase          :
@@ -107,7 +107,7 @@ author:
   stackoverflow    : # "123456/username" (the last part of your profile url, e.g. https://stackoverflow.com/users/123456/username)
   steam            : # "steamId" (the last part of your profile url, e.g. https://steamcommunity.com/id/steamId/)
   tumblr           :
-  twitter          :
+  twitter          : StevenTTuD
   vine             :
   weibo            :
   xing             :
