@@ -4,6 +4,10 @@
 
 <!-- end custom head snippets -->
 
-{% if page.title == 'Tags' %}
+{% if page.url == "/tags/" %}
   <link rel="stylesheet" href="{{ '/assets/css/tag.css' | absolute_url }}">
+{% endif %}
+
+{% if page.url == "/tags/" %}
+  <link rel="stylesheet" href="{{ '/assets/css/hide_sidebar.css' | absolute_url }}">
 {% endif %}
