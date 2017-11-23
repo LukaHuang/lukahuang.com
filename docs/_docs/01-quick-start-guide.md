@@ -138,7 +138,7 @@ Edit `_config.yml`. Then:
 
 If you're migrating a site already using Minimal Mistakes and haven't customized any of the theme files things upgrading will be easier for you.
 
-Start by removing the following folders and any files within them: 
+Start by removing the following folders and any files within them:
 
 ```terminal
 ├── _includes
@@ -152,7 +152,7 @@ Start by removing the following folders and any files within them:
 
 You won't need these anymore as they're bundled with the theme gem --- unless you intend to [override them](http://jekyllrb.com/docs/themes/#overriding-theme-defaults).
 
-**Note:** When clearing out the `assets` folder be sure to leave any files you've added and need. This includes images, CSS, or JavaScript that aren't already [bundled in the theme](https://github.com/mmistakes/minimal-mistakes/tree/master/assets). 
+**Note:** When clearing out the `assets` folder be sure to leave any files you've added and need. This includes images, CSS, or JavaScript that aren't already [bundled in the theme](https://github.com/mmistakes/minimal-mistakes/tree/master/assets).
 {: .notice--warning}
 
 From `v4.5.0` onwards, you don't have to maintain a copy of the default data files viz. `_data/ui-text.yml` and `_data/navigation.yml` either.
@@ -166,7 +166,7 @@ Replace `gem "github-pages` or `gem "jekyll"` with `gem "jekyll", "~> 3.5"`. You
 
 [^update-jekyll]: You could also run `bundle update jekyll` to update Jekyll.
 
-Add the Minimal Mistakes theme gem: 
+Add the Minimal Mistakes theme gem:
 
 ```ruby
 gem "minimal-mistakes-jekyll"
