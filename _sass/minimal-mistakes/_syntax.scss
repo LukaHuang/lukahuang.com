@@ -14,18 +14,18 @@ figure.highlight {
   background-color: $code-background-color;
   box-shadow: $box-shadow;
 
-  &:before {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.5em;
-    background-color: $border-color;
-    content: "\f121";
-    font-family: "fontawesome" !important;
-    line-height: 1;
-    text-transform: none;
-    speak: none;
-  }
+  // &:before {
+  //   position: absolute;
+  //   top: 0;
+  //   right: 0;
+  //   padding: 0.5em;
+  //   background-color: $border-color;
+  //   content: "\f121";
+  //   font-family: "fontawesome" !important;
+  //   line-height: 1;
+  //   text-transform: none;
+  //   speak: none;
+  // }
 
   pre.highlight {
     margin: 0;
