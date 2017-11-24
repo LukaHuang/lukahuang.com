@@ -69,7 +69,7 @@ fluentd -c ./fluent/fluent.conf -vv &
 
 ![](media/14943115845575/14943128690870.jpg)
 
-## step 4: 測試 fluentd 功能是否正常
+### step 4: 測試 fluentd 功能是否正常
 
 ```rb
 require 'fluent-logger'
