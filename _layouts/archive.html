@@ -15,7 +15,7 @@ layout: default
 {% endif %}
 
 <div id="main" role="main">
-  {% if page.url == "/" or page.url == "/archive/" %}
+  {% if page.url != "/tags/" && page.url != "/search/" %}
     {% include sidebar.html %}
   {% endif %}
   <div class="archive">
