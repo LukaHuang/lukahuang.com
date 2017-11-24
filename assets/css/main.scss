@@ -6,25 +6,3 @@
 
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
-
-@media (min-width: 64em) {
-  .page{
-    width: 100%;
-  }
-  .page__related{
-    float: none;
-  }
-  // .archive{
-  //   padding-right: 0;
-  //   float: none;
-  // }
-}
-.toc .nav__title{
-  background: #494e52;
-}
-
-// .pagination {
-//   width: 360px;
-//   margin: 1em auto;
-//   float: none;
-// }
