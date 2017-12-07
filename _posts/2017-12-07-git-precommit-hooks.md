@@ -3,7 +3,7 @@ author: StevenTTuD
 
 title: "使用 GIT Precommit hooks 防止 Binding.pry 進入 Commit"
 published: true
-date: 2017-12-07 20:02
+date: 2017-12-06 22:34
 tags:
   - Rails
   - Time
