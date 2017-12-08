@@ -22,5 +22,4 @@ comments: true
 ## referneces
 
 [Custom slugs for Rails URLs done right – Hacker Noon](https://hackernoon.com/using-custom-slugs-for-rails-urls-500eb3f58f3c)
-
 [處理rails中文slug | 魔法師的手杖](https://sibevin.github.io/posts/2015-01-13-092638-rails-handle-chinese-slug#bb6d5b76edfeaa54f3f18ad430a53ffb)
