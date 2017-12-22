@@ -21,7 +21,8 @@ comments: true
 2. 自定解析
     [fluent/fluent-plugin-grok-parser: Fluentd's Grok parser](https://github.com/fluent/fluent-plugin-grok-parser)
 
-3. 使用 Rails-logger 來蒐集
+3. 使用 Rails-logger 來蒐集, 如果你的目標是讓 EFK 變成一個 log 整合系統，這個方式是你的最佳選項。搭配 `act-fluent-logger-rails'
+` 與 `lograge` 這兩個 gem, 可以將你的 log 更加的組織化。詳細教學請參照下方連結:
     [Collecting and Analyzing Ruby on Rails Logs | Fluentd](http://www.fluentd.org/datasources/rails)
 
 這篇我們採用的方式是 1，優點是可以自定義 log 的形式，缺點是需要自行設計 log 系統。如果你只是想把原本存在於 `log/prodcution.log` 搜集到 EFK Stack，那可以使用 3 的方式來整合 Rails-app 的 log。而如果你想蒐集 Rails 以外的 log 如 apache 或是 nginx 的 log，則可以使用 2 的方式。
