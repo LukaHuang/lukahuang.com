@@ -8,8 +8,6 @@ tags:
 comments: true
 ---
 
-# OLTP 與 OLAP
-
 ## 什麼是 OLTP?
 
 最近在讀資料庫文件的時候接觸到 `OLTP` 這個名詞，大致上理解並比記下來。
