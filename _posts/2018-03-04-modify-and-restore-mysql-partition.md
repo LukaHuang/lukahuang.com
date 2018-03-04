@@ -86,12 +86,12 @@ UNLOCK TABLES;
 
 ```
 
-可以發現這不就是 SQL 的指令嘛？ 邏輯如下:
+這不就是 SQL 的指令嘛？ 邏輯如下:
 
-1. 如果 `sessions` table 已經存在，就刪除掉並使用 Dump File 內的備份指令重新建立 `sessions` table
+1. 如果 `alert_logs` table 已經存在，就刪除掉並使用 Dump File 內的備份指令重新建立 `alert_logs` table
 2. lock 住整個 table 並加入資料。
 
-從這些步驟我們可以觀察到即使 db 內已經存在 sessions table 了，使用 dump.sql 還原時仍然會先刪除 sessions table，再使用 dump.sql 中的 schema 來重建 table。
+從這些步驟我們可以觀察到即使 db 內已經存在 alert_logs table 了，使用 dump.sql 還原時仍然會先刪除 alert_logs table，再使用 dump.sql 中的 schema 來重建 table。
 
 知道這些情報之後 partition 的 backup 與 restore 有了頭緒。
 
@@ -214,7 +214,8 @@ CREATE TABLE `alert_logs` (
 1. backup entire database
 1. dump the partition database
 1. rake db:rollback
-1. rake db:migrate (new partition definition)
+1. modify migration of partition
+1. rake db:migrate
 1. restore partition database
 
 

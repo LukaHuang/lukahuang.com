@@ -10,13 +10,13 @@ categories: []
 comments: true
 
 ---
-### 前言
+## 前言
 
 最近工作上使用的資料庫主要以 Elasticsearch 為主。而 Elasticsearch 跟傳統的關聯式資料庫有諸多的不同之處。初期在開發的時候並不是那麼快的上手。所以記錄下該如何使用 Elasticsearch 與如何在官方文件中找到自己需要的功能。
 
-### 1. 準備工作
+## 1. 準備工作
 
-#### 1.1 你需要知道的名詞
+### 1.1 你需要知道的名詞
 
 一開始我對名詞的對應並不是特別的重視，隨著實戰上的需求，我開始需要查找 API 的時候，發現文件有點不知道從何看起。後來隨著使用的功能越來越多。必須對 Elasticsearch 有更深一層的了解，於是花了大約兩天左右的時間把文件重要的部份大略的看過一次。這樣的過程讓我理解了哪些功能可以在哪些地方找到，也是我寫下這篇筆記的動機，
 
@@ -25,7 +25,7 @@ comments: true
 `docuement` 對應的是關聯式資料庫中的一筆資料。
 `mapping` 對應關聯式資料庫中的 `schema`。
 
-#### 1.2 文件導覽
+### 1.2 文件導覽
 
 常用的文件分為兩部分 `definitive guide` 與 `referenece` 。為了直接對應官方文件這邊就直接用英文名詞。
 
@@ -47,7 +47,7 @@ comments: true
 另外 Elasticsearch Ruby 的 API 位置在[這邊](http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions)。因為文件的連結沒有在官方 github 中明顯的寫出來，一開始讓我疑惑了一下。
 
 
-#### 1.3 可以用哪些方法存取 Elasticsearch
+### 1.3 可以用哪些方法存取 Elasticsearch
 
 跟 Elasticsearch 的溝通只要透過 HTTP Request 就可以存取。這也是雖然 Elasticsearch 是以 Java 作為底層，但是卻可以跟大多數其他程式語言製作系統輕鬆串接重要原因。所以操作上只要你可以發出 HTTP Request 就可以跟 Elasticsearch 溝通。而因為安全性的關係，Elasticsearch 常常架設在內網。需要在遠端存取的時候透過VPN 會是比較安全的作法。
 
@@ -60,15 +60,15 @@ comments: true
 1. 使用 [Elasticsearch-ruby](http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions)存取 Elasticsearch 。好處是搜尋出來的結果已經經過包裝。缺點是需要大量新增或更新資料的時候因為過度包裝速度會比較慢。一開始使用的時候會擔心有些API不是官方的最新版本。實際測試的心得是大部分都是可行的。如果得不到預期的結果再使用 curl 來下原始的指令。到這邊可以發現，你需要對 elasticsearch的行為有一定的認識，不然你是無法好好的使用他。
 
 
-### 2. mapping
+## 2. mapping
 
-#### 2.1 Schema Free 更要嚴謹的定義資料庫
+### 2.1 Schema Free 更要嚴謹的定義資料庫
 
 `mapping` 即關聯式資料庫中的 `schema`。但是 Elasticsearch 有著 `schema free` 的特性。即如果你想存入的欄位的型別與 `mapping`的型別不同時你仍然可以存入。還未定義過的欄位也可以直接存入資料庫。
 
 有著 `schema free` 的特性更需要注重資料的格式與資料欄位的設計，如果不當的使用很可能讓資料庫中資料變成一堆難以整理的垃圾。
 
-#### 2.2 特別需要注意的 String 型態
+### 2.2 特別需要注意的 String 型態
 
 Elasticsearch 的 String 比較特別。如果不做特別設定的話，Elasticsearch 會預設處理方式為 `full text`，也就是會幫你的 string 做切字的動作。如果要把整個 string 欄位視為一個 `keyword` ，則需要在 mapping 的時候加上 `index: "not_analyzed"`。
 ```json
@@ -95,12 +95,12 @@ PUT my_index
 [String datatype - Elasticsearch Reference [2.4] - Elastic](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/string.html)
 [Field datatypes - Elasticsearch Reference [2.4] - Elastic](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/mapping-types.html)
 
-#### 2.3 keyword 、 full text 與 analyzer
+### 2.3 keyword 、 full text 與 analyzer
 
 `keyword`的行為跟關聯式資料庫的欄位行為比較像。除了用字串比對的方式以外沒什麼其他的搜尋方法。而`full text` 則會通過 `analyzer` 進行分析，你可以使用系統提供的 `analyzer`。系統提供的 analyzer 只能切英文字。如果要切中文可以用一套叫做 `elasticsearch-analysis-ik`的開源解決方案來處理。或是自行撰寫也是一個選項。
 
 
-#### 2.4 查詢 mapping 的語法
+### 2.4 查詢 mapping 的語法
 
 在終端機中使用 curl
 
@@ -119,13 +119,9 @@ JSON.parse res.body
 
 [Get Field Mapping - Elasticsearch Reference [2.4] - Elastic](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html)
 
-### 參考資料
+## 參考資料
 
 [Getting Started - Elasticsearch: The Definitive Guide [2.x] - Elastic](https://www.elastic.co/guide/en/elasticsearch/guide/current/getting-started.html)
 [Module: Elasticsearch::API::Actions — Documentation for elasticsearch-api (2.0.0)](http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions)
 [Field datatypes - Elasticsearch Reference [2.4] - Elastic](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/mapping-types.html)
 
-
-
-
-未完待續...

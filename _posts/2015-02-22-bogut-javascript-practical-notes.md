@@ -36,7 +36,9 @@ comments: true
 了解javascript的型別之後，接下來我們要來了解javascript的物件特性。
 
 ### 1. JavaScript物件是個容器(Container)。
+
 每個物件包含了`屬性(Property)`和`方法(Method或Function)`。
+
 ```js
 var car={};           //宣告物件(Object)
 car.nume = "BMW";     //name是car的屬性(Property)
@@ -45,6 +47,7 @@ car.start=function(){ //函式(Function)
 }
 var car_name = car['name'];
 ```
+
 ### 2. JavaScript 物件其實就是 HashMap
 - 所有屬性名稱一定是字串
 
@@ -55,9 +58,10 @@ var car_name = car['name'];
 （這部份code school的javascript課程有更多範例，未來有時間的時候再補充。）
 
 ### 3. JavaScript沒有Class概念，所以你可以不需要constructor，就能建立物件
-1. javascript的constructor(建構式)就是函式，又稱建構式函式。
 
+1. javascript的constructor(建構式)就是函式，又稱建構式函式。
 1. 使用 new 關鍵字，透過建構式建立物件。
+
 ```js
 function person(first, last, age, eyecolor) {
     this.firstName = first;
@@ -68,28 +72,32 @@ function person(first, last, age, eyecolor) {
 var myFather = new person("John", "Doe", 50, "blue");
 var myMother = new person("Sally", "Rally", 48, "green");
 ```
+
 ```js
 var myFather = new person("John", "Doe", 50, "blue");
 var myMother = new person("Sally", "Rally", 48, "green");
 ```
+
 1. 因為javascript沒有Class概念，所以必須借助prototype的特性。
 
 ### 4. javascript的物件可以不需先行宣告就可以自由擴充屬性
-1. 這點是我之前學習時沒有發現的微妙之處，一般物件導向程式語言如java一定要先行宣告變數才能使用，而javascript卻不需要。
-```js
-//物件範例
-var obj = { 'a':1, 'b':2 };
-//擴增屬性
-obj.c = 3;
-//這時候obj就會有a, b, c三個屬性了
 
-//刪除屬性
-elete obj.b;
-//這時候obj又只剩下a, c三個屬性了
-```
+1. 這點是我之前學習時沒有發現的微妙之處，一般物件導向程式語言如java一定要先行宣告變數才能使用，而javascript卻不需要。
+
 1. 因為原始型別無法自由擴增屬性，所以針對 number,string,boolean有提供原始型別包裹方式，包裹成物件後，即可透過該物件自由擴增屬性。
 
 1. 物件也可以透過下列的方法轉換成原始型別。`valueOf()` : 物件型別轉成原始型別。`toString()` : 物件型別轉成字串型別。
+
+```js
+  //物件範例
+  var obj = { 'a':1, 'b':2 };
+  //擴增屬性
+  obj.c = 3;
+  //這時候obj就會有a, b, c三個屬性了
+  //刪除屬性
+  elete obj.b;
+  //這時候obj又只剩下a, c三個屬性了
+  ```
 
 ### 5. 原生物件與宿主物件
 javascript有兩種物件：
