@@ -1,6 +1,6 @@
 ---
 author: StevenTTuD
-title: "Mysql - 如何修改 partition 並還原資料"
+title: "Mysql 實戰筆記 - 如何修改 partition 並還原資料"
 published: true
 date: 2018-03-04 12:50
 tags:
@@ -180,7 +180,14 @@ mysql -u username -p database_name < dump.sql
 SHOW CREATE TABLE alert_logs;
 ```
 
-確認無誤
+確認結果是否正確
+檢視一下目前的 table
+
+```sql
+SHOW CREATE TABLE alert_logs;
+```
+
+輸出
 
 ```sql
 CREATE TABLE `alert_logs` (
@@ -190,7 +197,7 @@ CREATE TABLE `alert_logs` (
   `alert_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `alert_time` datetime DEFAULT NULL,
   `alert_status` tinyint(2) DEFAULT '0',
-  `created_at` datetime NOT NULL DEFAULT '2055-06-01 00:00:00',
+  `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`,`created_at`),
 ) ENGINE=InnoDB AUTO_INCREMENT=4899 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
@@ -206,6 +213,14 @@ CREATE TABLE `alert_logs` (
  PARTITION p451 VALUES LESS THAN (MAXVALUE) ENGINE = InnoDB) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 ```
+
+確認建立 table 的資料無誤後，
+進入 Rails console 試試看 AlertLog 是否可以正常存取，
+這樣就完成了整個 partition 轉換並還原的流程。
+
+### 地雷 - created_at
+
+需要特別注意的是 - partition 中 為 key 的值一定必須是 `NOT NULL`，且`不要設 DEFAULT VALUE`，否則 Rails 不會幫你自動填入 created_at。
 
 ## Rails Migration
 
