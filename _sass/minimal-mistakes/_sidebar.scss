@@ -60,12 +60,9 @@
   margin-bottom: 1em;
 
   @include breakpoint($large) {
-    position: absolute;
     top: 0;
     right: 0;
-    width: $right-sidebar-width-narrow;
     margin-right: -1 * $right-sidebar-width-narrow;
-    padding-left: 1em;
     z-index: 10;
   }
 
@@ -257,7 +254,8 @@
     text-decoration: none;
 
     &:hover {
-      text-decoration: underline;
+      // text-decoration: underline;
+      color: $link-color-hover;
     }
   }
 }

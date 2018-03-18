@@ -468,7 +468,7 @@
 
   .nav__title {
     margin: 0;
-    padding: 0.5rem 1rem;
+    padding: 0.5em 1rem 0.5rem 0;
     font-family: $sans-serif-narrow;
     font-size: $type-size-5;
     font-weight: bold;
@@ -496,16 +496,25 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     background-color: $background-color;
-    border: 1px solid $border-color;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
+    margin-top: 0.5em;
+    // border: 1px solid $border-color;
+    // border-radius: $border-radius;
+    // box-shadow: $box-shadow;
 
     .nav__title {
-      color: #fff;
+      color: #000;
       font-size: $type-size-6;
-      background: $primary-color;
+      background:  #fff;
       border-top-left-radius: $border-radius;
       border-top-right-radius: $border-radius;
+    }
+  }
+  .toc > ul > li{
+    counter-increment: item;
+    &:before{
+      content: counter(item)".";
+      color: #000;
+      display: inline;
     }
   }
 
@@ -517,13 +526,13 @@
     font-size: 0.8rem;
 
     a {
-      display: block;
-      padding: 0.5rem 1rem;
+      display: inline;
+      padding: 0.1rem 1rem 0.1rem 0.1rem;
       color: $muted-text-color;
-      font-size: $type-size-7;
-      font-weight: bold;
+      font-size: $type-size-5;
+      // font-weight: bold;
       line-height: 1.5;
-      border-bottom: 1px solid $border-color;
+      // border-bottom: 1px solid $border-color;
 
       &:hover {
         color: $text-color;
