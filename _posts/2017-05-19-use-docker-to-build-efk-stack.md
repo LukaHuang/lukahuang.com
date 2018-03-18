@@ -12,13 +12,13 @@ comments: true
 
 ---
 
-## 1 Aggregator 與 Forwarder
+## Aggregator 與 Forwarder
 
 
 ![](https://lh3.googleusercontent.com/-ISAjtMLBHsQ/WSL5U_Aw87I/AAAAAAAAKzA/a5gcrr4jQ508MINa9Yy1aVR23CMFccYuwCHM/I/14954621237379.jpg)
 
 
-## 2 使用 docker 建立 fluentd image
+## 使用 docker 建立 fluentd image
 
 為了模擬需要的環境，我們來使用 docker 建立 fluentd image
 
@@ -51,7 +51,7 @@ curl https://raw.githubusercontent.com/fluent/fluentd-docker-image/master/Docker
 curl https://raw.githubusercontent.com/fluent/fluentd-docker-image/master/fluent.conf.erb > fluent.conf
 ```
 
-#### 2.2 製作 Fluentd Log Aggregator Image
+### 2.2 製作 Fluentd Log Aggregator Image
 
 ```
 FROM fluent/fluentd:onbuild
@@ -176,7 +176,7 @@ docker build -t my-fluentd-forwarder:1.0 ./
 
 接著輸入 `docker run -p 24225:24224 custom-fluentd` 即可啟動 container，並 bind 至本機 24225 port 上。
 
-## 3. 使用 docker-compose 整合容器
+## 使用 docker-compose 整合容器
 
 可以使用 docker-compose 節省 build 的動作。
 新增檔案 `docker-compose.yml`，輸入以下內容：
@@ -197,6 +197,6 @@ services:
 輸入 `docker-compose up` 一次 build forwarder 和 aggregator 兩個 image，
 並將容器跑起來。
 
-## 4.實際運作
+## 實際運作
 
 實際運作的時候只需將 fluent.conf 中的 ip 位置，改成真實 Server IP，即可開始運作。

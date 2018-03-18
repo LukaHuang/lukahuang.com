@@ -12,7 +12,7 @@ comments: true
 
 ---
 
-## 1 架構
+## 架構
 
 之前我們的架構是直接由 fluentd td-agent 傳送到 elasticsearch (如下圖)
 
@@ -22,9 +22,9 @@ comments: true
 
 ![](https://lh3.googleusercontent.com/-xndXkgeo0mg/WSKUWpAiPKI/AAAAAAAAKyM/jX3_xCaRC3YMEURD4kCgBmCdi0rjcGw3QCHM/I/14943830727801.jpg)
 
-## 2 實際配置方式
+## 實際配置方式
 
-## 2.1 如何配置 Forwarder
+### 2.1 如何配置 Forwarder
 
 ```
 # TCP input
@@ -61,7 +61,7 @@ comments: true
 </match>
 ```
 
-## 2.2 如何配置 Aggregator
+### 2.2 如何配置 Aggregator
 
 ```
 # Input
