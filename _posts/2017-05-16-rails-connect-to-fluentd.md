@@ -13,7 +13,7 @@ comments: true
 
 ---
 
-## 1. 幾種可以跟 Rails 串接的方式
+## 幾種可以跟 Rails 串接的方式
 
 1. gem 'fluent-logger'
     [Centralize Logs from Ruby Applications](http://docs.fluentd.org/v0.12/articles/ruby)
@@ -28,7 +28,7 @@ comments: true
 這篇我們採用的方式是 1，優點是可以自定義 log 的形式，缺點是需要自行設計 log 系統。如果你只是想把原本存在於 `log/prodcution.log` 搜集到 EFK Stack，那可以使用 3 的方式來整合 Rails-app 的 log。而如果你想蒐集 Rails 以外的 log 如 apache 或是 nginx 的 log，則可以使用 2 的方式。
 
 
-## 2. Fluentd agent 與 Rails 的串接
+## Fluentd agent 與 Rails 的串接
 
 ### step 1: 使用 Gem 安裝 Fluentd
 
@@ -129,7 +129,7 @@ Fluent::Logger.post("fluentd.test.follow", {"from"=>"userA", "to"=>"userB"})
 這樣就完成單機上的 fluentd-agent 與 Rails Application 的串接了。
 
 
-## 3. 介紹 Forward Input Plugin
+## 介紹 Forward Input Plugin
 
 Fluentd 蒐集 Rails 的 Log 的時候，並不是使用讀取檔案的方式。
 而是使用 `forward input plugin` 來幫助蒐集。

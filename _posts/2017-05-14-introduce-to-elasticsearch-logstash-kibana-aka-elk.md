@@ -15,7 +15,7 @@ comments: true
 
 # ELK
 
-## 1. 整體架構
+## 整體架構
 
 - 最左邊的 Logstash Shipper 用來運送 Log 到 Log 處理中心。
 - Redis 當做 Buffer 來緩衝資料量瞬間爆量的問題。
@@ -31,7 +31,7 @@ comments: true
 
 ---
 
-## 2. Logstash
+## Logstash
 
 Logstash 是一套 Log 分析框架，可以幫助我們處理各式各樣的 Log
 
@@ -45,11 +45,9 @@ Beat 即為 logstash forwarder 又稱為 shipper，因為之前的 logstash forw
 
 ![](https://lh3.googleusercontent.com/-H7VboeauWWE/WNoMlJwJpbI/AAAAAAAAKuw/AbpFk96DpIY/I/14906726298053.jpg)
 
-## 3. Elasticsearch
+## Elasticsearch
 
-
-
-## 4. Kibana
+## Kibana
 
 Kibana 是一個可以顯示 Logstash 處理後格式的後台。資料儲存於 Elasticsearch。
-可以顯示漂亮的圖表
+整理與視覺化我們需要的資料。
