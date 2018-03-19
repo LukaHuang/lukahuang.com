@@ -508,6 +508,9 @@
       border-top-left-radius: $border-radius;
       border-top-right-radius: $border-radius;
     }
+    li {
+      margin-bottom: 0.1em;
+    }
   }
   .toc > ul > li{
     counter-increment: item;
@@ -517,7 +520,6 @@
       display: inline;
     }
   }
-
   .toc__menu {
     margin: 0;
     padding: 0;
