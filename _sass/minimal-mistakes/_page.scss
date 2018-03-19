@@ -80,8 +80,8 @@
 
   /* paragraph indents */
   p {
+    line-height: 1.6em;
     margin: 0 0 $indent-var;
-
     /* sibling indentation*/
     @if $paragraph-indent == true {
       & + p {
