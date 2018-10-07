@@ -10,7 +10,7 @@ comments: true
 
 ---
 ## 靜態命名空間
-1. 直接指定
+### 方法1 - 直接指定
 ```js
 var myApp = {}
 
@@ -32,10 +32,10 @@ window.console && console.log(
 ); //0, 1, undefined, 0
 ```
 
-2. 使用物件實字（Object Literal Notation）
+### 方法 2. 使用物件實字（Object Literal Notation）
 
 
-3. 使用設計模式Module Pattern來建構
+### 方法3. 使用設計模式Module Pattern來建構
 
 ## 動態命名空間
 

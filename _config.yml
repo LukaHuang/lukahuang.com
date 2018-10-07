@@ -76,18 +76,18 @@ social:
 
 # Analytics
 analytics:
-  provider               : false # false (default), "google", "google-universal", "custom"
+  provider               : google # false (default), "google", "google-universal", "custom"
   google:
     tracking_id          : UA-123551558-1
 
 
 # Site Author
 author:
-  name             : Huang
+  name             : Steven Huang
   avatar           : "/assets/images/steventtud.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : Rubyist from Taiwan
+  bio              : A Backend Engineer and a Rubyist from Taiwan
   location         : Taipei
-  email            : szteven3@gmail.com
+  email            : steventtud@gmail.com
   uri              :
   bitbucket        :
   codepen          :
@@ -179,7 +179,7 @@ sass:
 
 # Outputting
 permalink: /:categories/:title/
-paginate: 5 # amount of posts to show
+paginate: 15 # amount of posts to show
 paginate_path: /page:num/
 timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 

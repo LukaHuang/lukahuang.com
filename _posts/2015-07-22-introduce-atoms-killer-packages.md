@@ -22,7 +22,8 @@ comments: true
 ![](https://lh3.googleusercontent.com/9vKXOSspuvaV4E6TsUFCEaNluWj0qcFVOrCds6qR5Bs=w1326-h824-no)
 
 這時候在選單列選擇 atom > open your style sheet，加入以下內容，即可改善。
-```less
+
+```css
 atom-text-editor::shadow .jumpy {
     &.label {
       opacity: 0.75;
