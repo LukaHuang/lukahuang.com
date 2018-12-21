@@ -1,7 +1,6 @@
 ---
 author: StevenTTuD
-
-title: Sinatra初體驗( 1 )：Route
+title: 初學 Sinatra 初體驗(1) - Route
 published: true
 date: 2014-10-03 12:04
 tags:
@@ -146,3 +145,5 @@ end
 來測試看看：
 輸入http://0.0.0.0:9292/hello/steven
 果然輸出了hellosteven
+
+

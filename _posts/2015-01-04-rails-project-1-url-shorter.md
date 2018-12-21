@@ -18,8 +18,11 @@ comments: true
 ## Use Case , Page Flow and Data
 
 在練習實作Project的過程中，我會格外地注意Use Case、Page Flow和Data。一個網站從無到有，便是先抓出使用者的需求，也就是Use Case，可以表達出身為不同的使用者，各需要哪些需求。
+
 ### Use Case
+
 Url Shortener顧名思義要能夠縮減網址，我們可以抓出幾個需求。
+
 - 使用者可以使用URL Shortener縮短網址
 - 輸入URL Shortener產生的網址時必須連接到原網址。
 
@@ -30,18 +33,20 @@ Url Shortener顧名思義要能夠縮減網址，我們可以抓出幾個需求�
 
 # URL Shortener in Rails
 
-1. 建立專案
+## 1. 建立專案
+
 ```
 rails new url_shortener
 ```
 
-1. route中加入url的resource，並指定首頁為`url#new`
+## 2. route中加入url的resource，並指定首頁為`url#new`
+
 ```rb
 root to: :redirect('/urls/new')
 resources :urls
 ```
 
-1. 建立controller，controller要加s
+## 3. 建立controller，controller要加s
 ```
 rails generate controller urls
 ```
@@ -61,7 +66,9 @@ validates :original, presence: true
 
 
 ## Controller
-#### Index
+
+### Index
+
 繼續完成controller，從index開始著手，在index我們希望可以看到全部儲存的連結。
 
 ```ruby
@@ -72,7 +79,7 @@ class UrlsController < ApplicationController
 end
 ```
 
-#### Show
+### Show
 在action show我們希望可以做到的功能是「當使用者輸入縮址時，會轉址到原網址」，這也是也這個URL Shortener的核心功能。
 
 ```rb
@@ -120,6 +127,7 @@ letter陣列用來裝所有的字母包含大寫A-Z與小寫a-z。flatten使屬�
 
 #### Create
 儲存一筆url資料，記得要使用strong parameter核對欄位。
+
 ```rb
 class UrlsController < ApplicationController
 	.
@@ -139,15 +147,17 @@ class UrlsController < ApplicationController
 	end
 end
 ```
->比較show與new可以發現，前面有加@的變數，是view會使用到的變數。如果view不會用到，那就不要添加@，以免造成混淆，這樣在閱讀程式碼的時候，可以更清楚的知道這些變數作用在哪些地方。
 
->來複習一下render的用法主要有四種：第一種是直接回傳結果，回傳的格式可以是xml,json,text...等等檔案格式。範例：`render text: "hello world"`、`render json: @event.to_json`。第二種是render template。可以直接指定template的路徑如：`render "/events/index.html.erb"`。如果是同controller的action可以寫成`render "index"`。第三種是回傳status code例如：`render status: 500`。第四種是回傳某template使用的layout，例如：`render layout: "special_layout"`。
+比較show與new可以發現，前面有加@的變數，是view會使用到的變數。如果view不會用到，那就不要添加@，以免造成混淆，這樣在閱讀程式碼的時候，可以更清楚的知道這些變數作用在哪些地方。
+
+來複習一下render的用法主要有四種：第一種是直接回傳結果，回傳的格式可以是xml,json,text...等等檔案格式。範例：`render text: "hello world"`、`render json: @event.to_json`。第二種是render template。可以直接指定template的路徑如：`render "/events/index.html.erb"`。如果是同controller的action可以寫成`render "index"`。第三種是回傳status code例如：`render status: 500`。第四種是回傳某template使用的layout，例如：`render layout: "special_layout"`。
+
 其他用法請參考：[Layouts and Rendering in Rails](http://guides.rubyonrails.org/layouts_and_rendering.html#using-render)
 
 ## Views
 因為URL Shortener的action show是轉址，並不需要view，所以我們要實作的view只有index.html.erb和new.html.erb。
 
-#### index.html.erb
+### index.html.erb
 
 ```html.erb
 <h1>Url Shortener</h1>
@@ -160,7 +170,7 @@ end
 <%= link_to "Shorten another URL", new_url_path %>
 ```
 
-#### new.html.erb
+### new.html.erb
 
 ```
 <h1>Shorten a URL</h1>

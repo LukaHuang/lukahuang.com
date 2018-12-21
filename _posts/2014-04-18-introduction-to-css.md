@@ -1,7 +1,7 @@
 ---
 author: StevenTTuD
 
-title: 'CSS簡介 '
+title: 'CSS簡介'
 published: true
 date: 2014-04-18 05:08
 tags:
