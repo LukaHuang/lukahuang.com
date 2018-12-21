@@ -14,6 +14,7 @@ comments: true
 這個網站寫的不錯，看來以後要拜讀一下他的文章。
 
 ## 2.1 影片
+
 ```js
 ￼￼function buildCoveTicketMaker( transport ) {
          return function ( name ) {
@@ -26,7 +27,7 @@ alert("Here is your transportation ticket via the " + transport + ".\n" +
 var getSubmarineTicket = buildCoveTicketMaker("Submarine");
 var getBattleshipTicket = buildCoveTicketMaker("Battleship");
 var getGiantSeagullTicket = buildCoveTicketMaker("Giant Seagull");
-```￼
+```
 
 第一次呼叫的時候先初始化transport，
 因為回傳的是一個function，這時候getSubmarineTicket儲存的已經是內部的inner function，又稱為closure。

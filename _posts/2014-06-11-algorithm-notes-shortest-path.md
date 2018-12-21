@@ -20,6 +20,7 @@ All Pairs Shortest Paths，全點對最短路徑：
 求出圖上所有兩點之間的最短路徑。全對全。
 
 ### Relaxation（鬆弛）
+
 最短路徑有算法一個共通的重要概念。簡單的說找到捷徑以縮短原本路徑，便是 relaxation 。
 
 ```

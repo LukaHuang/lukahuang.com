@@ -12,18 +12,20 @@ comments: true
 ---
 ## Collection
 
-1. 新增一個collection
+新增一個collection
+
 ```
 collections/posts.js
 ```
+
 ```js
 Posts = new Meteor.Collection('posts');
 ```
+
 除了client與server以外的資料夾會在兩者都執行。
 所以Posts collection在client和server都可以使用。
 這裡的Posts前面不加var，這樣整個app都可以存取到Posts。
 
-2. Commit 4-1
 ```
 git commit -m "Added a posts collection"
 ```
@@ -140,8 +142,11 @@ We'll need a way to tell Meteor which subset of data can be sent to the client, 
 這種利用publication/subscription系統的protocol，就稱為Distributed Data Protocol。
 
 ## Subscribing
+
 ### how you make a meteor app scalable in client-side
+
 1. 修改publication(server)
+
 ```js
 Meteor.publish('posts', function(author) {
   		return Posts.find({flagged: false, author: author});
@@ -150,6 +155,7 @@ Meteor.publish('posts', function(author) {
 
 
 2. 在client subscribe
+
 ```js
 // on the client
 Meteor.subscribe('posts', 'bob-smith');
@@ -159,8 +165,11 @@ Meteor.subscribe('posts', 'bob-smith');
 Automatically mirroring all data from the server on the client
 
 ### 實際運作
+
 如果你去看[Publish and subscribe](http://docs.meteor.com/#publishandsubscribe)的說明，你會發現實際使用的方法並不是那麼的簡潔，那是因為meteor提供了一個方變的method叫做_publishCursor()。當你在return一個cursor的時候，就會使用到它（例如：  return Posts.find({flagged: false, author: author});）。
+
 ### _publishCursor() 做了哪些事？
+
 - It checks the name of the server-side collection.
 - It pulls all matching documents from the cursor and sends it into a client-side collection of the same name. (It uses .added() to do this).
 - Whenever a document is added, removed or changed, it sends those changes down to the client-side collection. (It uses .observe() on the cursor and .added(), .changed() and removed() to do this).
