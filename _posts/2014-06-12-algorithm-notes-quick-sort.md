@@ -1,14 +1,13 @@
 ---
-layout: post
-title: 'Algorithm - Quick sort'
+title: '[Algorithm]  Quick sort'
 date: 2014-06-12 06:33
 comments: true
-categories: 
+categories:
 ---
-###概念
+### 概念
 從數列中挑選一個pivot，大於pivot放在右邊，小於pivot放在左邊，重複循環最後得出的陣列即為排序結果。
 
-###流程
+### 流程
 (請搭配虛擬碼的QUICKSORT主程式一起服用)
 1. 選擇陣列中的一個元素作為pivot
 2. 比pivot小的都移到pivot的左邊，比pivot大的都移到pivot的右邊。
@@ -16,7 +15,7 @@ categories:
 ![quicksort.jpg](http://user-image.logdown.io/user/6141/blog/6148/post/205864/WGqApmAOSfylxMIEmhql_quicksort.jpg)
 
 
-###程式碼
+### 程式碼
 ```
 QUICKSORT(A,p,r)
 1  if p < r
@@ -36,7 +35,8 @@ PARTITION(A,p,r)
 7  exchange A[i+1] with A[r]
 8  return i+1
 ```
-###Java實現
+### Java實現
+
 ```java
 package quicksort;
 
@@ -47,7 +47,7 @@ package quicksort;
 public class QuickSort  {
 
 private float[] arr ;
-    
+
   public void sort(float[] array) {
     this.arr = array;
     quickSort( 0 , array.length - 1);
@@ -60,15 +60,15 @@ private float[] arr ;
       else if (pivot < right)
             quickSort( pivot, right);
  }
- 
+
  public void findSmallest(float arr[], int k){
      quickSort( 0 , arr.length - 1, k);
  }
- 
+
  private  void quickSort( int lefe, int right,int k){
-      
-     int pivot = partition(lefe, right); 
-         
+
+     int pivot = partition(lefe, right);
+
      if(pivot == k-1){
          System.out.printf("第%d小數為%.2f\n", k, arr[pivot]);
      }
@@ -76,16 +76,16 @@ private float[] arr ;
          quickSort( lefe, pivot-1 , k);
      else
          quickSort( pivot, right, k);
-      
-     
+
+
  }
-  
+
   private int partition(int left, int right)
   {
       int i = left, j = right;
       float tmp;
       float pivot = arr[(left + right) / 2];
-     
+
       while (i <= j) {
             while (arr[i] < pivot)
                   i++;
@@ -99,12 +99,12 @@ private float[] arr ;
                   j--;
             }
       };
-     
+
       return i;
    }
- 
 
-} 
+
+}
 ```
-###參考資料
+### 參考資料
 [小殘 - Quick Sort](http://emn178.pixnet.net/blog/post/88613503-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E6%B3%95(quick-sort))

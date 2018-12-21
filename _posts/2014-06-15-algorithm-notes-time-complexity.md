@@ -1,5 +1,5 @@
 ---
-title: 'Algorithm - 時間複雜度整理'
+title: '[Algorithm]  時間複雜度整理'
 date: 2014-06-15 09:00
 comments: true
 categories:

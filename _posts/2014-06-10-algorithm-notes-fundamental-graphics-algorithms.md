@@ -1,6 +1,6 @@
 ---
 author: StevenTTuD
-title: 'Algorithm - BFS(Breadth-first Search)(ch22.1 22.2)'
+title: '[Algorithm]  BFS(Breadth-first Search)(ch22.1 22.2)'
 date: 2014-06-10 20:09
 comments: true
 categories:
@@ -23,7 +23,7 @@ BFS-Tree : 產生一棵以```S```為根的BFS-Tree來包含所有可到達的頂
 1. 最初只包含他的根，即來源頂點S。
 2. 每當掃瞄一個已經被發現的頂點u的adjacent list時，發現有白色的頂點V，麼頂點V和邊(u,v)就會被加入樹中。因為經由u才找到v，所以稱u是v的```predecessor```(先輩)或稱為parent。
 
-###頂點上的資料結構
+### 頂點上的資料結構
 每個頂點儲存了一些屬性(attribute)來幫助實現BFS-Tree。
 u.color - 表示頂點u的顏色
 u.π - predecessor vertex，用來紀錄頂點的先輩。
@@ -37,7 +37,7 @@ BFS將頂點塗成白色、灰色與黑色來區分他們的狀態。
 **灰色**則是介於兩者之間。
 一個頂點在第一次造訪的時候，從白色變成灰色或黑色，稱為discover(被發現)。
 
-###BFS演算法
+### BFS演算法
 ```
 BFS(G,s)
 1.  for each vertex u ∈ G.V - {s}
@@ -64,10 +64,10 @@ BFS(G,s)
 第10-18行被一個while迴圈包住，當沒有灰色頂點的時候才會跳出，也就是當Q中沒有存放任何灰色頂點，Q=null時才會結束。
 第11-12行，從Q中取出一個灰色頂點u。把u的相鄰邊，也就是這個頂點u的adjacent list中儲存的相鄰頂點v(可能有很多個)，用for迴圈一一讀出來。13-17行，如果取出的頂點是白色，那就把它塗成灰色，標記他為造訪過的頂點。距離+1。pi先輩設為u。把v加入到Q中。最後頂點u的所有鄰近的頂點都被發現了，所以設為黑色。
 
-###時間複雜度
+### 時間複雜度
 
 ![2014-06-11_115545.jpg](http://user-image.logdown.io/user/6141/blog/6148/post/205643/fYcrGvLnQYaCdOXKppAG_2014-06-11_115545.jpg)
 
-####參考資料
+#### 參考資料
 [ycp cs 360](http://faculty.ycp.edu/~dbabcock/cs360/lectures/lecture16.html)
 Introduce to algorithm

@@ -1,17 +1,19 @@
 ---
-title: 'Algorithm - DFS(Depth-First Search)(ch22.3)'
+title: '[Algorithm]  DFS(Depth-First Search)(ch22.3)'
 date: 2014-06-11 06:59
 comments: true
 categories:
 ---
 
 ### 頂點的資料結構
+
 DFS與BFS不同的是，在頂點上須標明兩個時間標籤(Timestamp，以頂點v為例子，就是v.d和v.f這兩個屬性。所以變成以下三個。
 u.π - predecessor vertex.
 u.d - timestamp when the vertex is first discovered (and is subsequently colored gray)
 u.f - timestamp when the vertex has been fully explored (and is subsequently colored black) ⇒ u.d < u.f
 
 ### DFS 深度優先搜尋演算法
+
 ```
 DFS(G)
 1.  for each vertex u ∈ G.V
@@ -22,6 +24,7 @@ DFS(G)
 6.     if u.color == WHITE
 7.        DFS-VISIT(G,u)
 ```
+
 第1-4行進行初始化。把Graph中的所有點設為白色（代表未造訪的意思），先輩(predecessor)設為nill。第四行重置全域時間計數器。
 第5-8行檢查是否要進入DFS-VISIT: 輪流檢查頂點V的adjacent list裡面的每個頂點，如果碰到白色頂點就使用DFS-VISIT來造訪它。
 
@@ -38,6 +41,7 @@ DFS-VISIT(G,u)
 9.  time = time + 1
 10. u.f = time
 ```
+
 第1行全域變數time+1，第2行把更新過的時間存進頂點u的時間標籤d內。
 第3行在u是白色的時候呼叫DFS-VISIT(G,u)，這時u已經造訪過了，塗成灰色。
 第4-7行檢查鄰接u的每個頂點v，如果v是白色的就遞迴地拜訪之。
