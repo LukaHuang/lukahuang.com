@@ -1,5 +1,5 @@
 ---
-title: '[Algorithm]  最短路徑問題(ch24)'
+title: 'Algorithm - 最短路徑問題(ch24)'
 date: 2014-06-11 07:49
 comments: true
 categories:

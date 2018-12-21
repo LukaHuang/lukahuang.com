@@ -1,6 +1,6 @@
 ---
 author: StevenTTuD
-title: '[Algorithm]  BFS(Breadth-first Search)(ch22.1 22.2)'
+title: 'Algorithm - BFS(Breadth-first Search)(ch22.1 22.2)'
 date: 2014-06-10 20:09
 comments: true
 categories:

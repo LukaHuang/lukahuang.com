@@ -1,5 +1,5 @@
 ---
-title: '[Algorithm]  Merge sort(ch2.3)'
+title: 'Algorithm - Merge sort(ch2.3)'
 date: 2014-06-12 06:33
 comments: true
 categories:

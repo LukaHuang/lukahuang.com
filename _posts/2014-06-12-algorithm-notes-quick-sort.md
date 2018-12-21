@@ -1,5 +1,5 @@
 ---
-title: '[Algorithm]  Quick sort'
+title: 'Algorithm - Quick sort'
 date: 2014-06-12 06:33
 comments: true
 categories:

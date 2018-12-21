@@ -1,6 +1,6 @@
 ---
 author: StevenTTuD
-title: '[Algorithm]  Dijkstra's Algorithm'
+title: Algorithm - Dijkstra's Algorithm
 date: 2014-06-10 16:00
 comments: true
 categories:
@@ -34,7 +34,9 @@ INITIALIZE-SINGLE-SOURCE(G,s)
 2.     v.d = ∞
 3.     v.pi = NIL
 4.  s.d = 0
+```
 
+```
 RELAX(u,v,w)
 1.  if v.d > u.d + w(u,v)
 2.     v.d = u.d + w(u,v)
