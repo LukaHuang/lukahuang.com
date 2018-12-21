@@ -88,7 +88,6 @@
   height: $archieve-base;
   margin: 0.5em;
   display: block;
-  
 }
 
 .archive__item-image{
@@ -345,5 +344,12 @@
         width: span(7 of 12);
       }
     }
+  }
+}
+.layout--single{
+  .archive__item-title{
+    line-height: inherit;
+    width: 100%;
+    height: auto;
   }
 }

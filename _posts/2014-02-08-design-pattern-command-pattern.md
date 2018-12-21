@@ -139,8 +139,6 @@ public class MetaCommandInvoker {
 3. Command pattern與Facade Pattern
 同樣都是在實際執行的物件和Client中間加上一個物件來降低藕合，差別在於facade必須為所有的method命名，例如開電視。而Command要使用哪一個才調用並執行，可以看得出Command Pattern適用於大量且不一定會使用的指令，而facade是讓你很明顯的看到，我這個系統有這些功能，扮演著介面的角色。
 
-======================================================================
-
 ## 參考資源:
 Head First Design Pattern
 [搞笑談軟工 重新整理Command Pattern](http://teddy-chen-tw.blogspot.tw/2013/08/command-pattern.html)

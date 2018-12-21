@@ -21,11 +21,10 @@ layout: default
 
     {{ content }}
 
-    <form>
-      <input placeholder="{{ site.data.ui-text[site.locale].search_placeholder_text | default: "Enter your search term..." }}" type="search" id="search" class="search-input">
+    <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+      <input type="search" name="q" class="search-form-input" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://steventtud.com">
     </form>
-
-    <div id="results"></div>
 
   </div>
 </div>

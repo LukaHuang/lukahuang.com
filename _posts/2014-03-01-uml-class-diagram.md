@@ -16,6 +16,7 @@ Design Pattern的學習中頻繁的出現著Class Diagram，如果不仔細地�
 最後簡單的介紹一下UML，UML是描述物件導向程式的語言，使用圖形來表示我們設計的軟體。從需求設計實作，都可以用UML來表示。而Class Diagram描述著系統的結構，是UML中唯一可以對應實際物件導向程式的UML圖。
 
 ### 能見度(Visibility)
+
 加在Class中的變數或是方法前面。
 public:大家都可以使用。
 private:只能在自己本身的Class中使用。
@@ -57,11 +58,6 @@ package:在同package下可以使用。
 ![2014-03-07_013507.jpg](http://user-image.logdown.io/user/6619/blog/6590/post/182932/p4ghACcQleb3VDv6Aahp_2014-03-07_013507.jpg)
 
 
-### 其他
-role 角色
-說明：箭頭附近的說明文字，代表變數的名稱。
-例如：
 
-============================================
 ## 參考資料：
 [游峰碩老師個人網頁](http://fengyu0318.myweb.hinet.net/ood.html)
