@@ -1,6 +1,6 @@
 ---
 author: StevenTTuD
-title: 初學 Sinatra 初體驗(1) - Route
+title: Sinatra 初體驗(1) - Route
 published: true
 date: 2014-10-03 12:04
 tags:
@@ -11,9 +11,10 @@ comments: true
 ---
 # First Sinatra App
 
-1.輸入```gem install sinatra```安裝gem
+輸入```gem install sinatra```安裝gem
 
-2.建立app.rb檔
+建立app.rb檔
+
 ```rb
 require "sinatra/base"
 
@@ -23,24 +24,29 @@ class App < Sinatra::Base
 	end
 end
 ```
-3.建立config.ru
+
+建立config.ru
 
 ```rb
 	require "./app" # relative file path
 
 	run App   #class Name
 ```
-4.輸入```rackup```啟動server，在 http://localhost:9292即可看到Hello World
+
+輸入```rackup```啟動server，在 `http://localhost:9292` 即可看到Hello World
 
 ## 使用curl來模仿HTTP Verb - GET
-1. 輸入```curl -v "http://localhost:9292"```
-2. 可以看到以下畫面
-/Users/Steven/Desktop/Screen Shot 2014-10-03 at 14.41.37.png
+
+```
+curl -v "http://localhost:9292"
+```
 
 RESTful HTTP Post:
+
 ```
 curl -X POST -d "http://localhost:9292"
 ```
+
 [http-post-and-get-using-curl-in-linux](http://stackoverflow.com/questions/14978411/http-post-and-get-using-curl-in-linux)
 
 [curl指令用法](http://evelynnote.blogspot.tw/2011/03/curl.html)
@@ -60,9 +66,10 @@ end
 這邊分號沒有寫錯，因為就是要傳一個空字串給server。
 這樣server就會傳回http response
 
-## 接著來大亂鬥
-app.rb
+## HTTP verb 都來一次
+
 ```rb
+# app.rb
 require "sinatra/base"
 
 class App < Sinatra::Base
@@ -83,6 +90,7 @@ class App < Sinatra::Base
 	end
 end
 ```
+
 輸入```curl -X POST -v -d "" http://localhost:9292```
 回應```Hello World via POST!!```
 輸入```curl -X PUT -v -d "" http://localhost:9292```
@@ -122,28 +130,32 @@ end
 3. 最後輸出的就是route相對輸出的內容
 
 ## 接下來
+
 ```rb
 get "/hello/:first_name/:last_name" do |first, last|
   "hello#{first}#{last}"
 end
 ```
-在網址列輸入http://0.0.0.0:9292/hello/steven/huang
-網頁上就會印出hellostevenhuang
+在網址列輸入`http://0.0.0.0:9292/hello/steven/huang`
+網頁上就會印出 hellostevenhuang
 
-### 這樣寫的缺點
-這樣寫的話有如果網址列輸入http://0.0.0.0:9292/hello/test
-就會出現Sinatra doesn’t know this ditty.的錯誤，因為這樣的寫法比較沒有彈性，route並沒有match到網址。
+## 這樣寫的缺點
 
-### 修正選擇性欄位的問題
+這樣寫的話有如果網址列輸入`http://0.0.0.0:9292/hello/test`
+就會出現 `Sinatra doesn’t know this ditty` 的錯誤，因為這樣的寫法比較沒有彈性，route並沒有match到網址。
+
+## 修正選擇性欄位的問題
+
 ```rb
 get "/hello/:first_name/?:last_name?" do |first, last|
   "hello#{first}#{last}"
 end
 ```
-這樣的話:last_name就變成選擇性欄位
-有沒有輸入都會進入這個route
+
+這樣的話 last_name 就變成了選擇性欄位
+有沒有輸入都會進入這個 route
 來測試看看：
-輸入http://0.0.0.0:9292/hello/steven
-果然輸出了hellosteven
+輸入 `http://0.0.0.0:9292/hello/steven`
+果然輸出了 hellosteven
 
 
