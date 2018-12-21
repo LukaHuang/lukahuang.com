@@ -1,6 +1,6 @@
 ---
 author: StevenTTuD
-title: "Mysql 實戰筆記 - 如何修改 partition 並還原資料"
+title: "Mysql - 如何修改 partition 並還原資料"
 published: true
 date: 2018-03-04 12:50
 tags:
