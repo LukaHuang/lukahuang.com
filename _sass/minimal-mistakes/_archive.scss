@@ -8,12 +8,12 @@
   @include breakpoint($large) {
     float: right;
     width: calc(100% - #{$right-sidebar-width-narrow});
-    padding-right: $right-sidebar-width-narrow;
+    padding-right: 0;
   }
 
   @include breakpoint($x-large) {
     width: calc(100% - #{$right-sidebar-width});
-    padding-right: $right-sidebar-width;
+    padding-right: 0;
   }
 
   a {
@@ -30,7 +30,7 @@
   border-bottom: 1px solid $border-color;
 
   + .list__item .archive__item-title {
-    margin-top: 0.5em;
+    // margin-top: 0.5em;
   }
 }
 
@@ -82,6 +82,26 @@
   }
 }
 
+.archive__item{
+  height: $archieve-base;
+  margin: 20px 0;
+  display: block;
+}
+
+.archive__item-image{
+  width: $archieve-base;
+  height: $archieve-base;
+  display: block;
+  float: left;
+  margin-right: 10px;
+}
+.archive__item-title{
+  height: $archieve-base;
+  display: block;
+  float: left;
+  margin: 0;
+  line-height: $archieve-base;
+}
 
 /*
    List view
@@ -166,7 +186,7 @@
   }
 
   .archive__item-title {
-    margin-top: 0.5em;
+    // margin-top: 0.5em;
     font-size: $type-size-5;
   }
 

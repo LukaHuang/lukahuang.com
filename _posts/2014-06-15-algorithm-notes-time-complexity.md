@@ -2,7 +2,8 @@
 title: 'Algorithm - 時間複雜度整理'
 date: 2014-06-15 09:00
 comments: true
-categories:
+tags:
+- Algorithm
 ---
 
 以下資料摘自Ting的小筆記

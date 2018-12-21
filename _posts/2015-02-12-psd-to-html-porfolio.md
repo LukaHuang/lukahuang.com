@@ -5,7 +5,8 @@ title: "排版練習1：PSD to HTML Porfolio"
 published: true
 date: 2015-02-12 04:51
 tags:
-  - "HTML / CSS"
+  - HTML
+  - CSS
   - PSD to HTML
 comments: true
 

@@ -1,6 +1,5 @@
 ---
 author: StevenTTuD
-
 title: 'Ruby bits ( 1 ) : Expression'
 published: true
 date: 2014-09-03 09:10

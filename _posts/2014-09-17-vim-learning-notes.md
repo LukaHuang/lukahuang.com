@@ -36,13 +36,9 @@ page up:
 ## Vim資源整理
 
 [VIM Adventures](http://vim-adventures.com/)
-
 [Vim 正體中文社團](https://www.facebook.com/groups/vim.tw/)
-
 [Best Vim Tips](http://vim.wikia.com/wiki/Best_Vim_Tips)
-
 [Vimgenius](http://www.vimgenius.com/)
 一個畫面精美的教學，不過考法似乎是用背的XD
-
 [Iteractive Vim](http://www.openvim.com/sandbox.html)
 右邊有指令邊看邊試還不錯用，但並非全部vim的指令都支援，只有表上的可以使用。

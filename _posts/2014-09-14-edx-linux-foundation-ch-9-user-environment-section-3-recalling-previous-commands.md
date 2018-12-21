@@ -2,8 +2,7 @@
 author: StevenTTuD
 author: StevenTTuD
 
-title: EDX Linux Foundation Ch 9：User Environment Section 3  Recalling Previous Commands
-  &4 Command Aliases
+title: EDX Linux Foundation Ch 9：User Environment Section 3 and 4
 published: true
 date: 2014-09-14 09:41
 tags:

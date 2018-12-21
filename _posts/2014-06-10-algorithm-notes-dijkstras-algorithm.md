@@ -3,7 +3,8 @@ author: StevenTTuD
 title: Algorithm - Dijkstra's Algorithm
 date: 2014-06-10 16:00
 comments: true
-categories:
+tags:
+- Algorithm
 ---
 
 ### 資料結構

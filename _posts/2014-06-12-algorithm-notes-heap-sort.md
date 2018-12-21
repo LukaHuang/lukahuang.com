@@ -2,7 +2,8 @@
 title: 'Algorithm - Heap sort'
 date: 2014-06-12 05:56
 comments: true
-categories:
+tags:
+- Algorithm
 ---
 
 ## Heap

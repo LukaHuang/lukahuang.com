@@ -1,3 +1,9 @@
+---
+title: '星期三搞定一週 88% 工作'
+date: 2014-08-09 01:54
+comments: true
+categories:
+---
 
 ## Part 1:工作清單以一週為規劃
 

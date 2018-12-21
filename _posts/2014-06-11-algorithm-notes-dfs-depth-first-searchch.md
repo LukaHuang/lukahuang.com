@@ -2,7 +2,8 @@
 title: 'Algorithm - DFS(Depth-First Search)(ch22.3)'
 date: 2014-06-11 06:59
 comments: true
-categories:
+tags:
+- Algorithm
 ---
 
 ### 頂點的資料結構

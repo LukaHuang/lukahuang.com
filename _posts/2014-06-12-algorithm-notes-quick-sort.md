@@ -2,7 +2,8 @@
 title: 'Algorithm - Quick sort'
 date: 2014-06-12 06:33
 comments: true
-categories:
+tags:
+- Algorithm
 ---
 ### 概念
 從數列中挑選一個pivot，大於pivot放在右邊，小於pivot放在左邊，重複循環最後得出的陣列即為排序結果。

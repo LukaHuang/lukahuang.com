@@ -4,7 +4,7 @@ author: StevenTTuD
 title: Demo：實作捲動觸發CSS動畫
 published: true
 date: 2015-10-20 18:35
-tags: ["HTML / CSS"]
+tags: ["HTML"]
 comments: true
 
 ---

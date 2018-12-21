@@ -5,13 +5,14 @@ title: Demo：使用Matirialize框架實現視差滾動
 published: true
 date: 2015-10-12 18:47
 tags:
-    - "HTML / CSS"
+    - HTML
+    - javascript
 comments: true
 
 ---
 [完成品展示頁](http://steventtud.github.io/matirialize_parral_design/)
 
-Materialize是除了Bootstrap以外現今相當熱門的前端框架，可以製作的網頁類型相當廣泛，未來將使用Materialize來開發一些小作品，是今天練習的主要目的。
+Materialize 是除了 Bootstrap 以外現今相當熱門的前端框架，可以製作的網頁類型相當廣泛，未來將使用 Materialize 來開發一些小作品，是今天練習的主要目的。
 
 ## 實現Materialize框架提供的視差滾動效果
 

@@ -4,7 +4,8 @@ author: StevenTTuD
 title: "Design Pattern - Command Pattern"
 published: true
 date: 2014-02-08 19:33
-tags: ["Design Pattern"]
+tags:
+  - Design Pattern
 comments: true
 
 ---

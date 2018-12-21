@@ -6,6 +6,8 @@ published: true
 date: 2014-07-29 04:12
 tags:
   - javascript
+categories:
+  - Front-end
 comments: true
 
 ---

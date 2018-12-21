@@ -5,9 +5,9 @@ title: "排版練習2：PSD to html with Bootstrap"
 published: true
 date: 2015-02-12 12:33
 tags:
-  - "HTML / CSS"
+  - HTML
   - PSD to HTML
-  - bootstrap
+  - Bootstrap
 comments: true
 
 ---

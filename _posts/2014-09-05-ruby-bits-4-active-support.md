@@ -1,6 +1,5 @@
 ---
 author: StevenTTuD
-
 title: Ruby bits ( 4 )：ActiveSupport
 published: true
 date: 2014-09-05 08:12

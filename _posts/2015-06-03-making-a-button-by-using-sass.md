@@ -1,10 +1,12 @@
 ---
 author: StevenTTuD
 
-title: "使用SMACSS製作button"
+title: "使用 SMACSS 製作button"
 published: true
 date: 2015-06-03 03:55
-tags: ["HTML / CSS", "SCSS"]
+tags:
+  - HTML
+  - SCSS
 comments: true
 
 ---

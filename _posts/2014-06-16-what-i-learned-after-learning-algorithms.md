@@ -2,7 +2,9 @@
 title: 'Algorithm - 3週不間斷學習演算法之心得'
 date: 2014-06-16 07:40
 comments: true
-categories:
+tags:
+  - Algorithm
+  - Learning
 ---
 
 這個禮拜花了大量的時間研讀演算法，紀錄下學習過程與心得。

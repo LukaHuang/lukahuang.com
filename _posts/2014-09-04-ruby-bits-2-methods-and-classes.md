@@ -1,6 +1,5 @@
 ---
 author: StevenTTuD
-
 title: 'Ruby bits ( 2 ) : Methods and Classes'
 published: true
 date: 2014-09-04 05:05

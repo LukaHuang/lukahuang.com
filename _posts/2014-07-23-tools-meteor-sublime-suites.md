@@ -39,6 +39,7 @@ comments: true
 ```
 
 ## 以後開發 meteor 專案時
+
 1. 先 open sublime-project
 2. 把要開發的 meteor 專案的檔案全部加進來
 3. 即可開始使用強大的 ternjs 套件

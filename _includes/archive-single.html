@@ -11,28 +11,63 @@
 {% endif %}
 
 <div class="{{ include.type | default: "list" }}__item">
-  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
-    {% if include.type == "grid" and teaser %}
-      <div class="archive__item-teaser">
-        <img src=
-          {% if teaser contains "://" %}
-            "{{ teaser }}"
-          {% else %}
-            "{{ teaser | absolute_url }}"
-          {% endif %}
-          alt="">
-      </div>
-    {% endif %}
-    <h2 class="archive__item-title" itemprop="headline">
-      {% if post.link %}
-        <a href="{{ post.link }}">{{ title }}</a> <a href="{{ post.url | absolute_url }}" rel="permalink"><i class="fa fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
+  {% if post.link %}
+    <a class="archive__item" href="{{ post.link }}"></a>
+  {% else %}
+    <a class="archive__item" href="{{ post.url | absolute_url }}" rel="permalink">
+  {% endif %}
+    <img class="archive__item-image" src=
+      {% if !!teaser %}
+        {% if teaser contains "://" %}
+          "{{ teaser }}"
+        {% else %}
+          "{{ teaser | absolute_url }}"
+        {% endif %}
       {% else %}
-        <a href="{{ post.url | absolute_url }}" rel="permalink">{{ title }}</a>
+        {% if post.tags contains 'Linux' %}
+          "/assets/images/icon/linux.png"
+        {% elsif post.tags contains 'AWS' %}
+          "/assets/images/icon/aws.png"
+        {% elsif post.tags contains 'Algorithm' %}
+          "/assets/images/icon/algorithm.jpg"
+        {% elsif post.tags contains 'Golang' %}
+          "/assets/images/icon/golang.jpg"
+        {% elsif post.tags contains 'EFK' %}
+          "/assets/images/icon/fluentd.png"
+        {% elsif post.tags contains 'Sublime' %}
+          "/assets/images/icon/sublime.jpeg"
+        {% elsif post.tags contains 'Atom' %}
+          "/assets/images/icon/atom.png"
+        {% elsif post.tags contains 'jQuery' %}
+          "/assets/images/icon/jquery.png"
+        {% elsif post.tags contains 'javascript' %}
+          "/assets/images/icon/javascript.png"
+        {% elsif post.tags contains 'SCSS' or post.tags contains 'SASS' %}
+          "/assets/images/icon/sass.png"
+        {% elsif post.tags contains 'Bootstrap' %}
+          "/assets/images/icon/bootstrap.png"
+        {% elsif post.tags contains 'CSS' %}
+          "/assets/images/icon/css.png"
+        {% elsif post.tags contains 'HTML' %}
+          "/assets/images/icon/html.png"
+        {% elsif post.tags contains 'Docker' %}
+          "/assets/images/icon/docker.png"
+        {% elsif post.tags contains 'Git' %}
+          "/assets/images/icon/git.png"
+        {% elsif post.tags contains 'Mysql' %}
+          "/assets/images/icon/mysql.png"
+        {% elsif post.tags contains 'Rails' %}
+          "/assets/images/icon/rails.png"
+        {% elsif post.tags contains 'Ruby' %}
+          "/assets/images/icon/ruby.png"
+        {% else %}
+          "/assets/images/icon/cat.png"
+        {% endif %}
       {% endif %}
-    </h2>
-    {% if post.read_time %}
-      <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> {% include read-time.html %}</p>
-    {% endif %}
-    {% if post.excerpt %}<p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify | strip_html | truncate: 160 }}</p>{% endif %}
-  </article>
+    alt="">
+
+    <div class="archive__item-title">
+      {{ title }}
+    </div>
+  </a>
 </div>

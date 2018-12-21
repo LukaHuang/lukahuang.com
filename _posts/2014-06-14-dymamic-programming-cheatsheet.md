@@ -2,7 +2,8 @@
 title: 'Dynamic Programming cheatsheet'
 date: 2014-06-14 18:59
 comments: true
-categories:
+tags:
+- Algorithm
 ---
 
 

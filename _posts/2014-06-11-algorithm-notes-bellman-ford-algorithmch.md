@@ -2,7 +2,8 @@
 title: 'Algorithm - Bellman-Ford Algorithm(ch24.1)'
 date: 2014-06-11 07:50
 comments: true
-categories:
+tags:
+- Algorithm
 ---
 ### BELLMAN-FORD Algorithm
 

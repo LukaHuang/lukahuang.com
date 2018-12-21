@@ -3,7 +3,11 @@ title: 'Sitcon workshop：Git 入門到進階與實務經驗談'
 date: 2014-08-11 01:54
 comments: true
 categories:
+tags:
+  - Git
 ---
+
+# Git 入門到進階與實務經驗談
 
 [workshop網頁](http://sitcon.kktix.cc/events/sitcon-workshop-2014)
 sitcon這次舉辦的為期五天的workshop
@@ -13,10 +17,7 @@ sitcon這次舉辦的為期五天的workshop
 2. 8/14 那些學校沒教的黑魔法攻防
 3. 8/15 學習設計：從一個網站的設計開始
 
-這是第一天Git workshop的學習筆記
-
-# Git 入門到進階與實務經驗談
-
+這是第一天 Git workshop 的學習筆記
 主講人:Denny
 投影片: [連結](http://denny0223.github.io/SITCON-workshop-2014-git/)
 

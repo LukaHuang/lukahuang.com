@@ -5,8 +5,8 @@ title: Bootstrap 學習筆記
 published: true
 date: 2014-07-23 15:13
 tags:
-  - "HTML / CSS"
-  - bootstrap
+  - Bootstrap
+  - HTML
 comments: true
 
 ---
