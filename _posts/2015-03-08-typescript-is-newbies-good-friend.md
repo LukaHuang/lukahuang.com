@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Typescript是新手的好朋友
 published: true

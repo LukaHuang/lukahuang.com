@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "使用 GIT Precommit hooks 防止 Binding.pry 進入 Commit"
 published: true
@@ -22,7 +22,7 @@ GIT Precommit hooks 是一種可以在你每次 Commit 之前的 Callback。每�
 
 在你的 git 專案底下，`.git/hooks/pre-commit.sample` 這是 Precommit hook 編寫的範本。將 `.sample` 結尾去除掉，就可以真正作用在當前的 Git 專案目錄上。不過因為我們想作用的是在 Rails 專案上，所以需要客製化腳本。
 
-這邊已經有寫好的腳本: [Source Code](https://raw.githubusercontent.com/StevenTTuD/githooks/master/pre-commit)
+這邊已經有寫好的腳本: [Source Code](https://raw.githubusercontent.com/Luka/githooks/master/pre-commit)
 
 ### 1.1 How to Use
 
@@ -35,7 +35,7 @@ cd project_name
 下載腳本
 
 ```
-curl https://raw.githubusercontent.com/StevenTTuD/githooks/master/pre-commit > .git/hooks/pre-commit
+curl https://raw.githubusercontent.com/Luka/githooks/master/pre-commit > .git/hooks/pre-commit
 ```
 
 讓腳本擁有執行的權限

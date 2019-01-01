@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Ruby bits ( 6 )：Blocks 學習筆記
 published: true

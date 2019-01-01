@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: 'Rails - 如何解決ajax沒有CSRF Key的問題 '
 published: true

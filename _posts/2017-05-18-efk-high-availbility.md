@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "EFK(5) - Fluentd 高可用架構(High Availibity)"
 published: true

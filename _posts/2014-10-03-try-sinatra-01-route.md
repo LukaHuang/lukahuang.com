@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: Sinatra 初體驗(1) - Route
 published: true
 date: 2014-10-03 12:04

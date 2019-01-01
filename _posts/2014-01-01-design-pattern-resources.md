@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "Design Pattern - 資源總整理"
 published: true

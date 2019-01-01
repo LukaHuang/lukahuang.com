@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Demo：實作捲動觸發CSS動畫
 published: true
@@ -9,7 +9,7 @@ comments: true
 
 ---
 
-[demo](http://steventtud.github.io/CSS-Animation-Page-Demo/)
+[demo](http://Luka.github.io/CSS-Animation-Page-Demo/)
 
 ## 第一部分：使用CSS撰寫Slide In效果
 

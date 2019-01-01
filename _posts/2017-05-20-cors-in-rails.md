@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "CORS in Rails"
 published: true

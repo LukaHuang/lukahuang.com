@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: Ruby bits ( 3 )：Class
 published: true
 date: 2014-09-05 06:41

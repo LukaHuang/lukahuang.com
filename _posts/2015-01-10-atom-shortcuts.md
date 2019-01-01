@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Atom 常用快速鍵
 published: true

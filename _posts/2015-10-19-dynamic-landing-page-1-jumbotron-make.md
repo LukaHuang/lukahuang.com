@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Landing Page 實作：來做個簡單的Jumbotron
 published: true

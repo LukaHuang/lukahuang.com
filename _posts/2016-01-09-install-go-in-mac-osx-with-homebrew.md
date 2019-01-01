@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "在 Mac OS X 下使用 brew 安裝 Go"
 published: true

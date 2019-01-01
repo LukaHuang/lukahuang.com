@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "排版練習2：PSD to html with Bootstrap"
 published: true

@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Atom 防止 Snippet Package 更新
 published: true

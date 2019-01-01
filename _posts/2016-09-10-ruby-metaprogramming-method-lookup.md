@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Ruby metaprogramming - Method Lookup
 published: true

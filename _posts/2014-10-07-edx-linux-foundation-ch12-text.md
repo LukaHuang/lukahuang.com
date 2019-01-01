@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: EDX Linux Foundation Ch13 Manipulating Text
 published: true

@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: jQuery vs Ruby - 取得倒數的元素並組成字串
 published: true

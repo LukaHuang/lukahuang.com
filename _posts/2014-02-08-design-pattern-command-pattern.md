@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "Design Pattern - Command Pattern"
 published: true

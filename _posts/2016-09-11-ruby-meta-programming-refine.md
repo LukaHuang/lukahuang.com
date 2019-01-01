@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: 'Ruby metaprogramming - Open Class and Refine '
 published: true

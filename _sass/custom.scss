@@ -11,3 +11,31 @@
 h2{
   margin-top: 1.5em;
 }
+
+.page__title{
+  line-height: 1.2em;
+}
+
+@media screen and (max-width: 600px) {
+  .layout--single .archive__item-title{
+    line-height: 54px;
+    width: 70%;
+    height: 54px;
+    display: block;
+    vertical-align: middle;
+    margin-left: 2%;
+  }
+  .grid__item{
+    margin-bottom: 0;
+  }
+  .archive__item-title {
+    width: 77%;
+  }
+}
+
+
+.archive__item-title {
+  height: 3,3em;
+  line-height: 3.3em;
+  margin-left: 1%;
+}

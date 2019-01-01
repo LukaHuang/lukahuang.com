@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Ruby - 讓 irb 更好用
 published: true

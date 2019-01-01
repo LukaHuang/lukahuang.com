@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Agile Meetup 2014 9月：喚醒者的工具箱
 published: true

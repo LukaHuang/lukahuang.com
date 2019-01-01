@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Linux - 如何查詢 OS 版本
 published: true

@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "EFK(3) - Rails 與 Fluentd 的串接方法"
 published: true

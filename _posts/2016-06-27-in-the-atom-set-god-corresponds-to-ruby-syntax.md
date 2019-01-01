@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "在 Atom 設定 .god 對應至 Ruby Syntax "
 published: true

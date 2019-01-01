@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: HTTP Status Code In Rails
 published: true

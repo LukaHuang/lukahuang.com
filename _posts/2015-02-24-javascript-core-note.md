@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: javascript核心筆記：Object
 published: true

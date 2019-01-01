@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: "[譯] 使用 AWS Ruby SDK v2 更新 S3 物件 Metadata"
 published: true
 date: 2018-01-25 15:32

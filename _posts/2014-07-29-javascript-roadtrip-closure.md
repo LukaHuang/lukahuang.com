@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Javascript Roadtrip 3 Closure
 published: true

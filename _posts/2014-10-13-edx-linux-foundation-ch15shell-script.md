@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: EDX Linux Foundation Ch15：Shell Script ( Ch14跳過 )
 published: true

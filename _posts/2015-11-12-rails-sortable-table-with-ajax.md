@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Rails - Sortable Table With Ajax
 published: true

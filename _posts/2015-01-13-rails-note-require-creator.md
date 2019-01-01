@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: 'Rails note : Require Creator'
 published: true

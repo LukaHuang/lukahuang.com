@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Rails 筆記 - 使用 ActiveRecord::Enum 設定狀態
 published: true

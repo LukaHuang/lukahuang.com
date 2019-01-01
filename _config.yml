@@ -9,9 +9,9 @@ minimal_mistakes_skin    : "contrast" # "air", "aqua", "contrast", "dark", "dirt
 
 # Site Settings
 locale                   : "en"
-title                    : "StevenTTuD's Blog"
+title                    : "Luka's notes"
 title_separator          : "-"
-name                     : "StevenTTuD"
+name                     : "Luka"
 description              : "go go go!!"
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
@@ -22,7 +22,7 @@ words_per_minute         : 200
 comments:
   provider               : false # false (default), "disqus", "discourse", "facebook", "google-plus", "staticman", "staticman_v2" "custom"
   disqus:
-    shortname            : steventtud # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
+    shortname            : Luka # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
   discourse:
     server               : # https://meta.discourse.org/t/embedding-discourse-comments-via-javascript/31963 , e.g.: meta.discourse.org
   facebook:
@@ -83,11 +83,11 @@ analytics:
 
 # Site Author
 author:
-  name             : Steven Huang
+  name             : Luka
   avatar           : "/assets/images/steventtud.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : A Rubyist from Taiwan.
+  bio              : A backend engineer from Taiwan.
   location         : Taipei
-  email            : steventtud@gmail.com
+  email            : luka7go@gmail.com
   uri              :
   bitbucket        :
   codepen          :
@@ -95,7 +95,7 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : StevenTTuD
+  github           : steventtud
   gitlab           :
   google_plus      :
   keybase          :

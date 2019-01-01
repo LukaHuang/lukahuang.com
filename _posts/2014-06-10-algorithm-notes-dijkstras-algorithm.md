@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: Algorithm - Dijkstra's Algorithm
 date: 2014-06-10 16:00
 comments: true

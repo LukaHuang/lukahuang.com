@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: "OLTP 與 OLAP"
 published: true
 date: 2017-12-22 14:11

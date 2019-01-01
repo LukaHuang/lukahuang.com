@@ -1,8 +1,8 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "爆炸性的學習"
-author: StevenTTuD
+author: Luka
 published: true
 date: 2014-03-20 17:01
 tags:

@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: 'Generate Safety Query String In ActiveRecord '
 published: true

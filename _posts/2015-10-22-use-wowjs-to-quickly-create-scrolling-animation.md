@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Demo：使用wow.js快速打造捲動式動畫網頁
 published: true
@@ -13,8 +13,8 @@ comments: true
 ---
 我用兩個不同方法個別製作出網站來讓大家比較看看：
 
-[純CSS打造捲動式動畫網站](http://steventtud.github.io/CSS-Animation-Page-Demo/)
-[wow.js打造的捲動式動畫網站](http://steventtud.github.io/wowjs-scroll-based-animation-/)
+[純CSS打造捲動式動畫網站](http://Luka.github.io/CSS-Animation-Page-Demo/)
+[wow.js打造的捲動式動畫網站](http://Luka.github.io/wowjs-scroll-based-animation-/)
 
 接著來介紹這wowjs的製作方法與其優缺點。
 

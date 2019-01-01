@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: Ruby bits 2 ( 1 )：BLOCKS, PROCS & LAMBDAS
 published: true
 date: 2014-09-06 07:42

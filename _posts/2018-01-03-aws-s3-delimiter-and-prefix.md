@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: "[譯] Amazon S3 Delimiter and Prefix"
 published: true
 date: 2018-01-03 12:50

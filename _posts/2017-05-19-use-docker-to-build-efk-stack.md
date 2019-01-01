@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "EFK(6) - 使用 docker 包裝 Fluentd"
 published: true
@@ -55,7 +55,7 @@ curl https://raw.githubusercontent.com/fluent/fluentd-docker-image/master/fluent
 
 ```
 FROM fluent/fluentd:onbuild
-StevenTTuD <steventtud@gmail.com>
+Luka <Luka@gmail.com>
 
 USER root
 

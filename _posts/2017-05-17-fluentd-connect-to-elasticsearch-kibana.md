@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: "EFK(4) - 讓 Elasticsearch 與 Kibana 能夠接收 Rails 的 log"
 published: true

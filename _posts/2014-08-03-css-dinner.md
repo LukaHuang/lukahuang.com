@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: CSS Dinner - 好玩又有效的 CSS 教學
 published: true
 date: 2014-08-03 03:04

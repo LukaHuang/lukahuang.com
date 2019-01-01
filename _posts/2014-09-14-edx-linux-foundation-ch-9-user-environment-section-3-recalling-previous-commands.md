@@ -1,6 +1,6 @@
 ---
-author: StevenTTuD
-author: StevenTTuD
+author: Luka
+author: Luka
 
 title: EDX Linux Foundation Ch 9：User Environment Section 3 and 4
 published: true

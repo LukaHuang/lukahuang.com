@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: jQuery Return Flight Ch1 ( 1 )：Ajax Basics
 published: true
 date: 2014-08-25 01:26

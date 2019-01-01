@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 title: "Mysql - 如何修改 partition 並還原資料"
 published: true
 date: 2018-03-04 12:50

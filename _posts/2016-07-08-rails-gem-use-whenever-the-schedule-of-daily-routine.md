@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: 'Rails: 使用 Whenever 產生 Cronjob '
 published: true

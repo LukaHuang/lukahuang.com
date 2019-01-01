@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: jQuery Return Flight Ch4：Utility Methods
 published: true

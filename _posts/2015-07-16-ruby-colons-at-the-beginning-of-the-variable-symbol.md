@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Ruby中冒號開頭Symbol與&:to_s用法解釋
 published: true

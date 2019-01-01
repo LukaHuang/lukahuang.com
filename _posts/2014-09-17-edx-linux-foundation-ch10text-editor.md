@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: EDX Linux Foundation Ch10：Text Editor
 published: true

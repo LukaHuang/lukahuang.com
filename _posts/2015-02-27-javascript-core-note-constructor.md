@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Javascript核心筆記：建構式與prototype
 published: true

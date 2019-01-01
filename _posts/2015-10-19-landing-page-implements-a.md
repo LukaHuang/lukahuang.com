@@ -1,5 +1,5 @@
 ---
-author: StevenTTuD
+author: Luka
 
 title: Demo：使用scrollspy讓畫面更生動
 published: true
@@ -11,7 +11,7 @@ tags:
 comments: true
 
 ---
-[Demo展示頁](http://steventtud.github.io/Scollspy-Landing-Page/#who)
+[Demo展示頁](http://Luka.github.io/Scollspy-Landing-Page/#who)
 
 ## 作法說明
 
