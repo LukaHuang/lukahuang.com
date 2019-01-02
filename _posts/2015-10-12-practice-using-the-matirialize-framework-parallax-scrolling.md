@@ -10,7 +10,7 @@ tags:
 comments: true
 
 ---
-[完成品展示頁](http://Luka.github.io/matirialize_parral_design/)
+[完成品展示頁](http://luka7go.github.io/matirialize_parral_design/)
 
 Materialize 是除了 Bootstrap 以外現今相當熱門的前端框架，可以製作的網頁類型相當廣泛，未來將使用 Materialize 來開發一些小作品，是今天練習的主要目的。
 
