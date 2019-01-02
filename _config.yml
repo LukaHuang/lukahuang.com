@@ -12,7 +12,7 @@ locale                   : "en"
 title                    : "Luka's notes"
 title_separator          : "-"
 name                     : "Luka Chun-Yen Huang"
-description              : "Problem Solver, also a Back-End Engineer"
+description              : "Problem Solver, also a Back-End Developer"
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -85,7 +85,7 @@ analytics:
 author:
   name             : Luka Chun-Yen Huang
   avatar           : "/assets/images/steventtud.jpg"
-  bio              : "Problem Solver, also a Back-End Engineer"
+  bio              : "Problem Solver, also a Back-End Developer"
   location         : Taipei
   email            : luka7go@gmail.com
   uri              :
