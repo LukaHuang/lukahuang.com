@@ -39,3 +39,20 @@ h2{
   line-height: 3.3em;
   margin-left: 1%;
 }
+
+.author__urls-wrapper{
+  vertical-align: top;
+  width: 10%;
+}
+
+#main > div.sidebar.sticky > div > div.author__urls-wrapper > button{
+  border: 0;
+  font-size: 1em;
+}
+.btn, #goog-wm-sb{
+  padding: 0;
+}
+
+#main > div.sidebar.sticky > div > div.author__content{
+  padding-right: 10px;
+}
