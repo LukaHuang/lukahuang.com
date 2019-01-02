@@ -11,8 +11,8 @@ minimal_mistakes_skin    : "contrast" # "air", "aqua", "contrast", "dark", "dirt
 locale                   : "en"
 title                    : "Luka's notes"
 title_separator          : "-"
-name                     : "Luka"
-description              : "go go go!!"
+name                     : "Luka (Chun-Yen Huang)"
+description              : "Back-end Developer, also a Problem Solver."
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -83,9 +83,9 @@ analytics:
 
 # Site Author
 author:
-  name             : Luka
-  avatar           : "/assets/images/steventtud.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : A backend engineer from Taiwan.
+  name             : Luka Chun-Yen Huang
+  avatar           : "/assets/images/steventtud.jpg"
+  bio              : "Back-end Developer, also a Problem Solver."
   location         : Taipei
   email            : luka7go@gmail.com
   uri              :
@@ -101,7 +101,7 @@ author:
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         : stevevnttud # "john-doe-12345678" (the last part of your profile url, e.g. https://www.linkedin.com/in/john-doe-12345678)
+  linkedin         : luka7go # "john-doe-12345678" (the last part of your profile url, e.g. https://www.linkedin.com/in/john-doe-12345678)
   pinterest        :
   soundcloud       :
   stackoverflow    : # "123456/username" (the last part of your profile url, e.g. https://stackoverflow.com/users/123456/username)
