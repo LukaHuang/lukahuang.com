@@ -6,8 +6,8 @@ main:
   #   url: https://mmistakes.github.io/minimal-mistakes/about/
   # - title: "Home"
   #   url: /
-  - title: "Archive"
-    url: /archive/
+  - title: "Archives"
+    url: /archives/
   - title: "Tags"
     url: /tags/
   - title: "Search"

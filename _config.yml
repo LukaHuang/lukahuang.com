@@ -224,7 +224,7 @@ jekyll-archives:
     - tags
     - year
   layouts:
-    tag: category
+    tag: tag
     category: category
   permalinks:
     tag: '/tag/:name/'
