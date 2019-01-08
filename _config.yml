@@ -86,8 +86,8 @@ author:
   name             : Luka Chun-Yen Huang
   avatar           : "/assets/images/steventtud.jpg"
   bio              : "Problem Solver, also a Back-End Developer"
-  location         : 
-  email            : 
+  location         :
+  email            :
   uri              :
   bitbucket        :
   codepen          :
@@ -191,6 +191,7 @@ plugins:
   - jekyll-gist
   - jekyll-feed
   - jemoji
+  - jekyll-archives
 
 # mimic GitHub Pages with --safe
 whitelist:
@@ -217,6 +218,17 @@ category_archive:
 tag_archive:
   type: liquid
   path: /tags/
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+    - year
+  layouts:
+    tag: category
+    category: category
+  permalinks:
+    tag: '/tag/:name/'
+    category: '/category/:name/'
 # https://github.com/jekyll/jekyll-archives
 # jekyll-archives:
 #   enabled:
