@@ -226,9 +226,11 @@ jekyll-archives:
   layouts:
     tag: tag
     category: category
+    year: year
   permalinks:
     tag: '/tag/:name/'
     category: '/category/:name/'
+    year: '/archive/:year/'
 # https://github.com/jekyll/jekyll-archives
 # jekyll-archives:
 #   enabled:
