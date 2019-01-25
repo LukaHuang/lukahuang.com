@@ -11,7 +11,7 @@ minimal_mistakes_skin    : "contrast" # "air", "aqua", "contrast", "dark", "dirt
 locale                   : "en"
 title                    : "Luka's notes"
 title_separator          : "-"
-name                     : "Luka Chun-Yen Huang"
+name                     : "Luka Huang"
 description              : "Problem Solver, also a Back-End Developer"
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
