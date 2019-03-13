@@ -11,7 +11,7 @@ tags:
 comments: true
 
 ---
-[Demo展示頁](http://luka7go.github.io/Scollspy-Landing-Page/#who)
+[Demo展示頁](http://codingluka.github.io/Scollspy-Landing-Page/#who)
 
 ## 作法說明
 

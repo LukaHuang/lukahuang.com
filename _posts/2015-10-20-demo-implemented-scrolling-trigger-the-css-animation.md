@@ -9,7 +9,7 @@ comments: true
 
 ---
 
-[demo](http://luka7go.github.io/CSS-Animation-Page-Demo/)
+[demo](http://codingluka.github.io/CSS-Animation-Page-Demo/)
 
 ## 第一部分：使用CSS撰寫Slide In效果
 

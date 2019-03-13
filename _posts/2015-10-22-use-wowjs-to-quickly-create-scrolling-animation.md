@@ -13,8 +13,8 @@ comments: true
 ---
 我用兩個不同方法個別製作出網站來讓大家比較看看：
 
-[純CSS打造捲動式動畫網站](http://luka7go.github.io/CSS-Animation-Page-Demo/)
-[wow.js打造的捲動式動畫網站](http://luka7go.github.io/wowjs-scroll-based-animation-/)
+[純CSS打造捲動式動畫網站](http://codingluka.github.io/CSS-Animation-Page-Demo/)
+[wow.js打造的捲動式動畫網站](http://codingluka.github.io/wowjs-scroll-based-animation-/)
 
 接著來介紹這wowjs的製作方法與其優缺點。
 
