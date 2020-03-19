@@ -56,3 +56,11 @@ h2{
 #main > div.sidebar.sticky > div > div.author__content{
   padding-right: 10px;
 }
+
+.page__content p{
+  display: block;
+  img{
+    display: block;
+    margin: 5px auto;
+  }
+}
