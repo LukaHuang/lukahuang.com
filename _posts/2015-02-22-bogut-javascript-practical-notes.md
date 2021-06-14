@@ -177,6 +177,6 @@ ANS : 5個記憶體物件、1個變數、3個型別  '
 保哥javascript實戰開發課程中還有更多的內容，本篇學習筆記重點放在理解 javascript 的重要特性和 javascript 的物件特性，函式部分只有稍稍帶過，更詳細的筆記將會在研讀[JavaScript語言核心系列](http://www.codedata.com.tw/category/javascript/5)的時候記錄。
 
 ## 參考資料
-* [JavaScript觀念整理-保哥上課心得 (1) « Coding For Fun](http://sfcer0414.logdown.com/posts/193415-javascript-concept-of-finishing-school-experience-1)
-* [JavaScript觀念整理-保哥上課心得 (2) « Coding For Fun](http://sfcer0414.logdown.com/posts/194246-javascript-concept-of-finishing-school-experience-2)
-* [Wilson.S.Weng: JavaScript 基礎訓練](http://l7960261.blogspot.tw/2014/01/javascript.html)
+- [JavaScript觀念整理-保哥上課心得 (1) « Coding For Fun](http://sfcer0414.logdown.com/posts/193415-javascript-concept-of-finishing-school-experience-1)
+- [JavaScript觀念整理-保哥上課心得 (2) « Coding For Fun](http://sfcer0414.logdown.com/posts/194246-javascript-concept-of-finishing-school-experience-2)
+- [Wilson.S.Weng: JavaScript 基礎訓練](http://l7960261.blogspot.tw/2014/01/javascript.html)

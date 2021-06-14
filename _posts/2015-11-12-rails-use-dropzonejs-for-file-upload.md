@@ -140,7 +140,7 @@ Dropzone.options.myAwesomeDropzone = { // The camelized version of the ID of the
 }
 ```
 
-* [Combine normal form with Dropzone · enyo/dropzone Wiki](https://github.com/enyo/dropzone/wiki/Combine-normal-form-with-Dropzone)
+- [Combine normal form with Dropzone · enyo/dropzone Wiki](https://github.com/enyo/dropzone/wiki/Combine-normal-form-with-Dropzone)
 
 
 ## 可以覆寫事件

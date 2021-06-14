@@ -135,7 +135,7 @@ memo_controller 中新增一個action來接這個ajax。因為要表示的是一
 
 ## 參考資源
 
-* [php - jQuery UI Sortable, then write order into a database - Stack Overflow](http://stackoverflow.com/questions/15633341/jquery-ui-sortable-then-write-order-into-a-database)
-* [Extending the jQuery Sortable With Ajax & MYSQL](https://gist.github.com/linssen/2773872)
+- [php - jQuery UI Sortable, then write order into a database - Stack Overflow](http://stackoverflow.com/questions/15633341/jquery-ui-sortable-then-write-order-into-a-database)
+- [Extending the jQuery Sortable With Ajax & MYSQL](https://gist.github.com/linssen/2773872)
 
 
