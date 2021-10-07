@@ -1,3 +1,12 @@
+---
+author: Luka
+title: TPM — 套件管理工具 ，讓你的 TMUX 更好用
+published: true
+date: 2020-06-02 19:51
+tags:
+comments: true
+---
+
 ## tpm — 套件管理工具 ，讓你的 tmux 更好用
 
 最近因為工作上需要用到開很多個視窗的情景，研究了一下如何把 tmux 變得更具有生產力。

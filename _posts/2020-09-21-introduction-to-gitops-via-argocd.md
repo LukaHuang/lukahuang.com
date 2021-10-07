@@ -1,9 +1,11 @@
 ---
 author: Luka
-title: 'ArgoCD — 透過 ArgoCD 認識 GitOps'
+title: 'ArgoCD - 透過 ArgoCD 認識 GitOps'
 published: true
 date: 2020-09-21 20:50
 comments: true
+tags: 
+  - Kubernetes
 ---
 
 # ArgoCD — 透過 ArgoCD 認識 GitOps

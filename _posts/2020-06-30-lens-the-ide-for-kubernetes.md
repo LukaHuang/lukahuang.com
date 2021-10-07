@@ -1,7 +1,14 @@
+---
+author: Luka
+title: Kubernetes IDE - Lens 用圖形化介面管理 K8S
+published: true
+date: 2020-06-30 17:01
+tags:
+  - Kubernetes
+comments: true
+---
 
-## Kubernetes IDE | Lens | 用圖形化介面管理 K8S 實在太舒服啦！
-
-![[https://k8slens.dev/](https://k8slens.dev/)](https://cdn-images-1.medium.com/max/2400/0*P3QeV7d9iPBNeOCr.png)
+![https://k8slens.dev](https://cdn-images-1.medium.com/max/2400/0*P3QeV7d9iPBNeOCr.png)
 
 以往我們在管理 Kubernetes 集群的時候，需要大量的命令列操作，需要去四處找尋需要的資訊，例如你想看 Node 的狀態你可能需要在 AWS Console 上面看，如果你用的是 GKE 的話你就需要到的 GCP 的後台上看。你想要進入 Pod 你需要先下 kubectl get pods取得 pod 列表，接著再下 kubectl exec -it pod/xxxpod -- bash 進入。
 
