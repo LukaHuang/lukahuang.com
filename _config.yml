@@ -251,6 +251,14 @@ compress_html:
   ignore:
     envs: development
 
+asciidoc: {}
+asciidoctor:
+  base_dir: :docdir
+  safe: unsafe
+  attributes:
+    - idseparator=_
+    - source-highlighter=coderay
+    - icons=font
 
 # Defaults
 defaults:
