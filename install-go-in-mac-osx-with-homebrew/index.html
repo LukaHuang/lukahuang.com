@@ -1,0 +1,532 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>在 Mac OS X 下使用 brew 安裝 Go - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="兩種安裝方法在 Mac OS X 下安裝 Go 有兩種方法，一種是去官網下載安裝包，另一種是使用 Homebrew 來安裝，為了以後更新的便利性著想，我決定使用 Homebrew 來安裝 Golang。ps: 如果你還沒有 Homebrew 的話，需要先安裝 Homebrew 才能進行以下的安裝。更新 Brew 到最新狀態打開你的 Terminal，輸入：brew update &amp;&amp; brew upgrade安裝 Golang使用 brew 安裝 gobrew install go完成安裝，安裝完畢之後使用 go run file_name 指令時會出現 path error 因為我們還沒設定 $GOPATH 路徑。設置 $GOPATHbash打開 bash 設定檔vim ~/.bashrc設定 GOPATH 參數export GOPATH=&quot;${HOME}/go&quot;export PATH=&quot;${GOPATH}/bin:${PATH}&quot;重載參數source ~/.bashrcfish因為我用的是 fish shell，所以也要設定 fish 的 GOPATH 路徑。輸入以下指令打開 fish 設定檔：vim ~/.config/fish/config.fish加上 GOPATH 參數set -gx GOPATH &quot;$HOME/Code/go&quot;set -gx PATH &quot;$GOPATH/bin&quot; $PATH重載參數. ~/.config/fish/config.fish建立你的第一個 Go 程式建立 hello.go 檔案vim /tmp/hello.go幫剛剛建立的檔案加上以下內容package mainimport &quot;fmt&quot;func main() {  fmt.Println(&quot;Hello, World!&quot;);}儲存後在 terminal 中輸入go run /tmp/hello.gov恭喜！ 你可以在 OS X 內使用 Golang 來開發了。參考資料Mac下安装Go和配置相应环境 Arron.y’s blogGetting Started with Golang on OS X">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="在 Mac OS X 下使用 brew 安裝 Go">
+
+
+  <link rel="canonical" href="https://lukahuang.com/install-go-in-mac-osx-with-homebrew/">
+  <meta property="og:url" content="https://lukahuang.com/install-go-in-mac-osx-with-homebrew/">
+
+
+
+  <meta property="og:description" content="兩種安裝方法在 Mac OS X 下安裝 Go 有兩種方法，一種是去官網下載安裝包，另一種是使用 Homebrew 來安裝，為了以後更新的便利性著想，我決定使用 Homebrew 來安裝 Golang。ps: 如果你還沒有 Homebrew 的話，需要先安裝 Homebrew 才能進行以下的安裝。更新 Brew 到最新狀態打開你的 Terminal，輸入：brew update &amp;&amp; brew upgrade安裝 Golang使用 brew 安裝 gobrew install go完成安裝，安裝完畢之後使用 go run file_name 指令時會出現 path error 因為我們還沒設定 $GOPATH 路徑。設置 $GOPATHbash打開 bash 設定檔vim ~/.bashrc設定 GOPATH 參數export GOPATH=&quot;${HOME}/go&quot;export PATH=&quot;${GOPATH}/bin:${PATH}&quot;重載參數source ~/.bashrcfish因為我用的是 fish shell，所以也要設定 fish 的 GOPATH 路徑。輸入以下指令打開 fish 設定檔：vim ~/.config/fish/config.fish加上 GOPATH 參數set -gx GOPATH &quot;$HOME/Code/go&quot;set -gx PATH &quot;$GOPATH/bin&quot; $PATH重載參數. ~/.config/fish/config.fish建立你的第一個 Go 程式建立 hello.go 檔案vim /tmp/hello.go幫剛剛建立的檔案加上以下內容package mainimport &quot;fmt&quot;func main() {  fmt.Println(&quot;Hello, World!&quot;);}儲存後在 terminal 中輸入go run /tmp/hello.gov恭喜！ 你可以在 OS X 內使用 Golang 來開發了。參考資料Mac下安装Go和配置相应环境 Arron.y’s blogGetting Started with Golang on OS X">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2016-01-09T14:07:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="在 Mac OS X 下使用 brew 安裝 Go">
+    <meta itemprop="description" content="兩種安裝方法在 Mac OS X 下安裝 Go 有兩種方法，一種是去官網下載安裝包，另一種是使用 Homebrew 來安裝，為了以後更新的便利性著想，我決定使用 Homebrew 來安裝 Golang。ps: 如果你還沒有 Homebrew 的話，需要先安裝 Homebrew 才能進行以下的安裝。更新 Brew 到最新狀態打開你的 Terminal，輸入：brew update &amp;&amp; brew upgrade安裝 Golang使用 brew 安裝 gobrew install go完成安裝，安裝完畢之後使用 go run file_name 指令時會出現 path error 因為我們還沒設定 $GOPATH 路徑。設置 $GOPATHbash打開 bash 設定檔vim ~/.bashrc設定 GOPATH 參數export GOPATH=&quot;${HOME}/go&quot;export PATH=&quot;${GOPATH}/bin:${PATH}&quot;重載參數source ~/.bashrcfish因為我用的是 fish shell，所以也要設定 fish 的 GOPATH 路徑。輸入以下指令打開 fish 設定檔：vim ~/.config/fish/config.fish加上 GOPATH 參數set -gx GOPATH &quot;$HOME/Code/go&quot;set -gx PATH &quot;$GOPATH/bin&quot; $PATH重載參數. ~/.config/fish/config.fish建立你的第一個 Go 程式建立 hello.go 檔案vim /tmp/hello.go幫剛剛建立的檔案加上以下內容package mainimport &quot;fmt&quot;func main() {  fmt.Println(&quot;Hello, World!&quot;);}儲存後在 terminal 中輸入go run /tmp/hello.gov恭喜！ 你可以在 OS X 內使用 Golang 來開發了。參考資料Mac下安装Go和配置相应环境 Arron.y’s blogGetting Started with Golang on OS X">
+    <meta itemprop="datePublished" content="January 09, 2016">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">在 Mac OS X 下使用 brew 安裝 Go
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#兩種安裝方法">兩種安裝方法</a></li>
+  <li><a href="#更新-brew-到最新狀態">更新 Brew 到最新狀態</a></li>
+  <li><a href="#安裝-golang">安裝 Golang</a></li>
+  <li><a href="#設置-gopath">設置 $GOPATH</a></li>
+  <li><a href="#建立你的第一個-go-程式">建立你的第一個 Go 程式</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h3 id="兩種安裝方法">兩種安裝方法</h3>
+
+<p>在 Mac OS X 下安裝 Go 有兩種方法，一種是去官網下載安裝包，另一種是使用 Homebrew 來安裝，為了以後更新的便利性著想，我決定使用 Homebrew 來安裝 Golang。</p>
+
+<p><em>ps: 如果你還沒有 Homebrew 的話，需要先安裝 Homebrew 才能進行以下的安裝。</em></p>
+
+<h3 id="更新-brew-到最新狀態">更新 Brew 到最新狀態</h3>
+
+<p>打開你的 Terminal，輸入：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew update &amp;&amp; brew upgrade
+</code></pre></div></div>
+
+<h3 id="安裝-golang">安裝 Golang</h3>
+
+<p>使用 brew 安裝 go</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install go
+</code></pre></div></div>
+
+<p>完成安裝，安裝完畢之後使用 <code class="highlighter-rouge">go run file_name</code> 指令時會出現 <code class="highlighter-rouge">path error</code> 因為我們還沒設定 $GOPATH 路徑。</p>
+
+<h3 id="設置-gopath">設置 $GOPATH</h3>
+
+<h4 id="bash">bash</h4>
+
+<p>打開 bash 設定檔</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim ~/.bashrc
+</code></pre></div></div>
+
+<p>設定 GOPATH 參數</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export GOPATH="${HOME}/go"
+export PATH="${GOPATH}/bin:${PATH}"
+</code></pre></div></div>
+
+<p>重載參數</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source ~/.bashrc
+</code></pre></div></div>
+
+<h4 id="fish">fish</h4>
+
+<p>因為我用的是 fish shell，所以也要設定 fish 的 GOPATH 路徑。輸入以下指令打開 fish 設定檔：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim ~/.config/fish/config.fish
+</code></pre></div></div>
+
+<p>加上 GOPATH 參數</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set -gx GOPATH "$HOME/Code/go"
+set -gx PATH "$GOPATH/bin" $PATH
+</code></pre></div></div>
+
+<p>重載參數</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>. ~/.config/fish/config.fish
+</code></pre></div></div>
+
+<h3 id="建立你的第一個-go-程式">建立你的第一個 Go 程式</h3>
+
+<p>建立 hello.go 檔案</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim /tmp/hello.go
+</code></pre></div></div>
+
+<p>幫剛剛建立的檔案加上以下內容</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>儲存後在 terminal 中輸入<code class="highlighter-rouge">go run /tmp/hello.gov</code></p>
+
+<p>恭喜！ 你可以在 OS X 內使用 Golang 來開發了。</p>
+
+<h4 id="參考資料">參考資料</h4>
+
+<p><a href="http://blog.helloarron.com/2015/08/29/go/mac-install-go/">Mac下安装Go和配置相应环境 Arron.y’s blog</a></p>
+
+<p><a href="https://coolaj86.com/articles/getting-started-with-golang-osx/">Getting Started with Golang on OS X</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#golang" class="page__taxonomy-item" rel="tag">Golang</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#osx" class="page__taxonomy-item" rel="tag">OSX</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2016-01-09T14:07:00+00:00">January 09, 2016</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/rails-use-dropzonejs-for-file-upload/" class="pagination--pager" title="Rails - 使用 dropzone.js 實現檔案上傳
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/deploy-redmine-to-vps-by-rails-way-in-ubuntu-14-04/" class="pagination--pager" title="Deploy Redmine to VPS by Rails way in Ubuntu 14.04
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

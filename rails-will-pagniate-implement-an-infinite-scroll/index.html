@@ -1,0 +1,578 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Rails - 使用 will pagniate 搭配 ajax 實作無限捲動 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="概念：will paganiate 由送到 controller 的 params[:page] 決定回傳的@posts。可以由我們在 controller 中定義@posts所知道。@posts = Post.paginate(:page =&gt; params[:page])inifite scroll event$(window).scroll(function () {   if ($(window).scrollTop() &gt;= $(document).height() - $(window).height() - 10) {      //Add something at the end of the page   }});記得要減10，或任何你覺得適合的數，可以幫助捲動正確觸發。javascript - infinite-scroll jquery plugin - Stack Overflow程式碼 - HTML因為我們使用 will pagniate 也就是分頁的GEM來實作，所以我們必須用 hidden field 來儲存目前捲動的最後一頁是哪一頁。image_tag 是 rails 特有的用法，會對應到 assets/images 資料夾下的圖片。index.html.erb&lt;div class=&quot;page-header&quot;&gt;  &lt;h1&gt;My Post&lt;/h1&gt;&lt;/div&gt;&lt;!-- page-header --&gt;&lt;div id=&quot;my-posts&quot;&gt;  &lt;%= render @posts %&gt;&lt;/div&gt;&lt;!-- my-posts --&gt;&lt;div id=&quot;loadmoreajaxloader&quot; style=&quot;display:none;&quot;&gt;&lt;center&gt;&lt;%= image_tag &quot;ajax-loader.gif&quot; %&gt;&lt;/center&gt;&lt;/div&gt;&lt;%= hidden_field_tag &quot;current_page&quot;, &quot;1&quot; %&gt;_post.html.erb&lt;div&gt;  &lt;h2&gt;&lt;%= link_to post.title, post %&gt;&lt;/h2&gt;  &lt;small&gt;&lt;em&gt;&lt;%= post.timestamp %&gt;&lt;/em&gt;&lt;/small&gt;  &lt;p&gt;&lt;%= truncate(strip_tags(post.body), length: 600) %&gt;&lt;/p&gt;&lt;/div&gt;程式碼 - JS實作了兩種觸發的方式，先完成較簡單的 click ，之後再把 click 事件替換成捲動至頁尾會觸發的事件即完成無限下拉式瀏覽。$(function () {    // Load more    var $loadmore = $(&quot;#loadmore&quot;);    var $current_page = $(&quot;#current_page&quot;);    var $my_posts = $(&quot;#my-posts&quot;);    var addPostToList = function (post) {        var postStri = &quot;&quot;;        postStri += &quot;&lt;div&gt;&quot;;        postStri += &quot;  &lt;h2&gt;&lt;a href=\&quot;#\&quot;&gt;&quot; + post.title + &quot;&lt;\/a&gt;&lt;\/h2&gt;&quot;;        postStri += &quot;  &lt;small&gt;&lt;em&gt;&quot; + post.created_at + &quot;&lt;\/em&gt;&lt;\/small&gt;&quot;;        postStri += post.body;        postStri += &quot;&lt;\/div&gt;&quot;;        $my_posts.append(postStri);    };    var addPosts = function (posts) {        $.each(posts, function () {            addPostToList(this);        });    };    $(window).on(&quot;scroll&quot;, function () {        if ($($(window).scrollTop() &gt;= $(document).height() - $(window).height() - 50)) {            var current_page = parseInt($current_page.val());            current_page++;            console.log(&quot;111&quot;);            $(&#39;div#loadmoreajaxloader&#39;).show();            $.ajax({                url: &quot;/posts.json&quot;,                type: &quot;GET&quot;,                dataType: &quot;json&quot;,                data: {                    page: current_page                },                success: function (data) {                    console.log(data);                    $current_page.val(String(current_page));                    var posts = data;                    $(&#39;div#loadmoreajaxloader&#39;).hide();                    addPosts(posts);                }            });        }    });    // var $loadmore_gif = $(&quot;a.loading-gif&quot;);    $loadmore.click(function (e) {        e.preventDefault();        var current_page = parseInt($current_page.val());        current_page++;        $loadmore.hide();        console.log(&quot;click&quot;);        $.ajax({            url: &quot;/posts.json&quot;,            type: &quot;GET&quot;,            dataType: &quot;json&quot;,            data: {                page: current_page            },            success: function (data) {                console.log(data);                $current_page.val(String(current_page));                var posts = data;                addPosts(posts);                $loadmore.show();            }        });    });});(function ($) {})(jQuery);其他：javascript小技巧 - 過濾url獲取idvar str_sub = str.substr(str.lastIndexOf(&quot;=&quot;)+1);Javascript: 標籤過濾從url獲取id - 數碼維基">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Rails - 使用 will pagniate 搭配 ajax 實作無限捲動">
+
+
+  <link rel="canonical" href="https://lukahuang.com/rails-will-pagniate-implement-an-infinite-scroll/">
+  <meta property="og:url" content="https://lukahuang.com/rails-will-pagniate-implement-an-infinite-scroll/">
+
+
+
+  <meta property="og:description" content="概念：will paganiate 由送到 controller 的 params[:page] 決定回傳的@posts。可以由我們在 controller 中定義@posts所知道。@posts = Post.paginate(:page =&gt; params[:page])inifite scroll event$(window).scroll(function () {   if ($(window).scrollTop() &gt;= $(document).height() - $(window).height() - 10) {      //Add something at the end of the page   }});記得要減10，或任何你覺得適合的數，可以幫助捲動正確觸發。javascript - infinite-scroll jquery plugin - Stack Overflow程式碼 - HTML因為我們使用 will pagniate 也就是分頁的GEM來實作，所以我們必須用 hidden field 來儲存目前捲動的最後一頁是哪一頁。image_tag 是 rails 特有的用法，會對應到 assets/images 資料夾下的圖片。index.html.erb&lt;div class=&quot;page-header&quot;&gt;  &lt;h1&gt;My Post&lt;/h1&gt;&lt;/div&gt;&lt;!-- page-header --&gt;&lt;div id=&quot;my-posts&quot;&gt;  &lt;%= render @posts %&gt;&lt;/div&gt;&lt;!-- my-posts --&gt;&lt;div id=&quot;loadmoreajaxloader&quot; style=&quot;display:none;&quot;&gt;&lt;center&gt;&lt;%= image_tag &quot;ajax-loader.gif&quot; %&gt;&lt;/center&gt;&lt;/div&gt;&lt;%= hidden_field_tag &quot;current_page&quot;, &quot;1&quot; %&gt;_post.html.erb&lt;div&gt;  &lt;h2&gt;&lt;%= link_to post.title, post %&gt;&lt;/h2&gt;  &lt;small&gt;&lt;em&gt;&lt;%= post.timestamp %&gt;&lt;/em&gt;&lt;/small&gt;  &lt;p&gt;&lt;%= truncate(strip_tags(post.body), length: 600) %&gt;&lt;/p&gt;&lt;/div&gt;程式碼 - JS實作了兩種觸發的方式，先完成較簡單的 click ，之後再把 click 事件替換成捲動至頁尾會觸發的事件即完成無限下拉式瀏覽。$(function () {    // Load more    var $loadmore = $(&quot;#loadmore&quot;);    var $current_page = $(&quot;#current_page&quot;);    var $my_posts = $(&quot;#my-posts&quot;);    var addPostToList = function (post) {        var postStri = &quot;&quot;;        postStri += &quot;&lt;div&gt;&quot;;        postStri += &quot;  &lt;h2&gt;&lt;a href=\&quot;#\&quot;&gt;&quot; + post.title + &quot;&lt;\/a&gt;&lt;\/h2&gt;&quot;;        postStri += &quot;  &lt;small&gt;&lt;em&gt;&quot; + post.created_at + &quot;&lt;\/em&gt;&lt;\/small&gt;&quot;;        postStri += post.body;        postStri += &quot;&lt;\/div&gt;&quot;;        $my_posts.append(postStri);    };    var addPosts = function (posts) {        $.each(posts, function () {            addPostToList(this);        });    };    $(window).on(&quot;scroll&quot;, function () {        if ($($(window).scrollTop() &gt;= $(document).height() - $(window).height() - 50)) {            var current_page = parseInt($current_page.val());            current_page++;            console.log(&quot;111&quot;);            $(&#39;div#loadmoreajaxloader&#39;).show();            $.ajax({                url: &quot;/posts.json&quot;,                type: &quot;GET&quot;,                dataType: &quot;json&quot;,                data: {                    page: current_page                },                success: function (data) {                    console.log(data);                    $current_page.val(String(current_page));                    var posts = data;                    $(&#39;div#loadmoreajaxloader&#39;).hide();                    addPosts(posts);                }            });        }    });    // var $loadmore_gif = $(&quot;a.loading-gif&quot;);    $loadmore.click(function (e) {        e.preventDefault();        var current_page = parseInt($current_page.val());        current_page++;        $loadmore.hide();        console.log(&quot;click&quot;);        $.ajax({            url: &quot;/posts.json&quot;,            type: &quot;GET&quot;,            dataType: &quot;json&quot;,            data: {                page: current_page            },            success: function (data) {                console.log(data);                $current_page.val(String(current_page));                var posts = data;                addPosts(posts);                $loadmore.show();            }        });    });});(function ($) {})(jQuery);其他：javascript小技巧 - 過濾url獲取idvar str_sub = str.substr(str.lastIndexOf(&quot;=&quot;)+1);Javascript: 標籤過濾從url獲取id - 數碼維基">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-11-12T05:29:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Rails - 使用 will pagniate 搭配 ajax 實作無限捲動">
+    <meta itemprop="description" content="概念：will paganiate 由送到 controller 的 params[:page] 決定回傳的@posts。可以由我們在 controller 中定義@posts所知道。@posts = Post.paginate(:page =&gt; params[:page])inifite scroll event$(window).scroll(function () {   if ($(window).scrollTop() &gt;= $(document).height() - $(window).height() - 10) {      //Add something at the end of the page   }});記得要減10，或任何你覺得適合的數，可以幫助捲動正確觸發。javascript - infinite-scroll jquery plugin - Stack Overflow程式碼 - HTML因為我們使用 will pagniate 也就是分頁的GEM來實作，所以我們必須用 hidden field 來儲存目前捲動的最後一頁是哪一頁。image_tag 是 rails 特有的用法，會對應到 assets/images 資料夾下的圖片。index.html.erb&lt;div class=&quot;page-header&quot;&gt;  &lt;h1&gt;My Post&lt;/h1&gt;&lt;/div&gt;&lt;!-- page-header --&gt;&lt;div id=&quot;my-posts&quot;&gt;  &lt;%= render @posts %&gt;&lt;/div&gt;&lt;!-- my-posts --&gt;&lt;div id=&quot;loadmoreajaxloader&quot; style=&quot;display:none;&quot;&gt;&lt;center&gt;&lt;%= image_tag &quot;ajax-loader.gif&quot; %&gt;&lt;/center&gt;&lt;/div&gt;&lt;%= hidden_field_tag &quot;current_page&quot;, &quot;1&quot; %&gt;_post.html.erb&lt;div&gt;  &lt;h2&gt;&lt;%= link_to post.title, post %&gt;&lt;/h2&gt;  &lt;small&gt;&lt;em&gt;&lt;%= post.timestamp %&gt;&lt;/em&gt;&lt;/small&gt;  &lt;p&gt;&lt;%= truncate(strip_tags(post.body), length: 600) %&gt;&lt;/p&gt;&lt;/div&gt;程式碼 - JS實作了兩種觸發的方式，先完成較簡單的 click ，之後再把 click 事件替換成捲動至頁尾會觸發的事件即完成無限下拉式瀏覽。$(function () {    // Load more    var $loadmore = $(&quot;#loadmore&quot;);    var $current_page = $(&quot;#current_page&quot;);    var $my_posts = $(&quot;#my-posts&quot;);    var addPostToList = function (post) {        var postStri = &quot;&quot;;        postStri += &quot;&lt;div&gt;&quot;;        postStri += &quot;  &lt;h2&gt;&lt;a href=\&quot;#\&quot;&gt;&quot; + post.title + &quot;&lt;\/a&gt;&lt;\/h2&gt;&quot;;        postStri += &quot;  &lt;small&gt;&lt;em&gt;&quot; + post.created_at + &quot;&lt;\/em&gt;&lt;\/small&gt;&quot;;        postStri += post.body;        postStri += &quot;&lt;\/div&gt;&quot;;        $my_posts.append(postStri);    };    var addPosts = function (posts) {        $.each(posts, function () {            addPostToList(this);        });    };    $(window).on(&quot;scroll&quot;, function () {        if ($($(window).scrollTop() &gt;= $(document).height() - $(window).height() - 50)) {            var current_page = parseInt($current_page.val());            current_page++;            console.log(&quot;111&quot;);            $(&#39;div#loadmoreajaxloader&#39;).show();            $.ajax({                url: &quot;/posts.json&quot;,                type: &quot;GET&quot;,                dataType: &quot;json&quot;,                data: {                    page: current_page                },                success: function (data) {                    console.log(data);                    $current_page.val(String(current_page));                    var posts = data;                    $(&#39;div#loadmoreajaxloader&#39;).hide();                    addPosts(posts);                }            });        }    });    // var $loadmore_gif = $(&quot;a.loading-gif&quot;);    $loadmore.click(function (e) {        e.preventDefault();        var current_page = parseInt($current_page.val());        current_page++;        $loadmore.hide();        console.log(&quot;click&quot;);        $.ajax({            url: &quot;/posts.json&quot;,            type: &quot;GET&quot;,            dataType: &quot;json&quot;,            data: {                page: current_page            },            success: function (data) {                console.log(data);                $current_page.val(String(current_page));                var posts = data;                addPosts(posts);                $loadmore.show();            }        });    });});(function ($) {})(jQuery);其他：javascript小技巧 - 過濾url獲取idvar str_sub = str.substr(str.lastIndexOf(&quot;=&quot;)+1);Javascript: 標籤過濾從url獲取id - 數碼維基">
+    <meta itemprop="datePublished" content="November 12, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Rails - 使用 will pagniate 搭配 ajax 實作無限捲動
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#概念">概念：</a></li>
+  <li><a href="#inifite-scroll-event">inifite scroll event</a></li>
+  <li><a href="#程式碼---html">程式碼 - HTML</a></li>
+  <li><a href="#程式碼---js">程式碼 - JS</a></li>
+  <li><a href="#其他javascript小技巧---過濾url獲取id">其他：javascript小技巧 - 過濾url獲取id</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="概念">概念：</h2>
+
+<p>will paganiate 由送到 controller 的 params[:page] 決定回傳的<code class="highlighter-rouge">@posts</code>。</p>
+
+<p>可以由我們在 controller 中定義<code class="highlighter-rouge">@posts</code>所知道。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vi">@posts</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="p">[</span><span class="ss">:page</span><span class="p">])</span>
+</code></pre></div></div>
+
+<h2 id="inifite-scroll-event">inifite scroll event</h2>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">scroll</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+   <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">scrollTop</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">height</span><span class="p">()</span> <span class="o">-</span> <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">height</span><span class="p">()</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//Add something at the end of the page</span>
+   <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>記得要減10，或任何你覺得適合的數，可以幫助捲動正確觸發。</p>
+
+<p><a href="http://stackoverflow.com/questions/5059526/infinite-scroll-jquery-plugin">javascript - infinite-scroll jquery plugin - Stack Overflow</a></p>
+
+<h2 id="程式碼---html">程式碼 - HTML</h2>
+
+<p>因為我們使用 will pagniate 也就是分頁的GEM來實作，所以我們必須用 hidden field 來儲存目前捲動的最後一頁是哪一頁。image_tag 是 rails 特有的用法，會對應到 <code class="highlighter-rouge">assets/images</code> 資料夾下的圖片。</p>
+
+<p>index.html.erb</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"page-header"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>My Post<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- page-header --&gt;</span>
+
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"my-posts"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;</span><span class="err">%=</span> <span class="na">render</span> <span class="err">@</span><span class="na">posts</span> <span class="err">%</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- my-posts --&gt;</span>
+
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"loadmoreajaxloader"</span> <span class="na">style=</span><span class="s">"display:none;"</span><span class="nt">&gt;&lt;center&gt;&lt;</span><span class="err">%=</span> <span class="na">image_tag</span> <span class="err">"</span><span class="na">ajax-loader.gif</span><span class="err">"</span> <span class="err">%</span><span class="nt">&gt;&lt;/center&gt;&lt;/div&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%=</span> <span class="na">hidden_field_tag</span> <span class="err">"</span><span class="na">current_page</span><span class="err">",</span> <span class="err">"1"</span> <span class="err">%</span><span class="nt">&gt;</span>
+
+</code></pre></div></div>
+
+<p>_post.html.erb</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div&gt;</span>
+  <span class="nt">&lt;h2&gt;&lt;</span><span class="err">%=</span> <span class="na">link_to</span> <span class="na">post.title</span><span class="err">,</span> <span class="na">post</span> <span class="err">%</span><span class="nt">&gt;&lt;/h2&gt;</span>
+  <span class="nt">&lt;small&gt;&lt;em&gt;&lt;</span><span class="err">%=</span> <span class="na">post.timestamp</span> <span class="err">%</span><span class="nt">&gt;&lt;/em&gt;&lt;/small&gt;</span>
+  <span class="nt">&lt;p&gt;&lt;</span><span class="err">%=</span> <span class="na">truncate</span><span class="err">(</span><span class="na">strip_tags</span><span class="err">(</span><span class="na">post.body</span><span class="err">),</span> <span class="na">length:</span> <span class="err">600)</span> <span class="err">%</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+
+</code></pre></div></div>
+
+<h2 id="程式碼---js">程式碼 - JS</h2>
+
+<p>實作了兩種觸發的方式，先完成較簡單的 click ，之後再把 click 事件替換成捲動至頁尾會觸發的事件即完成無限下拉式瀏覽。</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Load more</span>
+    <span class="kd">var</span> <span class="nx">$loadmore</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#loadmore</span><span class="dl">"</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">$current_page</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#current_page</span><span class="dl">"</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">$my_posts</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#my-posts</span><span class="dl">"</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">addPostToList</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">postStri</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
+        <span class="nx">postStri</span> <span class="o">+=</span> <span class="dl">"</span><span class="s2">&lt;div&gt;</span><span class="dl">"</span><span class="p">;</span>
+        <span class="nx">postStri</span> <span class="o">+=</span> <span class="dl">"</span><span class="s2">  &lt;h2&gt;&lt;a href=</span><span class="se">\"</span><span class="s2">#</span><span class="se">\"</span><span class="s2">&gt;</span><span class="dl">"</span> <span class="o">+</span> <span class="nx">post</span><span class="p">.</span><span class="nx">title</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">&lt;</span><span class="se">\</span><span class="s2">/a&gt;&lt;</span><span class="se">\</span><span class="s2">/h2&gt;</span><span class="dl">"</span><span class="p">;</span>
+        <span class="nx">postStri</span> <span class="o">+=</span> <span class="dl">"</span><span class="s2">  &lt;small&gt;&lt;em&gt;</span><span class="dl">"</span> <span class="o">+</span> <span class="nx">post</span><span class="p">.</span><span class="nx">created_at</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">&lt;</span><span class="se">\</span><span class="s2">/em&gt;&lt;</span><span class="se">\</span><span class="s2">/small&gt;</span><span class="dl">"</span><span class="p">;</span>
+        <span class="nx">postStri</span> <span class="o">+=</span> <span class="nx">post</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+        <span class="nx">postStri</span> <span class="o">+=</span> <span class="dl">"</span><span class="s2">&lt;</span><span class="se">\</span><span class="s2">/div&gt;</span><span class="dl">"</span><span class="p">;</span>
+        <span class="nx">$my_posts</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">postStri</span><span class="p">);</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">addPosts</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">posts</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">posts</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">addPostToList</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">};</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">scroll</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">scrollTop</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">height</span><span class="p">()</span> <span class="o">-</span> <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">height</span><span class="p">()</span> <span class="o">-</span> <span class="mi">50</span><span class="p">))</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">current_page</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">$current_page</span><span class="p">.</span><span class="nx">val</span><span class="p">());</span>
+            <span class="nx">current_page</span><span class="o">++</span><span class="p">;</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">111</span><span class="dl">"</span><span class="p">);</span>
+            <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">div#loadmoreajaxloader</span><span class="dl">'</span><span class="p">).</span><span class="nx">show</span><span class="p">();</span>
+            <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+                <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">/posts.json</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">dataType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">json</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">page</span><span class="p">:</span> <span class="nx">current_page</span>
+                <span class="p">},</span>
+                <span class="na">success</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+                    <span class="nx">$current_page</span><span class="p">.</span><span class="nx">val</span><span class="p">(</span><span class="nb">String</span><span class="p">(</span><span class="nx">current_page</span><span class="p">));</span>
+                    <span class="kd">var</span> <span class="nx">posts</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+                    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">div#loadmoreajaxloader</span><span class="dl">'</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+                    <span class="nx">addPosts</span><span class="p">(</span><span class="nx">posts</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="c1">// var $loadmore_gif = $("a.loading-gif");</span>
+    <span class="nx">$loadmore</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">current_page</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">$current_page</span><span class="p">.</span><span class="nx">val</span><span class="p">());</span>
+        <span class="nx">current_page</span><span class="o">++</span><span class="p">;</span>
+        <span class="nx">$loadmore</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">click</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+            <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">/posts.json</span><span class="dl">"</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">,</span>
+            <span class="na">dataType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">json</span><span class="dl">"</span><span class="p">,</span>
+            <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">page</span><span class="p">:</span> <span class="nx">current_page</span>
+            <span class="p">},</span>
+            <span class="na">success</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+                <span class="nx">$current_page</span><span class="p">.</span><span class="nx">val</span><span class="p">(</span><span class="nb">String</span><span class="p">(</span><span class="nx">current_page</span><span class="p">));</span>
+                <span class="kd">var</span> <span class="nx">posts</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+                <span class="nx">addPosts</span><span class="p">(</span><span class="nx">posts</span><span class="p">);</span>
+                <span class="nx">$loadmore</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+<span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">})(</span><span class="nx">jQuery</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="其他javascript小技巧---過濾url獲取id">其他：javascript小技巧 - 過濾url獲取id</h2>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">str_sub</span> <span class="o">=</span> <span class="nx">str</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">str</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="dl">"</span><span class="s2">=</span><span class="dl">"</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><a href="http://codex.wiki/question/1933026-9917">Javascript: 標籤過濾從url獲取id - 數碼維基</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#rails" class="page__taxonomy-item" rel="tag">Rails</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-11-12T05:29:00+00:00">November 12, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/tealeaf-course-2-sluggify-module/" class="pagination--pager" title="從 Tealeaf 課程學習模組化 - Sluggify Module
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/rails-sortable-table-with-ajax/" class="pagination--pager" title="Rails - Sortable Table With Ajax
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,506 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Ruby bits ( 2 ) : Methods and Classes - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Hash Argument每一個不同的欄位就多一個 argument不是個好方法，會造成很多欄位空在那邊。用 Hash argument 來解決這個問題。使用方法，因為 hash 是由 key-value 所組成，所以可以把需要的屬性設成 symbol ，也就是:lat這種樣子。後面指定它的 value，形成 key-value 的形式。改寫成 1.9 以後的 hashhash 中的 key 可以省略，只寫出某幾個就可以，就連hash argument 本身都可以省略，。Exceptions當 tweets 是空的時候，我希望我會知道這個訊息，這時候 Exception 就派上用場了。def get_tweets(list)  unless list.authorized?(@user)    raise AuthorizationException.new	end	list.tweetsend現在我有一個 method 叫做 get_tweets(list)，當他發現 user 沒有認證的時候，它就會丟出AuthorizationException這個例外，對應的程式碼是raise AuthorizationException.new，接下來再用另外一段程式碼，把剛剛上面的程式碼包起來，因為我們接下來要做的是對拋出的例外做一些處理，好讓我們可以藉由 exception 更輕鬆的了解到錯誤出現在哪裡。begin  tweets = get_tweets(my_list)rescue AuthorizationException  warn &quot;You are not authorized to access this list.&quot;end1~2行，先執行我們剛剛建立的method 叫做 get_tweet(my_list)，接著 3~4 行的意思是當發現有認證例外（AuthorizationException）產生時，就會跳出警告&quot;You are not authorized to access this list.&quot;。延伸閱讀：Ruby Exceptionstutorial point ruby exceptionruby exceptions and error handlingSplat Argument前面有加 * 字號的變數代表傳入的會是 Array，依序傳入為 Array[0]、Array[1]、Array[2]…以此類推。You Need a Class When …OverSharingReopen Classes  You can re-open and change any class.  Beware! You don’t know who relies on the old functionality.  You should only re-open classes that you yourself own.Self">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Ruby bits ( 2 ) : Methods and Classes">
+
+
+  <link rel="canonical" href="https://lukahuang.com/ruby-bits-2-methods-and-classes/">
+  <meta property="og:url" content="https://lukahuang.com/ruby-bits-2-methods-and-classes/">
+
+
+
+  <meta property="og:description" content="Hash Argument每一個不同的欄位就多一個 argument不是個好方法，會造成很多欄位空在那邊。用 Hash argument 來解決這個問題。使用方法，因為 hash 是由 key-value 所組成，所以可以把需要的屬性設成 symbol ，也就是:lat這種樣子。後面指定它的 value，形成 key-value 的形式。改寫成 1.9 以後的 hashhash 中的 key 可以省略，只寫出某幾個就可以，就連hash argument 本身都可以省略，。Exceptions當 tweets 是空的時候，我希望我會知道這個訊息，這時候 Exception 就派上用場了。def get_tweets(list)  unless list.authorized?(@user)    raise AuthorizationException.new	end	list.tweetsend現在我有一個 method 叫做 get_tweets(list)，當他發現 user 沒有認證的時候，它就會丟出AuthorizationException這個例外，對應的程式碼是raise AuthorizationException.new，接下來再用另外一段程式碼，把剛剛上面的程式碼包起來，因為我們接下來要做的是對拋出的例外做一些處理，好讓我們可以藉由 exception 更輕鬆的了解到錯誤出現在哪裡。begin  tweets = get_tweets(my_list)rescue AuthorizationException  warn &quot;You are not authorized to access this list.&quot;end1~2行，先執行我們剛剛建立的method 叫做 get_tweet(my_list)，接著 3~4 行的意思是當發現有認證例外（AuthorizationException）產生時，就會跳出警告&quot;You are not authorized to access this list.&quot;。延伸閱讀：Ruby Exceptionstutorial point ruby exceptionruby exceptions and error handlingSplat Argument前面有加 * 字號的變數代表傳入的會是 Array，依序傳入為 Array[0]、Array[1]、Array[2]…以此類推。You Need a Class When …OverSharingReopen Classes  You can re-open and change any class.  Beware! You don’t know who relies on the old functionality.  You should only re-open classes that you yourself own.Self">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-04T05:05:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Ruby bits ( 2 ) : Methods and Classes">
+    <meta itemprop="description" content="Hash Argument每一個不同的欄位就多一個 argument不是個好方法，會造成很多欄位空在那邊。用 Hash argument 來解決這個問題。使用方法，因為 hash 是由 key-value 所組成，所以可以把需要的屬性設成 symbol ，也就是:lat這種樣子。後面指定它的 value，形成 key-value 的形式。改寫成 1.9 以後的 hashhash 中的 key 可以省略，只寫出某幾個就可以，就連hash argument 本身都可以省略，。Exceptions當 tweets 是空的時候，我希望我會知道這個訊息，這時候 Exception 就派上用場了。def get_tweets(list)  unless list.authorized?(@user)    raise AuthorizationException.new	end	list.tweetsend現在我有一個 method 叫做 get_tweets(list)，當他發現 user 沒有認證的時候，它就會丟出AuthorizationException這個例外，對應的程式碼是raise AuthorizationException.new，接下來再用另外一段程式碼，把剛剛上面的程式碼包起來，因為我們接下來要做的是對拋出的例外做一些處理，好讓我們可以藉由 exception 更輕鬆的了解到錯誤出現在哪裡。begin  tweets = get_tweets(my_list)rescue AuthorizationException  warn &quot;You are not authorized to access this list.&quot;end1~2行，先執行我們剛剛建立的method 叫做 get_tweet(my_list)，接著 3~4 行的意思是當發現有認證例外（AuthorizationException）產生時，就會跳出警告&quot;You are not authorized to access this list.&quot;。延伸閱讀：Ruby Exceptionstutorial point ruby exceptionruby exceptions and error handlingSplat Argument前面有加 * 字號的變數代表傳入的會是 Array，依序傳入為 Array[0]、Array[1]、Array[2]…以此類推。You Need a Class When …OverSharingReopen Classes  You can re-open and change any class.  Beware! You don’t know who relies on the old functionality.  You should only re-open classes that you yourself own.Self">
+    <meta itemprop="datePublished" content="September 04, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Ruby bits ( 2 ) : Methods and Classes
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#hash-argument">Hash Argument</a></li>
+  <li><a href="#exceptions">Exceptions</a></li>
+  <li><a href="#splat-argument">Splat Argument</a></li>
+  <li><a href="#you-need-a-class-when-">You Need a Class When …</a></li>
+  <li><a href="#oversharing">OverSharing</a></li>
+  <li><a href="#reopen-classes">Reopen Classes</a></li>
+  <li><a href="#self">Self</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="hash-argument">Hash Argument</h2>
+<p><img src="https://lh4.googleusercontent.com/-hdUCbd8-xxI/VJ7OabbDJzI/AAAAAAAADVE/IVpvhmF0jME/w1755-h965-no/Screen%2BShot%2B2014-12-27%2Bat%2B23.18.02.png" alt="" />
+每一個不同的欄位就多一個 argument不是個好方法，會造成很多欄位空在那邊。
+<img src="https://lh6.googleusercontent.com/-Gn4gNk7tPCE/VJ7ObUCXt5I/AAAAAAAADVQ/DmSN6NOzNLw/w1755-h958-no/Screen%2BShot%2B2014-12-27%2Bat%2B23.18.18.png" alt="" />
+用 Hash argument 來解決這個問題。
+<img src="https://lh6.googleusercontent.com/-Gn4gNk7tPCE/VJ7ObUCXt5I/AAAAAAAADVQ/DmSN6NOzNLw/w1755-h958-no/Screen%2BShot%2B2014-12-27%2Bat%2B23.18.18.png" alt="" />
+使用方法，因為 hash 是由 key-value 所組成，所以可以把需要的屬性設成 symbol ，也就是<code class="highlighter-rouge">:lat</code>這種樣子。後面指定它的 value，形成 key-value 的形式。
+<img src="https://lh5.googleusercontent.com/-6bgtAU3Clbg/VJ7ObPXoEWI/AAAAAAAADVM/0UnTaLC-y8o/w1755-h933-no/Screen%2BShot%2B2014-12-27%2Bat%2B23.18.31.png" alt="" />
+改寫成 1.9 以後的 hash<img src="https://lh5.googleusercontent.com/-Kig_SWyG0Bc/VJ7Odqbjh0I/AAAAAAAADVY/fZtWyQP4WPQ/w1755-h855-no/Screen%2BShot%2B2014-12-27%2Bat%2B23.19.22.png" alt="" />
+hash 中的 key 可以省略，只寫出某幾個就可以，就連hash argument 本身都可以省略，。
+<img src="https://lh6.googleusercontent.com/-SoTADybAdlA/VJ7OfHNTvJI/AAAAAAAADVg/bWIor1roiY8/w1755-h663-no/Screen%2BShot%2B2014-12-27%2Bat%2B23.19.42.png" alt="" /></p>
+
+<h2 id="exceptions">Exceptions</h2>
+<p><img src="https://lh6.googleusercontent.com/-q7ZbxrQ8BHU/VJ7ZaBfnJ2I/AAAAAAAADV4/7G0z1kMaJXk/w1753-h933-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.05.23.png" alt="" />
+當 tweets 是空的時候，我希望我會知道這個訊息，這時候 Exception 就派上用場了。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_tweets</span><span class="p">(</span><span class="n">list</span><span class="p">)</span>
+  <span class="k">unless</span> <span class="n">list</span><span class="p">.</span><span class="nf">authorized?</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="no">AuthorizationException</span><span class="p">.</span><span class="nf">new</span>
+	<span class="k">end</span>
+	<span class="n">list</span><span class="p">.</span><span class="nf">tweets</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>現在我有一個 method 叫做 get_tweets(list)，當他發現 user 沒有認證的時候，它就會丟出AuthorizationException這個例外，對應的程式碼是<code class="highlighter-rouge">raise AuthorizationException.new</code>，接下來再用另外一段程式碼，把剛剛上面的程式碼包起來，因為我們接下來要做的是對拋出的例外做一些處理，好讓我們可以藉由 exception 更輕鬆的了解到錯誤出現在哪裡。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+  <span class="n">tweets</span> <span class="o">=</span> <span class="n">get_tweets</span><span class="p">(</span><span class="n">my_list</span><span class="p">)</span>
+<span class="k">rescue</span> <span class="no">AuthorizationException</span>
+  <span class="nb">warn</span> <span class="s2">"You are not authorized to access this list."</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>1~2行，先執行我們剛剛建立的method 叫做 get_tweet(my_list)，接著 3~4 行的意思是當發現有認證例外（AuthorizationException）產生時，就會跳出警告<code class="highlighter-rouge">"You are not authorized to access this list."</code>。
+延伸閱讀：
+<a href="http://rubylearning.com/satishtalim/ruby_exceptions.html">Ruby Exceptions</a>
+<a href="http://www.tutorialspoint.com/ruby/ruby_exceptions.htm">tutorial point ruby exception</a>
+<a href="http://www.skorks.com/2009/09/ruby-exceptions-and-exception-handling/">ruby exceptions and error handling</a></p>
+
+<h2 id="splat-argument">Splat Argument</h2>
+<p><img src="https://lh3.googleusercontent.com/--O8ZvriOtYI/VJ7frL2bYtI/AAAAAAAADWU/Vudg3_RSJnY/w1748-h260-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.34.16.png" alt="" />
+前面有加 * 字號的變數代表傳入的會是 Array，依序傳入為 Array[0]、Array[1]、Array[2]…以此類推。
+<img src="https://lh3.googleusercontent.com/m_IMEQvAM5O6a-_I801MNkMBy3b6Ksklu_-wnlDo5T8=w1755-h415-no" alt="" /></p>
+
+<h2 id="you-need-a-class-when-">You Need a Class When …</h2>
+<p><img src="https://lh4.googleusercontent.com/-A_2YsWJ-dzQ/VJ7j1AQW5kI/AAAAAAAADW4/pkW88PelvLU/w1755-h1005-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.48.34.png" alt="" />
+<img src="https://lh6.googleusercontent.com/-koGBR2kSY74/VJ7jz1uHhMI/AAAAAAAADW0/J4GF70Xeeg4/w1753-h903-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.49.01.png" alt="" />
+<img src="https://lh4.googleusercontent.com/-qcgWOVQOWl0/VJ7jz_THkII/AAAAAAAADWs/GiSTz8Od5uE/w1755-h855-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.49.23.png" alt="" /></p>
+
+<h2 id="oversharing">OverSharing</h2>
+<p><img src="https://lh4.googleusercontent.com/-ySIcZkVxL1k/VJ7j3olxddI/AAAAAAAADXA/LGct57OmEoU/w1753-h973-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.50.40.png" alt="" />
+<img src="https://lh4.googleusercontent.com/-G881X3MSHo8/VJ7j67Nk_vI/AAAAAAAADXM/ZkKMYHmRlY8/w1755-h960-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.50.48.png" alt="" /></p>
+
+<h2 id="reopen-classes">Reopen Classes</h2>
+<p><img src="https://lh5.googleusercontent.com/-oHFPEKrFU0o/VJ7j71YNvoI/AAAAAAAADXQ/Y3IIxyyihG0/w1755-h968-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.51.02.png" alt="" /></p>
+<ul>
+  <li>You can re-open and change any class.</li>
+  <li>Beware! You don’t know who relies on the old functionality.</li>
+  <li>You should only re-open classes that you yourself own.</li>
+</ul>
+
+<h2 id="self">Self</h2>
+<p><img src="https://lh6.googleusercontent.com/-gJ4xawZHjFY/VJ7j9YxS8bI/AAAAAAAADXY/UKRNKNzoTdA/w1755-h980-no/Screen%2BShot%2B2014-12-28%2Bat%2B00.51.54.png" alt="" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby-bit" class="page__taxonomy-item" rel="tag">Ruby Bit</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby" class="page__taxonomy-item" rel="tag">Ruby</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-04T05:05:00+00:00">September 04, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/ruby-bits-1-expression/" class="pagination--pager" title="Ruby bits ( 1 ) : Expression
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/ruby-bits-3-class/" class="pagination--pager" title="Ruby bits ( 3 )：Class
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,526 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>HTTP Status Code In Rails - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Rails將這些HTTP Status定義成有意義的單字。讓我們可以在使用的時候減少因為背錯而發生錯誤的機率。使用方式用symbol加上單字即可取代原本的HTTP Status Code(500)render status: 500render status: :forbidden這些Symbol其實定義在Rack中原始碼 rack/utils.rb    HTTP_STATUS_CODES = {    # Informational      100 =&gt; &#39;Continue&#39;,      101 =&gt; &#39;Switching Protocols&#39;,      102 =&gt; &#39;Processing&#39;,    # Success      200 =&gt; &#39;OK&#39;,      201 =&gt; &#39;Created&#39;,      202 =&gt; &#39;Accepted&#39;,      203 =&gt; &#39;Non-Authoritative Information&#39;,      204 =&gt; &#39;No Content&#39;,      205 =&gt; &#39;Reset Content&#39;,      206 =&gt; &#39;Partial Content&#39;,      207 =&gt; &#39;Multi-Status&#39;,      208 =&gt; &#39;Already Reported&#39;,      226 =&gt; &#39;IM Used&#39;,    # Redirection      300 =&gt; &#39;Multiple Choices&#39;,      301 =&gt; &#39;Moved Permanently&#39;,      302 =&gt; &#39;Found&#39;,      303 =&gt; &#39;See Other&#39;,      304 =&gt; &#39;Not Modified&#39;,      305 =&gt; &#39;Use Proxy&#39;,      307 =&gt; &#39;Temporary Redirect&#39;,      308 =&gt; &#39;Permanent Redirect&#39;,    # Client Error      400 =&gt; &#39;Bad Request&#39;,      401 =&gt; &#39;Unauthorized&#39;,      402 =&gt; &#39;Payment Required&#39;,      403 =&gt; &#39;Forbidden&#39;,      404 =&gt; &#39;Not Found&#39;,      405 =&gt; &#39;Method Not Allowed&#39;,      406 =&gt; &#39;Not Acceptable&#39;,      407 =&gt; &#39;Proxy Authentication Required&#39;,      408 =&gt; &#39;Request Timeout&#39;,      409 =&gt; &#39;Conflict&#39;,      410 =&gt; &#39;Gone&#39;,      411 =&gt; &#39;Length Required&#39;,      412 =&gt; &#39;Precondition Failed&#39;,      413 =&gt; &#39;Payload Too Large&#39;,      414 =&gt; &#39;URI Too Long&#39;,      415 =&gt; &#39;Unsupported Media Type&#39;,      416 =&gt; &#39;Range Not Satisfiable&#39;,      417 =&gt; &#39;Expectation Failed&#39;,      421 =&gt; &#39;Misdirected Request&#39;,      422 =&gt; &#39;Unprocessable Entity&#39;,      423 =&gt; &#39;Locked&#39;,      424 =&gt; &#39;Failed Dependency&#39;,      426 =&gt; &#39;Upgrade Required&#39;,      428 =&gt; &#39;Precondition Required&#39;,      429 =&gt; &#39;Too Many Requests&#39;,      431 =&gt; &#39;Request Header Fields Too Large&#39;,    # Server Error      500 =&gt; &#39;Internal Server Error&#39;,      501 =&gt; &#39;Not Implemented&#39;,      502 =&gt; &#39;Bad Gateway&#39;,      503 =&gt; &#39;Service Unavailable&#39;,      504 =&gt; &#39;Gateway Timeout&#39;,      505 =&gt; &#39;HTTP Version Not Supported&#39;,      506 =&gt; &#39;Variant Also Negotiates&#39;,      507 =&gt; &#39;Insufficient Storage&#39;,      508 =&gt; &#39;Loop Detected&#39;,      510 =&gt; &#39;Not Extended&#39;,      511 =&gt; &#39;Network Authentication Required&#39;    }還是不知道從何下手記憶嘛？來看保哥已經整理好一篇完整的HTTP Status Code文章囉^^The Will Will Web 網頁開發人員應了解的 HTTP 狀態碼">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="HTTP Status Code In Rails">
+
+
+  <link rel="canonical" href="https://lukahuang.com/http-status-code-in-rails/">
+  <meta property="og:url" content="https://lukahuang.com/http-status-code-in-rails/">
+
+
+
+  <meta property="og:description" content="Rails將這些HTTP Status定義成有意義的單字。讓我們可以在使用的時候減少因為背錯而發生錯誤的機率。使用方式用symbol加上單字即可取代原本的HTTP Status Code(500)render status: 500render status: :forbidden這些Symbol其實定義在Rack中原始碼 rack/utils.rb    HTTP_STATUS_CODES = {    # Informational      100 =&gt; &#39;Continue&#39;,      101 =&gt; &#39;Switching Protocols&#39;,      102 =&gt; &#39;Processing&#39;,    # Success      200 =&gt; &#39;OK&#39;,      201 =&gt; &#39;Created&#39;,      202 =&gt; &#39;Accepted&#39;,      203 =&gt; &#39;Non-Authoritative Information&#39;,      204 =&gt; &#39;No Content&#39;,      205 =&gt; &#39;Reset Content&#39;,      206 =&gt; &#39;Partial Content&#39;,      207 =&gt; &#39;Multi-Status&#39;,      208 =&gt; &#39;Already Reported&#39;,      226 =&gt; &#39;IM Used&#39;,    # Redirection      300 =&gt; &#39;Multiple Choices&#39;,      301 =&gt; &#39;Moved Permanently&#39;,      302 =&gt; &#39;Found&#39;,      303 =&gt; &#39;See Other&#39;,      304 =&gt; &#39;Not Modified&#39;,      305 =&gt; &#39;Use Proxy&#39;,      307 =&gt; &#39;Temporary Redirect&#39;,      308 =&gt; &#39;Permanent Redirect&#39;,    # Client Error      400 =&gt; &#39;Bad Request&#39;,      401 =&gt; &#39;Unauthorized&#39;,      402 =&gt; &#39;Payment Required&#39;,      403 =&gt; &#39;Forbidden&#39;,      404 =&gt; &#39;Not Found&#39;,      405 =&gt; &#39;Method Not Allowed&#39;,      406 =&gt; &#39;Not Acceptable&#39;,      407 =&gt; &#39;Proxy Authentication Required&#39;,      408 =&gt; &#39;Request Timeout&#39;,      409 =&gt; &#39;Conflict&#39;,      410 =&gt; &#39;Gone&#39;,      411 =&gt; &#39;Length Required&#39;,      412 =&gt; &#39;Precondition Failed&#39;,      413 =&gt; &#39;Payload Too Large&#39;,      414 =&gt; &#39;URI Too Long&#39;,      415 =&gt; &#39;Unsupported Media Type&#39;,      416 =&gt; &#39;Range Not Satisfiable&#39;,      417 =&gt; &#39;Expectation Failed&#39;,      421 =&gt; &#39;Misdirected Request&#39;,      422 =&gt; &#39;Unprocessable Entity&#39;,      423 =&gt; &#39;Locked&#39;,      424 =&gt; &#39;Failed Dependency&#39;,      426 =&gt; &#39;Upgrade Required&#39;,      428 =&gt; &#39;Precondition Required&#39;,      429 =&gt; &#39;Too Many Requests&#39;,      431 =&gt; &#39;Request Header Fields Too Large&#39;,    # Server Error      500 =&gt; &#39;Internal Server Error&#39;,      501 =&gt; &#39;Not Implemented&#39;,      502 =&gt; &#39;Bad Gateway&#39;,      503 =&gt; &#39;Service Unavailable&#39;,      504 =&gt; &#39;Gateway Timeout&#39;,      505 =&gt; &#39;HTTP Version Not Supported&#39;,      506 =&gt; &#39;Variant Also Negotiates&#39;,      507 =&gt; &#39;Insufficient Storage&#39;,      508 =&gt; &#39;Loop Detected&#39;,      510 =&gt; &#39;Not Extended&#39;,      511 =&gt; &#39;Network Authentication Required&#39;    }還是不知道從何下手記憶嘛？來看保哥已經整理好一篇完整的HTTP Status Code文章囉^^The Will Will Web 網頁開發人員應了解的 HTTP 狀態碼">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-10-10T11:22:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="HTTP Status Code In Rails">
+    <meta itemprop="description" content="Rails將這些HTTP Status定義成有意義的單字。讓我們可以在使用的時候減少因為背錯而發生錯誤的機率。使用方式用symbol加上單字即可取代原本的HTTP Status Code(500)render status: 500render status: :forbidden這些Symbol其實定義在Rack中原始碼 rack/utils.rb    HTTP_STATUS_CODES = {    # Informational      100 =&gt; &#39;Continue&#39;,      101 =&gt; &#39;Switching Protocols&#39;,      102 =&gt; &#39;Processing&#39;,    # Success      200 =&gt; &#39;OK&#39;,      201 =&gt; &#39;Created&#39;,      202 =&gt; &#39;Accepted&#39;,      203 =&gt; &#39;Non-Authoritative Information&#39;,      204 =&gt; &#39;No Content&#39;,      205 =&gt; &#39;Reset Content&#39;,      206 =&gt; &#39;Partial Content&#39;,      207 =&gt; &#39;Multi-Status&#39;,      208 =&gt; &#39;Already Reported&#39;,      226 =&gt; &#39;IM Used&#39;,    # Redirection      300 =&gt; &#39;Multiple Choices&#39;,      301 =&gt; &#39;Moved Permanently&#39;,      302 =&gt; &#39;Found&#39;,      303 =&gt; &#39;See Other&#39;,      304 =&gt; &#39;Not Modified&#39;,      305 =&gt; &#39;Use Proxy&#39;,      307 =&gt; &#39;Temporary Redirect&#39;,      308 =&gt; &#39;Permanent Redirect&#39;,    # Client Error      400 =&gt; &#39;Bad Request&#39;,      401 =&gt; &#39;Unauthorized&#39;,      402 =&gt; &#39;Payment Required&#39;,      403 =&gt; &#39;Forbidden&#39;,      404 =&gt; &#39;Not Found&#39;,      405 =&gt; &#39;Method Not Allowed&#39;,      406 =&gt; &#39;Not Acceptable&#39;,      407 =&gt; &#39;Proxy Authentication Required&#39;,      408 =&gt; &#39;Request Timeout&#39;,      409 =&gt; &#39;Conflict&#39;,      410 =&gt; &#39;Gone&#39;,      411 =&gt; &#39;Length Required&#39;,      412 =&gt; &#39;Precondition Failed&#39;,      413 =&gt; &#39;Payload Too Large&#39;,      414 =&gt; &#39;URI Too Long&#39;,      415 =&gt; &#39;Unsupported Media Type&#39;,      416 =&gt; &#39;Range Not Satisfiable&#39;,      417 =&gt; &#39;Expectation Failed&#39;,      421 =&gt; &#39;Misdirected Request&#39;,      422 =&gt; &#39;Unprocessable Entity&#39;,      423 =&gt; &#39;Locked&#39;,      424 =&gt; &#39;Failed Dependency&#39;,      426 =&gt; &#39;Upgrade Required&#39;,      428 =&gt; &#39;Precondition Required&#39;,      429 =&gt; &#39;Too Many Requests&#39;,      431 =&gt; &#39;Request Header Fields Too Large&#39;,    # Server Error      500 =&gt; &#39;Internal Server Error&#39;,      501 =&gt; &#39;Not Implemented&#39;,      502 =&gt; &#39;Bad Gateway&#39;,      503 =&gt; &#39;Service Unavailable&#39;,      504 =&gt; &#39;Gateway Timeout&#39;,      505 =&gt; &#39;HTTP Version Not Supported&#39;,      506 =&gt; &#39;Variant Also Negotiates&#39;,      507 =&gt; &#39;Insufficient Storage&#39;,      508 =&gt; &#39;Loop Detected&#39;,      510 =&gt; &#39;Not Extended&#39;,      511 =&gt; &#39;Network Authentication Required&#39;    }還是不知道從何下手記憶嘛？來看保哥已經整理好一篇完整的HTTP Status Code文章囉^^The Will Will Web 網頁開發人員應了解的 HTTP 狀態碼">
+    <meta itemprop="datePublished" content="October 10, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">HTTP Status Code In Rails
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#使用方式">使用方式</a></li>
+  <li><a href="#這些symbol其實定義在rack中">這些Symbol其實定義在Rack中</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>Rails將這些HTTP Status定義成有意義的單字。讓我們可以在使用的時候減少因為背錯而發生錯誤的機率。</p>
+
+<h3 id="使用方式">使用方式</h3>
+
+<p>用symbol加上單字即可取代原本的HTTP Status Code(500)</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">render</span> <span class="ss">status: </span><span class="mi">500</span>
+<span class="n">render</span> <span class="ss">status: :forbidden</span>
+</code></pre></div></div>
+
+<h3 id="這些symbol其實定義在rack中">這些Symbol其實定義在Rack中</h3>
+
+<p><a href="https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L452-L515">原始碼 rack/utils.rb</a></p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="no">HTTP_STATUS_CODES</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="c1"># Informational</span>
+      <span class="mi">100</span> <span class="o">=&gt;</span> <span class="s1">'Continue'</span><span class="p">,</span>
+      <span class="mi">101</span> <span class="o">=&gt;</span> <span class="s1">'Switching Protocols'</span><span class="p">,</span>
+      <span class="mi">102</span> <span class="o">=&gt;</span> <span class="s1">'Processing'</span><span class="p">,</span>
+
+    <span class="c1"># Success</span>
+      <span class="mi">200</span> <span class="o">=&gt;</span> <span class="s1">'OK'</span><span class="p">,</span>
+      <span class="mi">201</span> <span class="o">=&gt;</span> <span class="s1">'Created'</span><span class="p">,</span>
+      <span class="mi">202</span> <span class="o">=&gt;</span> <span class="s1">'Accepted'</span><span class="p">,</span>
+      <span class="mi">203</span> <span class="o">=&gt;</span> <span class="s1">'Non-Authoritative Information'</span><span class="p">,</span>
+      <span class="mi">204</span> <span class="o">=&gt;</span> <span class="s1">'No Content'</span><span class="p">,</span>
+      <span class="mi">205</span> <span class="o">=&gt;</span> <span class="s1">'Reset Content'</span><span class="p">,</span>
+      <span class="mi">206</span> <span class="o">=&gt;</span> <span class="s1">'Partial Content'</span><span class="p">,</span>
+      <span class="mi">207</span> <span class="o">=&gt;</span> <span class="s1">'Multi-Status'</span><span class="p">,</span>
+      <span class="mi">208</span> <span class="o">=&gt;</span> <span class="s1">'Already Reported'</span><span class="p">,</span>
+      <span class="mi">226</span> <span class="o">=&gt;</span> <span class="s1">'IM Used'</span><span class="p">,</span>
+
+    <span class="c1"># Redirection</span>
+      <span class="mi">300</span> <span class="o">=&gt;</span> <span class="s1">'Multiple Choices'</span><span class="p">,</span>
+      <span class="mi">301</span> <span class="o">=&gt;</span> <span class="s1">'Moved Permanently'</span><span class="p">,</span>
+      <span class="mi">302</span> <span class="o">=&gt;</span> <span class="s1">'Found'</span><span class="p">,</span>
+      <span class="mi">303</span> <span class="o">=&gt;</span> <span class="s1">'See Other'</span><span class="p">,</span>
+      <span class="mi">304</span> <span class="o">=&gt;</span> <span class="s1">'Not Modified'</span><span class="p">,</span>
+      <span class="mi">305</span> <span class="o">=&gt;</span> <span class="s1">'Use Proxy'</span><span class="p">,</span>
+      <span class="mi">307</span> <span class="o">=&gt;</span> <span class="s1">'Temporary Redirect'</span><span class="p">,</span>
+      <span class="mi">308</span> <span class="o">=&gt;</span> <span class="s1">'Permanent Redirect'</span><span class="p">,</span>
+
+    <span class="c1"># Client Error</span>
+      <span class="mi">400</span> <span class="o">=&gt;</span> <span class="s1">'Bad Request'</span><span class="p">,</span>
+      <span class="mi">401</span> <span class="o">=&gt;</span> <span class="s1">'Unauthorized'</span><span class="p">,</span>
+      <span class="mi">402</span> <span class="o">=&gt;</span> <span class="s1">'Payment Required'</span><span class="p">,</span>
+      <span class="mi">403</span> <span class="o">=&gt;</span> <span class="s1">'Forbidden'</span><span class="p">,</span>
+      <span class="mi">404</span> <span class="o">=&gt;</span> <span class="s1">'Not Found'</span><span class="p">,</span>
+      <span class="mi">405</span> <span class="o">=&gt;</span> <span class="s1">'Method Not Allowed'</span><span class="p">,</span>
+      <span class="mi">406</span> <span class="o">=&gt;</span> <span class="s1">'Not Acceptable'</span><span class="p">,</span>
+      <span class="mi">407</span> <span class="o">=&gt;</span> <span class="s1">'Proxy Authentication Required'</span><span class="p">,</span>
+      <span class="mi">408</span> <span class="o">=&gt;</span> <span class="s1">'Request Timeout'</span><span class="p">,</span>
+      <span class="mi">409</span> <span class="o">=&gt;</span> <span class="s1">'Conflict'</span><span class="p">,</span>
+      <span class="mi">410</span> <span class="o">=&gt;</span> <span class="s1">'Gone'</span><span class="p">,</span>
+      <span class="mi">411</span> <span class="o">=&gt;</span> <span class="s1">'Length Required'</span><span class="p">,</span>
+      <span class="mi">412</span> <span class="o">=&gt;</span> <span class="s1">'Precondition Failed'</span><span class="p">,</span>
+      <span class="mi">413</span> <span class="o">=&gt;</span> <span class="s1">'Payload Too Large'</span><span class="p">,</span>
+      <span class="mi">414</span> <span class="o">=&gt;</span> <span class="s1">'URI Too Long'</span><span class="p">,</span>
+      <span class="mi">415</span> <span class="o">=&gt;</span> <span class="s1">'Unsupported Media Type'</span><span class="p">,</span>
+      <span class="mi">416</span> <span class="o">=&gt;</span> <span class="s1">'Range Not Satisfiable'</span><span class="p">,</span>
+      <span class="mi">417</span> <span class="o">=&gt;</span> <span class="s1">'Expectation Failed'</span><span class="p">,</span>
+      <span class="mi">421</span> <span class="o">=&gt;</span> <span class="s1">'Misdirected Request'</span><span class="p">,</span>
+      <span class="mi">422</span> <span class="o">=&gt;</span> <span class="s1">'Unprocessable Entity'</span><span class="p">,</span>
+      <span class="mi">423</span> <span class="o">=&gt;</span> <span class="s1">'Locked'</span><span class="p">,</span>
+      <span class="mi">424</span> <span class="o">=&gt;</span> <span class="s1">'Failed Dependency'</span><span class="p">,</span>
+      <span class="mi">426</span> <span class="o">=&gt;</span> <span class="s1">'Upgrade Required'</span><span class="p">,</span>
+      <span class="mi">428</span> <span class="o">=&gt;</span> <span class="s1">'Precondition Required'</span><span class="p">,</span>
+      <span class="mi">429</span> <span class="o">=&gt;</span> <span class="s1">'Too Many Requests'</span><span class="p">,</span>
+      <span class="mi">431</span> <span class="o">=&gt;</span> <span class="s1">'Request Header Fields Too Large'</span><span class="p">,</span>
+
+    <span class="c1"># Server Error</span>
+      <span class="mi">500</span> <span class="o">=&gt;</span> <span class="s1">'Internal Server Error'</span><span class="p">,</span>
+      <span class="mi">501</span> <span class="o">=&gt;</span> <span class="s1">'Not Implemented'</span><span class="p">,</span>
+      <span class="mi">502</span> <span class="o">=&gt;</span> <span class="s1">'Bad Gateway'</span><span class="p">,</span>
+      <span class="mi">503</span> <span class="o">=&gt;</span> <span class="s1">'Service Unavailable'</span><span class="p">,</span>
+      <span class="mi">504</span> <span class="o">=&gt;</span> <span class="s1">'Gateway Timeout'</span><span class="p">,</span>
+      <span class="mi">505</span> <span class="o">=&gt;</span> <span class="s1">'HTTP Version Not Supported'</span><span class="p">,</span>
+      <span class="mi">506</span> <span class="o">=&gt;</span> <span class="s1">'Variant Also Negotiates'</span><span class="p">,</span>
+      <span class="mi">507</span> <span class="o">=&gt;</span> <span class="s1">'Insufficient Storage'</span><span class="p">,</span>
+      <span class="mi">508</span> <span class="o">=&gt;</span> <span class="s1">'Loop Detected'</span><span class="p">,</span>
+      <span class="mi">510</span> <span class="o">=&gt;</span> <span class="s1">'Not Extended'</span><span class="p">,</span>
+      <span class="mi">511</span> <span class="o">=&gt;</span> <span class="s1">'Network Authentication Required'</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+<p>還是不知道從何下手記憶嘛？來看保哥已經整理好一篇完整的HTTP Status Code文章囉^^</p>
+
+<p><a href="http://blog.miniasp.com/post/2009/01/16/Web-developer-should-know-about-HTTP-Status-Code.aspx">The Will Will Web 網頁開發人員應了解的 HTTP 狀態碼</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#rails" class="page__taxonomy-item" rel="tag">Rails</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-10-10T11:22:00+00:00">October 10, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/introduce-atoms-killer-packages/" class="pagination--pager" title="Atom殺手級套件介紹
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/practice-using-the-matirialize-framework-parallax-scrolling/" class="pagination--pager" title="Demo：使用Matirialize框架實現視差滾動
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

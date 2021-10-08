@@ -1,0 +1,816 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Ruby bits ( 6 )：Blocks 學習筆記 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="不得不再說一次，這些主題都超級重要，不先學Ruby直接學Rails感覺很卡。果然要從基礎開始打才是王道。在看這篇之前請先看完method / block / yield / Proc / lambda，很多觀念都是從這邊的延伸。conventionsblock有兩種表達方式single blockbraces if the block is a single linewords.each { |word| puts word }multiblockdo/end if it’s multiple lineswords.each do |word|  backward_word = word.reverse  puts backward_wordendyield這邊有一個yield的範例def call_this_block_twice	yield	yieldendcall_this_block_twice{ puts &quot;twitter&quot;}  #=&gt;twitter twitter一開始看一定看不懂他是怎麼做的，因為他省略了很多東西，其實call block可以拆解成三個部分，第一個部分是定義呼叫block的function，在這個例子中就是def call_this_block_twice	yield	yieldend使用yield的時候可以省略傳入的&amp;block與呼叫的.call方法，上面這段程式碼等同於def call_this_block_twice(&amp;block)	block.call	block.callend第二個部分是宣告block在這個例子中省略了這一部分，其實”twitter”就是一個傳入的block。第三部分是傳入block到function之中輸出結果把”twitter”這個block傳進能夠處理block的function之中。call_this_block_twice{ puts &quot;twitter&quot;}  #=&gt;twitter twitteryield - arguments再來看另一個範例def call_this_block  yield &quot;tweet&quot;endyield中傳入了參數”tweet”，也就等於block.call(“tweet”)call_this_block { |myarg| puts myarg }  #=&gt;tweetcall_this_block { |myarg| puts myarg.upcase }  #=&gt;TWEET這時候如果要在call block的時候呼叫參數，要用|和|把輸入的參數包起來。接著後面的陳述式就可以對輸入的進行一些處理。Your own “each”現在我的class中有兩個method，一個要列出朋友的tweet，一個要儲存朋友的tweet。可以發現@user.friends.each do |friend|這段iteration重複了。class Timeline  def list_tweets    @user.friends.each do |friend|      friend.tweets.each { |tweet| puts tweet }    end  end  def store_tweets    @user.friends.each do |friend|      friend.tweets.each { |tweet| tweet.cache }    end  endend於是我們來著撰寫自己的eachclass Timeline  def each    @user.friends.each do |friend|      friend.tweets.each { |tweet| yield tweet }    end  endendtimeline = Timeline.new(user)timeline.each { |tweet| puts tweet }timeline.each { |tweet| tweet.cache }加入Enumerable擴充更多的methodclass Timeline  def each...end  include Enumerableend在include Enumerable這個module之後，瞬間多了很多method（如下），要解了更多就去看看ruby-doc Enumerable吧。timeline.sort_by  { |tweet| tweet.created_at }timeline.map      { |tweet| tweet.status }timeline.find_all { |tweet| tweet.status =~ /\@codeschool/ }重構練習def update_status(user, tweet)  begin    sign_in(user)    post(tweet)  rescue ConnectionError =&gt; e    logger.error(e)ensure    sign_out(user)	endenddef get_list(user, list_name)  begin    sign_in(user)    retrieve_list(list_name)  rescue ConnectionError =&gt; e    logger.error(e)ensure    sign_out(user)	endend有裡個method裡面除了核心邏輯以外全部都一樣。這樣的話我們需要進行重構來實現DRY原則。因為Proc本身就是匿名函數也就是一段未執行程式碼，所以特別適用這個情況。把重複的地方獨立出來，核心邏輯用yield代替。def while_signed_in_as(user) begin    sign_in(user)    yield  rescue ConnectionError =&gt; e    logger.error(e)  ensure    sign_out(user)  endend使用do的時候會省略傳入的&amp;block，所以這段程式碼其實是對block做些處理，並顯示在block.call也就是yield的部份。while_signed_in_as(user) do  post(tweet)endtweets = while_signed_in_as(user) do  retrieve_list(list_name)end最後可以改寫的精簡一點去掉不必要的begin和enddef while_signed_in_as(user)  sign_in(user)  yield  rescue ConnectionError =&gt; e    logger.error(e)  ensure    sign_out(user)end作業實作6.1使用each代替for迴圈。原來使用for迴圈的程式：def list  for i in 0...(games.length)    game = games[i]    puts game.name  endend改寫成eachdef list  games.each do|game|    puts game.name  endend6.2現在我們有一個class叫做Game裡面裝著每場比賽的資訊。有一個陣列叫做Games，裡面蒐集了很多場的比賽。現在我們要在Library中寫一個方法叫做each_on_system(system)，讓他可以讀出Games陣列裡面符合輸入的system的比賽。class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def each_on_system(system)  endend使用範例example.rblibrary = Library.new(GAMES)library.each_on_system(&quot;SNES&quot;) { puts &quot;Found a Super Nintendo game&quot; }將library修正後，即為所得。class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def each_on_system(system)    games.each do|game|      yield if game.system == system    end  endend6.3 Passing Argument to Blocks            讓產生的block能夠使用iterator的參數。如下圖可以使用      game      。      library = Library.new(GAMES)library.each_on_system(&quot;SNES&quot;) { |game| puts game.name }6.4 Return Value From blockModify the list method to yield to a block and print whatever the block returns.除了能夠在block中使用以外還要可以直接印出來。library = Library.new(GAMES)library.list { |game| &quot;#{game.name} (#{game.system}) - #{game.year}&quot; }class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def list    games.each do |game|      puts yield game    end  endend6.5include Enumerable module6.6重構以避免重複class Game  attr_accessor :name, :year, :system  attr_reader :created_at  def initialize(name, options={})    self.name = name    self.year = options[:year]    self.system = options[:system]    @created_at = Time.now  end  def play    begin      emulator = Emulator.new(system)      emulator.play(self)    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  end  def screenshot    begin      emulator = Emulator.new(system)      emulator.start(self)      emulator.screenshot    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  endendclass Game  attr_accessor :name, :year, :system  attr_reader :created_at  def initialize(name, options={})    self.name = name    self.year = options[:year]    self.system = options[:system]    @created_at = Time.now  end  def play    emulate do |emulator|      emulator.play(self)    end  end  def screenshot    emulate do |emulator|      emulator.start(self)      emulator.screenshot    end  end  private  def emulate    begin      emulator = Emulator.new(system)      yield emulator    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  endendclass Emulator  def initialize(system)    # Creates an emulator for the given system  end  def play(game)    # Runs the given game in the emulator  end  def start(game)    # Loads the given game but doesn&#39;t run it  end  def screenshot    # Returns a screenshot of the currently loaded game  endend">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Ruby bits ( 6 )：Blocks 學習筆記">
+
+
+  <link rel="canonical" href="https://lukahuang.com/ruby-bits-6-blocks/">
+  <meta property="og:url" content="https://lukahuang.com/ruby-bits-6-blocks/">
+
+
+
+  <meta property="og:description" content="不得不再說一次，這些主題都超級重要，不先學Ruby直接學Rails感覺很卡。果然要從基礎開始打才是王道。在看這篇之前請先看完method / block / yield / Proc / lambda，很多觀念都是從這邊的延伸。conventionsblock有兩種表達方式single blockbraces if the block is a single linewords.each { |word| puts word }multiblockdo/end if it’s multiple lineswords.each do |word|  backward_word = word.reverse  puts backward_wordendyield這邊有一個yield的範例def call_this_block_twice	yield	yieldendcall_this_block_twice{ puts &quot;twitter&quot;}  #=&gt;twitter twitter一開始看一定看不懂他是怎麼做的，因為他省略了很多東西，其實call block可以拆解成三個部分，第一個部分是定義呼叫block的function，在這個例子中就是def call_this_block_twice	yield	yieldend使用yield的時候可以省略傳入的&amp;block與呼叫的.call方法，上面這段程式碼等同於def call_this_block_twice(&amp;block)	block.call	block.callend第二個部分是宣告block在這個例子中省略了這一部分，其實”twitter”就是一個傳入的block。第三部分是傳入block到function之中輸出結果把”twitter”這個block傳進能夠處理block的function之中。call_this_block_twice{ puts &quot;twitter&quot;}  #=&gt;twitter twitteryield - arguments再來看另一個範例def call_this_block  yield &quot;tweet&quot;endyield中傳入了參數”tweet”，也就等於block.call(“tweet”)call_this_block { |myarg| puts myarg }  #=&gt;tweetcall_this_block { |myarg| puts myarg.upcase }  #=&gt;TWEET這時候如果要在call block的時候呼叫參數，要用|和|把輸入的參數包起來。接著後面的陳述式就可以對輸入的進行一些處理。Your own “each”現在我的class中有兩個method，一個要列出朋友的tweet，一個要儲存朋友的tweet。可以發現@user.friends.each do |friend|這段iteration重複了。class Timeline  def list_tweets    @user.friends.each do |friend|      friend.tweets.each { |tweet| puts tweet }    end  end  def store_tweets    @user.friends.each do |friend|      friend.tweets.each { |tweet| tweet.cache }    end  endend於是我們來著撰寫自己的eachclass Timeline  def each    @user.friends.each do |friend|      friend.tweets.each { |tweet| yield tweet }    end  endendtimeline = Timeline.new(user)timeline.each { |tweet| puts tweet }timeline.each { |tweet| tweet.cache }加入Enumerable擴充更多的methodclass Timeline  def each...end  include Enumerableend在include Enumerable這個module之後，瞬間多了很多method（如下），要解了更多就去看看ruby-doc Enumerable吧。timeline.sort_by  { |tweet| tweet.created_at }timeline.map      { |tweet| tweet.status }timeline.find_all { |tweet| tweet.status =~ /\@codeschool/ }重構練習def update_status(user, tweet)  begin    sign_in(user)    post(tweet)  rescue ConnectionError =&gt; e    logger.error(e)ensure    sign_out(user)	endenddef get_list(user, list_name)  begin    sign_in(user)    retrieve_list(list_name)  rescue ConnectionError =&gt; e    logger.error(e)ensure    sign_out(user)	endend有裡個method裡面除了核心邏輯以外全部都一樣。這樣的話我們需要進行重構來實現DRY原則。因為Proc本身就是匿名函數也就是一段未執行程式碼，所以特別適用這個情況。把重複的地方獨立出來，核心邏輯用yield代替。def while_signed_in_as(user) begin    sign_in(user)    yield  rescue ConnectionError =&gt; e    logger.error(e)  ensure    sign_out(user)  endend使用do的時候會省略傳入的&amp;block，所以這段程式碼其實是對block做些處理，並顯示在block.call也就是yield的部份。while_signed_in_as(user) do  post(tweet)endtweets = while_signed_in_as(user) do  retrieve_list(list_name)end最後可以改寫的精簡一點去掉不必要的begin和enddef while_signed_in_as(user)  sign_in(user)  yield  rescue ConnectionError =&gt; e    logger.error(e)  ensure    sign_out(user)end作業實作6.1使用each代替for迴圈。原來使用for迴圈的程式：def list  for i in 0...(games.length)    game = games[i]    puts game.name  endend改寫成eachdef list  games.each do|game|    puts game.name  endend6.2現在我們有一個class叫做Game裡面裝著每場比賽的資訊。有一個陣列叫做Games，裡面蒐集了很多場的比賽。現在我們要在Library中寫一個方法叫做each_on_system(system)，讓他可以讀出Games陣列裡面符合輸入的system的比賽。class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def each_on_system(system)  endend使用範例example.rblibrary = Library.new(GAMES)library.each_on_system(&quot;SNES&quot;) { puts &quot;Found a Super Nintendo game&quot; }將library修正後，即為所得。class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def each_on_system(system)    games.each do|game|      yield if game.system == system    end  endend6.3 Passing Argument to Blocks            讓產生的block能夠使用iterator的參數。如下圖可以使用      game      。      library = Library.new(GAMES)library.each_on_system(&quot;SNES&quot;) { |game| puts game.name }6.4 Return Value From blockModify the list method to yield to a block and print whatever the block returns.除了能夠在block中使用以外還要可以直接印出來。library = Library.new(GAMES)library.list { |game| &quot;#{game.name} (#{game.system}) - #{game.year}&quot; }class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def list    games.each do |game|      puts yield game    end  endend6.5include Enumerable module6.6重構以避免重複class Game  attr_accessor :name, :year, :system  attr_reader :created_at  def initialize(name, options={})    self.name = name    self.year = options[:year]    self.system = options[:system]    @created_at = Time.now  end  def play    begin      emulator = Emulator.new(system)      emulator.play(self)    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  end  def screenshot    begin      emulator = Emulator.new(system)      emulator.start(self)      emulator.screenshot    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  endendclass Game  attr_accessor :name, :year, :system  attr_reader :created_at  def initialize(name, options={})    self.name = name    self.year = options[:year]    self.system = options[:system]    @created_at = Time.now  end  def play    emulate do |emulator|      emulator.play(self)    end  end  def screenshot    emulate do |emulator|      emulator.start(self)      emulator.screenshot    end  end  private  def emulate    begin      emulator = Emulator.new(system)      yield emulator    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  endendclass Emulator  def initialize(system)    # Creates an emulator for the given system  end  def play(game)    # Runs the given game in the emulator  end  def start(game)    # Loads the given game but doesn&#39;t run it  end  def screenshot    # Returns a screenshot of the currently loaded game  endend">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-06T05:13:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Ruby bits ( 6 )：Blocks 學習筆記">
+    <meta itemprop="description" content="不得不再說一次，這些主題都超級重要，不先學Ruby直接學Rails感覺很卡。果然要從基礎開始打才是王道。在看這篇之前請先看完method / block / yield / Proc / lambda，很多觀念都是從這邊的延伸。conventionsblock有兩種表達方式single blockbraces if the block is a single linewords.each { |word| puts word }multiblockdo/end if it’s multiple lineswords.each do |word|  backward_word = word.reverse  puts backward_wordendyield這邊有一個yield的範例def call_this_block_twice	yield	yieldendcall_this_block_twice{ puts &quot;twitter&quot;}  #=&gt;twitter twitter一開始看一定看不懂他是怎麼做的，因為他省略了很多東西，其實call block可以拆解成三個部分，第一個部分是定義呼叫block的function，在這個例子中就是def call_this_block_twice	yield	yieldend使用yield的時候可以省略傳入的&amp;block與呼叫的.call方法，上面這段程式碼等同於def call_this_block_twice(&amp;block)	block.call	block.callend第二個部分是宣告block在這個例子中省略了這一部分，其實”twitter”就是一個傳入的block。第三部分是傳入block到function之中輸出結果把”twitter”這個block傳進能夠處理block的function之中。call_this_block_twice{ puts &quot;twitter&quot;}  #=&gt;twitter twitteryield - arguments再來看另一個範例def call_this_block  yield &quot;tweet&quot;endyield中傳入了參數”tweet”，也就等於block.call(“tweet”)call_this_block { |myarg| puts myarg }  #=&gt;tweetcall_this_block { |myarg| puts myarg.upcase }  #=&gt;TWEET這時候如果要在call block的時候呼叫參數，要用|和|把輸入的參數包起來。接著後面的陳述式就可以對輸入的進行一些處理。Your own “each”現在我的class中有兩個method，一個要列出朋友的tweet，一個要儲存朋友的tweet。可以發現@user.friends.each do |friend|這段iteration重複了。class Timeline  def list_tweets    @user.friends.each do |friend|      friend.tweets.each { |tweet| puts tweet }    end  end  def store_tweets    @user.friends.each do |friend|      friend.tweets.each { |tweet| tweet.cache }    end  endend於是我們來著撰寫自己的eachclass Timeline  def each    @user.friends.each do |friend|      friend.tweets.each { |tweet| yield tweet }    end  endendtimeline = Timeline.new(user)timeline.each { |tweet| puts tweet }timeline.each { |tweet| tweet.cache }加入Enumerable擴充更多的methodclass Timeline  def each...end  include Enumerableend在include Enumerable這個module之後，瞬間多了很多method（如下），要解了更多就去看看ruby-doc Enumerable吧。timeline.sort_by  { |tweet| tweet.created_at }timeline.map      { |tweet| tweet.status }timeline.find_all { |tweet| tweet.status =~ /\@codeschool/ }重構練習def update_status(user, tweet)  begin    sign_in(user)    post(tweet)  rescue ConnectionError =&gt; e    logger.error(e)ensure    sign_out(user)	endenddef get_list(user, list_name)  begin    sign_in(user)    retrieve_list(list_name)  rescue ConnectionError =&gt; e    logger.error(e)ensure    sign_out(user)	endend有裡個method裡面除了核心邏輯以外全部都一樣。這樣的話我們需要進行重構來實現DRY原則。因為Proc本身就是匿名函數也就是一段未執行程式碼，所以特別適用這個情況。把重複的地方獨立出來，核心邏輯用yield代替。def while_signed_in_as(user) begin    sign_in(user)    yield  rescue ConnectionError =&gt; e    logger.error(e)  ensure    sign_out(user)  endend使用do的時候會省略傳入的&amp;block，所以這段程式碼其實是對block做些處理，並顯示在block.call也就是yield的部份。while_signed_in_as(user) do  post(tweet)endtweets = while_signed_in_as(user) do  retrieve_list(list_name)end最後可以改寫的精簡一點去掉不必要的begin和enddef while_signed_in_as(user)  sign_in(user)  yield  rescue ConnectionError =&gt; e    logger.error(e)  ensure    sign_out(user)end作業實作6.1使用each代替for迴圈。原來使用for迴圈的程式：def list  for i in 0...(games.length)    game = games[i]    puts game.name  endend改寫成eachdef list  games.each do|game|    puts game.name  endend6.2現在我們有一個class叫做Game裡面裝著每場比賽的資訊。有一個陣列叫做Games，裡面蒐集了很多場的比賽。現在我們要在Library中寫一個方法叫做each_on_system(system)，讓他可以讀出Games陣列裡面符合輸入的system的比賽。class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def each_on_system(system)  endend使用範例example.rblibrary = Library.new(GAMES)library.each_on_system(&quot;SNES&quot;) { puts &quot;Found a Super Nintendo game&quot; }將library修正後，即為所得。class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def each_on_system(system)    games.each do|game|      yield if game.system == system    end  endend6.3 Passing Argument to Blocks            讓產生的block能夠使用iterator的參數。如下圖可以使用      game      。      library = Library.new(GAMES)library.each_on_system(&quot;SNES&quot;) { |game| puts game.name }6.4 Return Value From blockModify the list method to yield to a block and print whatever the block returns.除了能夠在block中使用以外還要可以直接印出來。library = Library.new(GAMES)library.list { |game| &quot;#{game.name} (#{game.system}) - #{game.year}&quot; }class Library  attr_accessor :games  def initialize(games = [])    self.games = games  end  def list    games.each do |game|      puts yield game    end  endend6.5include Enumerable module6.6重構以避免重複class Game  attr_accessor :name, :year, :system  attr_reader :created_at  def initialize(name, options={})    self.name = name    self.year = options[:year]    self.system = options[:system]    @created_at = Time.now  end  def play    begin      emulator = Emulator.new(system)      emulator.play(self)    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  end  def screenshot    begin      emulator = Emulator.new(system)      emulator.start(self)      emulator.screenshot    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  endendclass Game  attr_accessor :name, :year, :system  attr_reader :created_at  def initialize(name, options={})    self.name = name    self.year = options[:year]    self.system = options[:system]    @created_at = Time.now  end  def play    emulate do |emulator|      emulator.play(self)    end  end  def screenshot    emulate do |emulator|      emulator.start(self)      emulator.screenshot    end  end  private  def emulate    begin      emulator = Emulator.new(system)      yield emulator    rescue Exception =&gt; e      puts &quot;Emulator failed: #{e}&quot;    end  endendclass Emulator  def initialize(system)    # Creates an emulator for the given system  end  def play(game)    # Runs the given game in the emulator  end  def start(game)    # Loads the given game but doesn&#39;t run it  end  def screenshot    # Returns a screenshot of the currently loaded game  endend">
+    <meta itemprop="datePublished" content="September 06, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Ruby bits ( 6 )：Blocks 學習筆記
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#conventions">conventions</a>
+    <ul>
+      <li><a href="#single-block">single block</a></li>
+      <li><a href="#multiblock">multiblock</a></li>
+    </ul>
+  </li>
+  <li><a href="#yield">yield</a>
+    <ul>
+      <li><a href="#yield---arguments">yield - arguments</a></li>
+    </ul>
+  </li>
+  <li><a href="#your-own-each">Your own “each”</a></li>
+  <li><a href="#重構練習">重構練習</a></li>
+  <li><a href="#作業實作">作業實作</a>
+    <ul>
+      <li><a href="#61">6.1</a></li>
+      <li><a href="#62">6.2</a></li>
+      <li><a href="#63-passing-argument-to-blocks">6.3 Passing Argument to Blocks</a></li>
+      <li><a href="#64-return-value-from-block">6.4 Return Value From block</a></li>
+      <li><a href="#65include-enumerable-module">6.5include Enumerable module</a></li>
+      <li><a href="#66重構以避免重複">6.6重構以避免重複</a></li>
+    </ul>
+  </li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>不得不再說一次，這些主題都超級重要，不先學Ruby直接學Rails感覺很卡。果然要從基礎開始打才是王道。在看這篇之前請先看完<a href="http://bombersnote.logdown.com/posts/2014/09/06/231080">method / block / yield / Proc / lambda</a>，很多觀念都是從這邊的延伸。</p>
+
+<h2 id="conventions">conventions</h2>
+<p>block有兩種表達方式</p>
+<h3 id="single-block">single block</h3>
+<p>braces if the block is a single line</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">words</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">word</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">word</span> <span class="p">}</span>
+</code></pre></div></div>
+<h3 id="multiblock">multiblock</h3>
+<p>do/end if it’s multiple lines</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">words</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">word</span><span class="o">|</span>
+  <span class="n">backward_word</span> <span class="o">=</span> <span class="n">word</span><span class="p">.</span><span class="nf">reverse</span>
+  <span class="nb">puts</span> <span class="n">backward_word</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<h2 id="yield">yield</h2>
+<p>這邊有一個yield的範例</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">call_this_block_twice</span>
+	<span class="k">yield</span>
+	<span class="k">yield</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">call_this_block_twice</span><span class="p">{</span> <span class="nb">puts</span> <span class="s2">"twitter"</span><span class="p">}</span>
+  <span class="c1">#=&gt;twitter twitter</span>
+</code></pre></div></div>
+<p>一開始看一定看不懂他是怎麼做的，因為他省略了很多東西，其實call block可以拆解成三個部分，第一個部分是定義呼叫block的function，在這個例子中就是</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">call_this_block_twice</span>
+	<span class="k">yield</span>
+	<span class="k">yield</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>使用yield的時候可以省略傳入的&amp;block與呼叫的.call方法，上面這段程式碼等同於</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">call_this_block_twice</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+	<span class="n">block</span><span class="p">.</span><span class="nf">call</span>
+	<span class="n">block</span><span class="p">.</span><span class="nf">call</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>第二個部分是宣告block
+在這個例子中省略了這一部分，其實”twitter”就是一個傳入的block。</p>
+
+<p>第三部分是傳入block到function之中輸出結果
+把”twitter”這個block傳進能夠處理block的function之中。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">call_this_block_twice</span><span class="p">{</span> <span class="nb">puts</span> <span class="s2">"twitter"</span><span class="p">}</span>
+  <span class="c1">#=&gt;twitter twitter</span>
+</code></pre></div></div>
+
+<h3 id="yield---arguments">yield - arguments</h3>
+<p>再來看另一個範例</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">call_this_block</span>
+  <span class="k">yield</span> <span class="s2">"tweet"</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>yield中傳入了參數”tweet”，也就等於block.call(“tweet”)</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">call_this_block</span> <span class="p">{</span> <span class="o">|</span><span class="n">myarg</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">myarg</span> <span class="p">}</span>
+  <span class="c1">#=&gt;tweet</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">call_this_block</span> <span class="p">{</span> <span class="o">|</span><span class="n">myarg</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">myarg</span><span class="p">.</span><span class="nf">upcase</span> <span class="p">}</span>
+  <span class="c1">#=&gt;TWEET</span>
+</code></pre></div></div>
+<p>這時候如果要在call block的時候呼叫參數，要用<code class="highlighter-rouge">|</code>和<code class="highlighter-rouge">|</code>把輸入的參數包起來。接著後面的陳述式就可以對輸入的進行一些處理。</p>
+
+<h2 id="your-own-each">Your own “each”</h2>
+<p>現在我的class中有兩個method，一個要列出朋友的tweet，一個要儲存朋友的tweet。可以發現<code class="highlighter-rouge">@user.friends.each do |friend|</code>這段iteration重複了。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Timeline</span>
+  <span class="k">def</span> <span class="nf">list_tweets</span>
+    <span class="vi">@user</span><span class="p">.</span><span class="nf">friends</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friend</span><span class="o">|</span>
+      <span class="n">friend</span><span class="p">.</span><span class="nf">tweets</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">tweet</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">store_tweets</span>
+    <span class="vi">@user</span><span class="p">.</span><span class="nf">friends</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friend</span><span class="o">|</span>
+      <span class="n">friend</span><span class="p">.</span><span class="nf">tweets</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="n">tweet</span><span class="p">.</span><span class="nf">cache</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>於是我們來著撰寫自己的each</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Timeline</span>
+  <span class="k">def</span> <span class="nf">each</span>
+    <span class="vi">@user</span><span class="p">.</span><span class="nf">friends</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">friend</span><span class="o">|</span>
+      <span class="n">friend</span><span class="p">.</span><span class="nf">tweets</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="k">yield</span> <span class="n">tweet</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+<span class="n">timeline</span> <span class="o">=</span> <span class="no">Timeline</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">timeline</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">tweet</span> <span class="p">}</span>
+<span class="n">timeline</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="n">tweet</span><span class="p">.</span><span class="nf">cache</span> <span class="p">}</span>
+</code></pre></div></div>
+<p>加入Enumerable擴充更多的method</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Timeline</span>
+  <span class="k">def</span> <span class="nf">each</span>
+<span class="o">...</span>
+<span class="k">end</span>
+  <span class="kp">include</span> <span class="no">Enumerable</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>在include Enumerable這個module之後，瞬間多了很多method（如下），要解了更多就去看看<a href="http://ruby-doc.org/core-2.1.2/Enumerable.html">ruby-doc Enumerable</a>吧。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timeline</span><span class="p">.</span><span class="nf">sort_by</span>  <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="n">tweet</span><span class="p">.</span><span class="nf">created_at</span> <span class="p">}</span>
+<span class="n">timeline</span><span class="p">.</span><span class="nf">map</span>      <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="n">tweet</span><span class="p">.</span><span class="nf">status</span> <span class="p">}</span>
+<span class="n">timeline</span><span class="p">.</span><span class="nf">find_all</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="n">tweet</span><span class="p">.</span><span class="nf">status</span> <span class="o">=~</span> <span class="sr">/\@codeschool/</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="重構練習">重構練習</h2>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">update_status</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tweet</span><span class="p">)</span>
+  <span class="k">begin</span>
+    <span class="n">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">post</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span>
+  <span class="k">rescue</span> <span class="no">ConnectionError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+    <span class="n">logger</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="k">ensure</span>
+    <span class="n">sign_out</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_list</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">list_name</span><span class="p">)</span>
+  <span class="k">begin</span>
+    <span class="n">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">retrieve_list</span><span class="p">(</span><span class="n">list_name</span><span class="p">)</span>
+  <span class="k">rescue</span> <span class="no">ConnectionError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+    <span class="n">logger</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="k">ensure</span>
+    <span class="n">sign_out</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>有裡個method裡面除了核心邏輯以外全部都一樣。這樣的話我們需要進行重構來實現DRY原則。因為Proc本身就是匿名函數也就是一段未執行程式碼，所以特別適用這個情況。</p>
+
+<p>把重複的地方獨立出來，核心邏輯用yield代替。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">while_signed_in_as</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="k">begin</span>
+    <span class="n">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">yield</span>
+  <span class="k">rescue</span> <span class="no">ConnectionError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+    <span class="n">logger</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+  <span class="k">ensure</span>
+    <span class="n">sign_out</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>使用do的時候會省略傳入的&amp;block，所以這段程式碼其實是對block做些處理，並顯示在block.call也就是yield的部份。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">while_signed_in_as</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">post</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tweets</span> <span class="o">=</span> <span class="n">while_signed_in_as</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">retrieve_list</span><span class="p">(</span><span class="n">list_name</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>最後可以改寫的精簡一點
+去掉不必要的begin和end</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">while_signed_in_as</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+  <span class="n">sign_in</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+  <span class="k">yield</span>
+  <span class="k">rescue</span> <span class="no">ConnectionError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+    <span class="n">logger</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+  <span class="k">ensure</span>
+    <span class="n">sign_out</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="作業實作">作業實作</h2>
+<h3 id="61">6.1</h3>
+<p>使用each代替for迴圈。原來使用for迴圈的程式：</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">list</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">...</span><span class="p">(</span><span class="n">games</span><span class="p">.</span><span class="nf">length</span><span class="p">)</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="n">games</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="nb">puts</span> <span class="n">game</span><span class="p">.</span><span class="nf">name</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>改寫成each</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">list</span>
+  <span class="n">games</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span><span class="o">|</span><span class="n">game</span><span class="o">|</span>
+    <span class="nb">puts</span> <span class="n">game</span><span class="p">.</span><span class="nf">name</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<h3 id="62">6.2</h3>
+<p>現在我們有一個class叫做Game裡面裝著每場比賽的資訊。
+有一個陣列叫做Games，裡面蒐集了很多場的比賽。
+現在我們要在Library中寫一個方法叫做each_on_system(system)，讓他可以讀出Games陣列裡面符合輸入的system的比賽。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:games</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">games</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">games</span> <span class="o">=</span> <span class="n">games</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">each_on_system</span><span class="p">(</span><span class="nb">system</span><span class="p">)</span>
+
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>使用範例example.rb</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span> <span class="o">=</span> <span class="no">Library</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">GAMES</span><span class="p">)</span>
+<span class="n">library</span><span class="p">.</span><span class="nf">each_on_system</span><span class="p">(</span><span class="s2">"SNES"</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"Found a Super Nintendo game"</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>將library修正後，即為所得。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:games</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">games</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">games</span> <span class="o">=</span> <span class="n">games</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">each_on_system</span><span class="p">(</span><span class="nb">system</span><span class="p">)</span>
+    <span class="n">games</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span><span class="o">|</span><span class="n">game</span><span class="o">|</span>
+      <span class="k">yield</span> <span class="k">if</span> <span class="n">game</span><span class="p">.</span><span class="nf">system</span> <span class="o">==</span> <span class="nb">system</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="63-passing-argument-to-blocks">6.3 Passing Argument to Blocks</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>讓產生的block能夠使用iterator的參數。如下圖可以使用</td>
+      <td>game</td>
+      <td>。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span> <span class="o">=</span> <span class="no">Library</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">GAMES</span><span class="p">)</span>
+<span class="n">library</span><span class="p">.</span><span class="nf">each_on_system</span><span class="p">(</span><span class="s2">"SNES"</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">game</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">game</span><span class="p">.</span><span class="nf">name</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="64-return-value-from-block">6.4 Return Value From block</h3>
+
+<p>Modify the list method to yield to a block and print whatever the block returns.
+除了能夠在block中使用以外還要可以直接印出來。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span> <span class="o">=</span> <span class="no">Library</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">GAMES</span><span class="p">)</span>
+<span class="n">library</span><span class="p">.</span><span class="nf">list</span> <span class="p">{</span> <span class="o">|</span><span class="n">game</span><span class="o">|</span> <span class="s2">"</span><span class="si">#{</span><span class="n">game</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">#{</span><span class="n">game</span><span class="p">.</span><span class="nf">system</span><span class="si">}</span><span class="s2">) - </span><span class="si">#{</span><span class="n">game</span><span class="p">.</span><span class="nf">year</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:games</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">games</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">games</span> <span class="o">=</span> <span class="n">games</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">list</span>
+    <span class="n">games</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">game</span><span class="o">|</span>
+      <span class="nb">puts</span> <span class="k">yield</span> <span class="n">game</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="65include-enumerable-module">6.5include Enumerable module</h3>
+
+<h3 id="66重構以避免重複">6.6重構以避免重複</h3>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Game</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:year</span><span class="p">,</span> <span class="ss">:system</span>
+  <span class="nb">attr_reader</span> <span class="ss">:created_at</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="nb">name</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">year</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="ss">:year</span><span class="p">]</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">system</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="ss">:system</span><span class="p">]</span>
+    <span class="vi">@created_at</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">play</span>
+    <span class="k">begin</span>
+      <span class="n">emulator</span> <span class="o">=</span> <span class="no">Emulator</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">system</span><span class="p">)</span>
+      <span class="n">emulator</span><span class="p">.</span><span class="nf">play</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span>
+      <span class="nb">puts</span> <span class="s2">"Emulator failed: </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">screenshot</span>
+    <span class="k">begin</span>
+      <span class="n">emulator</span> <span class="o">=</span> <span class="no">Emulator</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">system</span><span class="p">)</span>
+      <span class="n">emulator</span><span class="p">.</span><span class="nf">start</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+      <span class="n">emulator</span><span class="p">.</span><span class="nf">screenshot</span>
+    <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span>
+      <span class="nb">puts</span> <span class="s2">"Emulator failed: </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Game</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:year</span><span class="p">,</span> <span class="ss">:system</span>
+  <span class="nb">attr_reader</span> <span class="ss">:created_at</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="nb">name</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">year</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="ss">:year</span><span class="p">]</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">system</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="ss">:system</span><span class="p">]</span>
+    <span class="vi">@created_at</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">play</span>
+    <span class="n">emulate</span> <span class="k">do</span> <span class="o">|</span><span class="n">emulator</span><span class="o">|</span>
+      <span class="n">emulator</span><span class="p">.</span><span class="nf">play</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">screenshot</span>
+    <span class="n">emulate</span> <span class="k">do</span> <span class="o">|</span><span class="n">emulator</span><span class="o">|</span>
+      <span class="n">emulator</span><span class="p">.</span><span class="nf">start</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+      <span class="n">emulator</span><span class="p">.</span><span class="nf">screenshot</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">emulate</span>
+    <span class="k">begin</span>
+      <span class="n">emulator</span> <span class="o">=</span> <span class="no">Emulator</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">system</span><span class="p">)</span>
+      <span class="k">yield</span> <span class="n">emulator</span>
+    <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span>
+      <span class="nb">puts</span> <span class="s2">"Emulator failed: </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Emulator</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">system</span><span class="p">)</span>
+    <span class="c1"># Creates an emulator for the given system</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+    <span class="c1"># Runs the given game in the emulator</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+    <span class="c1"># Loads the given game but doesn't run it</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">screenshot</span>
+    <span class="c1"># Returns a screenshot of the currently loaded game</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby-bit" class="page__taxonomy-item" rel="tag">Ruby Bit</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby" class="page__taxonomy-item" rel="tag">Ruby</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-06T05:13:00+00:00">September 06, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/ruby-bits-5-modules/" class="pagination--pager" title="Ruby bits ( 5 )：Modules
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/ruby-bits_2-1-blocks-procs/" class="pagination--pager" title="Ruby bits 2 ( 1 )：BLOCKS, PROCS &amp; LAMBDAS
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

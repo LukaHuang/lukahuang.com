@@ -1,0 +1,679 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Deploy Redmine to VPS by Rails way in Ubuntu 14.04 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="前言Redmine 是一套以 Ruby 為基底的專案管理網頁應用程式。而且正好就是使用 Ruby on Rails 開發的。所以如果你是 Rails 工程師，使用一般部屬 Rails 專案的方式就可將 Redmine 架起來。本文記錄下來的方法，是我覺得最簡單，並且沒有副作用的架設方法。如果你要架設的不是 Redmine ，而是其他的 Rails 專案，也同樣適用。本文採用的環境：OS: Ubuntu 14.04VPS: Digital Ocean在 Ubuntu 創造新的使用者Linux 是非常嚴謹的系統，不同資料夾放的東西都有其規範。而 root 帳號在 Linux 系統中是超人，可以做任何的事情。為了維持 Linux 系統的乾淨度，我們要建立一個專用的使用者 oceanttd 而不是直接使用 root 帳號來部屬。這樣在有多人要同時使用同一個 Linux 作業系統的時候會減少很多麻煩。創造部屬的帳號 oceanttdsudo adduser oceanttd把 oceanttd 帳號加到 sudo 群組(?)sudo adduser oceanttd sudo切換到 oceanttd 帳號su oceanttd更新 Ubuntu apt-get 的套件sudo apt-get update安裝 Mysql 或是其他資料庫sudo apt-get install mysql-server安裝 RVM輸入指令安裝 RVM，過程中可能會出現一些錯誤訊息，因為我沒有預先使用 apt-get 安裝需要的套件。不過不要緊，跟著系統會告訴哪些還沒裝好，並且會給你安裝的指令，跟著系統指示很快的就可以完成。curl -L https://get.rvm.io | bash重新登入 vps，輸入 rvm -v 查看 rvm 是否有裝好。在 RVM 中安裝 Rubyrvm install 2.2.3將 ruby 2.2.3 設定成預設的 Ruby 語言，這個動作很重要一定要做，因為預設的 Ruby 會是 Ubuntu 系統中預裝的版本，換成 RVM 的版本我們才好處理 Gem 之類的安裝問題rvm use 2.2.3 --default檢查系統中的 ruby 是否使用 rvm 的 ruby輸入ruby -v檢查版本輸入which ruby 檢查路徑，路徑裡面有 rvm 的才是正確安裝 Rails記得加上 --no-ri --no-rdoc ，意思是不要裝文件，因為我們上網查就好了。可以省下很多時間。gem install rails --no-ri --no-rdoc把 Redmine 專案載下來，( 如果你要部屬的是自己的專案，請 git clone 你自己的專案 )到 Redmine 官方的下載頁面下載最新版本或是你想要的版本的 Redmine。我的版本是 3.2.0 有支援 markown。就以 3.2.0 為例好了，如果你想要用別的版本可以自行替換。wget http://www.redmine.org/releases/redmine-3.2.0.tar.gz解壓縮tar xzf redmine-3.2.0.tar.gz現在你有一個 Redmine 的 Rails 專案了。對 Rails 專案的一些處理bundle 一下。可能會有一些 Ubuntu 的套件沒有裝會噴錯誤。不過都還滿簡單的。bundle缺少 imagemagick 的話可以下下面指令。$ sudo apt-get install imagemagick$ sudo apt-get install libmagickwand-devRails 資料庫處理rake db:createrake db:migrate建之前要更新一下 config/database.yml 的內容，把 VPS Server 上的 mysql 帳號密碼寫進去。安裝 Passengergem install passenger --no-ri --no-rdoc使用 Passenger 安裝 nginxrvmsudo passenger-install-nginx-module安装 Nginx init script$ cd ~/$ git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git$ sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx$ sudo chmod +x /etc/init.d/nginx開機自動啟動$ sudo update-rc.d nginx defaults(內容來自 ruby china 文尾有連結)設定 nginx.conf打開 nginx.confsudo vim /opt/nginx/conf/nginx.confuser jason; # 修改成你的系统帐号名，不然项目目录 /home/jason/www 这里没有权限worker_processes 8; # 修改成和你 CPU 核数一样pid /var/run/nginx.pid;http {  include       mime.types;  default_type  application/octet-stream;  client_max_body_size 50m;  sendfile        on;  access_log /var/log/nginx/access.log;  error_log /var/log/nginx/error.log;  gzip on;  gzip_disable &quot;msie6&quot;;  ## ------------ 重点修改内容 --------  server {    # 此处用于防止其他的域名绑定到你的网站上面    listen 80 default;    return 403;  }  server {    listen       80;    server_name  you.host.name; # 请替换成你网站的域名    rails_env    production;    root         /home/jason/www/gitlab/public;    passenger_enabled on;    location ~ ^(/assets) {      access_log        off;      # 设置 assets 下面的浏览器缓存时间为最大值（由于 Rails Assets Pipline 的文件名是根据文件修改产生的 MD5 digest 文件名，所以此处可以放心开启）      expires           max;    }  }  ## ---------------------------------}重新啟動 Nginxsudo /etc/init.d/nginx start到 Rails project 下重啟 nginxtouch tmp/restart.txt大功告成，現在你應該可以透過你的 server ip，連接到你架設的 Redmine 上了^^在過程中可能遇到的錯誤Incomplete response received from application打開瀏覽器看到 Incomplete response received from application 時。這時候我們可以去看看/opt/nginx/logs/error.log。發現有以下訊息：*** Exception RuntimeError in Rack application object (Missing `secret_token` and `secret_key_base` for &#39;production&#39; environment, set these values in `config/secrets.yml`) (process 5076, thread 0x007fd841f79d58(Worker 1)):這時候我們在 secret.yml 中加入 secret_token 即可。參考連結Deploy Ruby On Rails on Ubuntu 14.04 Trusty Tahr - GoRails雨蒼的終端機: 如何在Ubuntu 13.04 Server上部署Ruby on Rails app在 Ubuntu 14.04 Server 上安装部署 Ruby on Rails 应用 - Wiki » Ruby ChinaBlog of Ryan Bigg - Deploying a Rails application on Ubuntu: Passenger Edition">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Deploy Redmine to VPS by Rails way in Ubuntu 14.04">
+
+
+  <link rel="canonical" href="https://lukahuang.com/deploy-redmine-to-vps-by-rails-way-in-ubuntu-14-04/">
+  <meta property="og:url" content="https://lukahuang.com/deploy-redmine-to-vps-by-rails-way-in-ubuntu-14-04/">
+
+
+
+  <meta property="og:description" content="前言Redmine 是一套以 Ruby 為基底的專案管理網頁應用程式。而且正好就是使用 Ruby on Rails 開發的。所以如果你是 Rails 工程師，使用一般部屬 Rails 專案的方式就可將 Redmine 架起來。本文記錄下來的方法，是我覺得最簡單，並且沒有副作用的架設方法。如果你要架設的不是 Redmine ，而是其他的 Rails 專案，也同樣適用。本文採用的環境：OS: Ubuntu 14.04VPS: Digital Ocean在 Ubuntu 創造新的使用者Linux 是非常嚴謹的系統，不同資料夾放的東西都有其規範。而 root 帳號在 Linux 系統中是超人，可以做任何的事情。為了維持 Linux 系統的乾淨度，我們要建立一個專用的使用者 oceanttd 而不是直接使用 root 帳號來部屬。這樣在有多人要同時使用同一個 Linux 作業系統的時候會減少很多麻煩。創造部屬的帳號 oceanttdsudo adduser oceanttd把 oceanttd 帳號加到 sudo 群組(?)sudo adduser oceanttd sudo切換到 oceanttd 帳號su oceanttd更新 Ubuntu apt-get 的套件sudo apt-get update安裝 Mysql 或是其他資料庫sudo apt-get install mysql-server安裝 RVM輸入指令安裝 RVM，過程中可能會出現一些錯誤訊息，因為我沒有預先使用 apt-get 安裝需要的套件。不過不要緊，跟著系統會告訴哪些還沒裝好，並且會給你安裝的指令，跟著系統指示很快的就可以完成。curl -L https://get.rvm.io | bash重新登入 vps，輸入 rvm -v 查看 rvm 是否有裝好。在 RVM 中安裝 Rubyrvm install 2.2.3將 ruby 2.2.3 設定成預設的 Ruby 語言，這個動作很重要一定要做，因為預設的 Ruby 會是 Ubuntu 系統中預裝的版本，換成 RVM 的版本我們才好處理 Gem 之類的安裝問題rvm use 2.2.3 --default檢查系統中的 ruby 是否使用 rvm 的 ruby輸入ruby -v檢查版本輸入which ruby 檢查路徑，路徑裡面有 rvm 的才是正確安裝 Rails記得加上 --no-ri --no-rdoc ，意思是不要裝文件，因為我們上網查就好了。可以省下很多時間。gem install rails --no-ri --no-rdoc把 Redmine 專案載下來，( 如果你要部屬的是自己的專案，請 git clone 你自己的專案 )到 Redmine 官方的下載頁面下載最新版本或是你想要的版本的 Redmine。我的版本是 3.2.0 有支援 markown。就以 3.2.0 為例好了，如果你想要用別的版本可以自行替換。wget http://www.redmine.org/releases/redmine-3.2.0.tar.gz解壓縮tar xzf redmine-3.2.0.tar.gz現在你有一個 Redmine 的 Rails 專案了。對 Rails 專案的一些處理bundle 一下。可能會有一些 Ubuntu 的套件沒有裝會噴錯誤。不過都還滿簡單的。bundle缺少 imagemagick 的話可以下下面指令。$ sudo apt-get install imagemagick$ sudo apt-get install libmagickwand-devRails 資料庫處理rake db:createrake db:migrate建之前要更新一下 config/database.yml 的內容，把 VPS Server 上的 mysql 帳號密碼寫進去。安裝 Passengergem install passenger --no-ri --no-rdoc使用 Passenger 安裝 nginxrvmsudo passenger-install-nginx-module安装 Nginx init script$ cd ~/$ git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git$ sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx$ sudo chmod +x /etc/init.d/nginx開機自動啟動$ sudo update-rc.d nginx defaults(內容來自 ruby china 文尾有連結)設定 nginx.conf打開 nginx.confsudo vim /opt/nginx/conf/nginx.confuser jason; # 修改成你的系统帐号名，不然项目目录 /home/jason/www 这里没有权限worker_processes 8; # 修改成和你 CPU 核数一样pid /var/run/nginx.pid;http {  include       mime.types;  default_type  application/octet-stream;  client_max_body_size 50m;  sendfile        on;  access_log /var/log/nginx/access.log;  error_log /var/log/nginx/error.log;  gzip on;  gzip_disable &quot;msie6&quot;;  ## ------------ 重点修改内容 --------  server {    # 此处用于防止其他的域名绑定到你的网站上面    listen 80 default;    return 403;  }  server {    listen       80;    server_name  you.host.name; # 请替换成你网站的域名    rails_env    production;    root         /home/jason/www/gitlab/public;    passenger_enabled on;    location ~ ^(/assets) {      access_log        off;      # 设置 assets 下面的浏览器缓存时间为最大值（由于 Rails Assets Pipline 的文件名是根据文件修改产生的 MD5 digest 文件名，所以此处可以放心开启）      expires           max;    }  }  ## ---------------------------------}重新啟動 Nginxsudo /etc/init.d/nginx start到 Rails project 下重啟 nginxtouch tmp/restart.txt大功告成，現在你應該可以透過你的 server ip，連接到你架設的 Redmine 上了^^在過程中可能遇到的錯誤Incomplete response received from application打開瀏覽器看到 Incomplete response received from application 時。這時候我們可以去看看/opt/nginx/logs/error.log。發現有以下訊息：*** Exception RuntimeError in Rack application object (Missing `secret_token` and `secret_key_base` for &#39;production&#39; environment, set these values in `config/secrets.yml`) (process 5076, thread 0x007fd841f79d58(Worker 1)):這時候我們在 secret.yml 中加入 secret_token 即可。參考連結Deploy Ruby On Rails on Ubuntu 14.04 Trusty Tahr - GoRails雨蒼的終端機: 如何在Ubuntu 13.04 Server上部署Ruby on Rails app在 Ubuntu 14.04 Server 上安装部署 Ruby on Rails 应用 - Wiki » Ruby ChinaBlog of Ryan Bigg - Deploying a Rails application on Ubuntu: Passenger Edition">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2016-02-13T10:30:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Deploy Redmine to VPS by Rails way in Ubuntu 14.04">
+    <meta itemprop="description" content="前言Redmine 是一套以 Ruby 為基底的專案管理網頁應用程式。而且正好就是使用 Ruby on Rails 開發的。所以如果你是 Rails 工程師，使用一般部屬 Rails 專案的方式就可將 Redmine 架起來。本文記錄下來的方法，是我覺得最簡單，並且沒有副作用的架設方法。如果你要架設的不是 Redmine ，而是其他的 Rails 專案，也同樣適用。本文採用的環境：OS: Ubuntu 14.04VPS: Digital Ocean在 Ubuntu 創造新的使用者Linux 是非常嚴謹的系統，不同資料夾放的東西都有其規範。而 root 帳號在 Linux 系統中是超人，可以做任何的事情。為了維持 Linux 系統的乾淨度，我們要建立一個專用的使用者 oceanttd 而不是直接使用 root 帳號來部屬。這樣在有多人要同時使用同一個 Linux 作業系統的時候會減少很多麻煩。創造部屬的帳號 oceanttdsudo adduser oceanttd把 oceanttd 帳號加到 sudo 群組(?)sudo adduser oceanttd sudo切換到 oceanttd 帳號su oceanttd更新 Ubuntu apt-get 的套件sudo apt-get update安裝 Mysql 或是其他資料庫sudo apt-get install mysql-server安裝 RVM輸入指令安裝 RVM，過程中可能會出現一些錯誤訊息，因為我沒有預先使用 apt-get 安裝需要的套件。不過不要緊，跟著系統會告訴哪些還沒裝好，並且會給你安裝的指令，跟著系統指示很快的就可以完成。curl -L https://get.rvm.io | bash重新登入 vps，輸入 rvm -v 查看 rvm 是否有裝好。在 RVM 中安裝 Rubyrvm install 2.2.3將 ruby 2.2.3 設定成預設的 Ruby 語言，這個動作很重要一定要做，因為預設的 Ruby 會是 Ubuntu 系統中預裝的版本，換成 RVM 的版本我們才好處理 Gem 之類的安裝問題rvm use 2.2.3 --default檢查系統中的 ruby 是否使用 rvm 的 ruby輸入ruby -v檢查版本輸入which ruby 檢查路徑，路徑裡面有 rvm 的才是正確安裝 Rails記得加上 --no-ri --no-rdoc ，意思是不要裝文件，因為我們上網查就好了。可以省下很多時間。gem install rails --no-ri --no-rdoc把 Redmine 專案載下來，( 如果你要部屬的是自己的專案，請 git clone 你自己的專案 )到 Redmine 官方的下載頁面下載最新版本或是你想要的版本的 Redmine。我的版本是 3.2.0 有支援 markown。就以 3.2.0 為例好了，如果你想要用別的版本可以自行替換。wget http://www.redmine.org/releases/redmine-3.2.0.tar.gz解壓縮tar xzf redmine-3.2.0.tar.gz現在你有一個 Redmine 的 Rails 專案了。對 Rails 專案的一些處理bundle 一下。可能會有一些 Ubuntu 的套件沒有裝會噴錯誤。不過都還滿簡單的。bundle缺少 imagemagick 的話可以下下面指令。$ sudo apt-get install imagemagick$ sudo apt-get install libmagickwand-devRails 資料庫處理rake db:createrake db:migrate建之前要更新一下 config/database.yml 的內容，把 VPS Server 上的 mysql 帳號密碼寫進去。安裝 Passengergem install passenger --no-ri --no-rdoc使用 Passenger 安裝 nginxrvmsudo passenger-install-nginx-module安装 Nginx init script$ cd ~/$ git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git$ sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx$ sudo chmod +x /etc/init.d/nginx開機自動啟動$ sudo update-rc.d nginx defaults(內容來自 ruby china 文尾有連結)設定 nginx.conf打開 nginx.confsudo vim /opt/nginx/conf/nginx.confuser jason; # 修改成你的系统帐号名，不然项目目录 /home/jason/www 这里没有权限worker_processes 8; # 修改成和你 CPU 核数一样pid /var/run/nginx.pid;http {  include       mime.types;  default_type  application/octet-stream;  client_max_body_size 50m;  sendfile        on;  access_log /var/log/nginx/access.log;  error_log /var/log/nginx/error.log;  gzip on;  gzip_disable &quot;msie6&quot;;  ## ------------ 重点修改内容 --------  server {    # 此处用于防止其他的域名绑定到你的网站上面    listen 80 default;    return 403;  }  server {    listen       80;    server_name  you.host.name; # 请替换成你网站的域名    rails_env    production;    root         /home/jason/www/gitlab/public;    passenger_enabled on;    location ~ ^(/assets) {      access_log        off;      # 设置 assets 下面的浏览器缓存时间为最大值（由于 Rails Assets Pipline 的文件名是根据文件修改产生的 MD5 digest 文件名，所以此处可以放心开启）      expires           max;    }  }  ## ---------------------------------}重新啟動 Nginxsudo /etc/init.d/nginx start到 Rails project 下重啟 nginxtouch tmp/restart.txt大功告成，現在你應該可以透過你的 server ip，連接到你架設的 Redmine 上了^^在過程中可能遇到的錯誤Incomplete response received from application打開瀏覽器看到 Incomplete response received from application 時。這時候我們可以去看看/opt/nginx/logs/error.log。發現有以下訊息：*** Exception RuntimeError in Rack application object (Missing `secret_token` and `secret_key_base` for &#39;production&#39; environment, set these values in `config/secrets.yml`) (process 5076, thread 0x007fd841f79d58(Worker 1)):這時候我們在 secret.yml 中加入 secret_token 即可。參考連結Deploy Ruby On Rails on Ubuntu 14.04 Trusty Tahr - GoRails雨蒼的終端機: 如何在Ubuntu 13.04 Server上部署Ruby on Rails app在 Ubuntu 14.04 Server 上安装部署 Ruby on Rails 应用 - Wiki » Ruby ChinaBlog of Ryan Bigg - Deploying a Rails application on Ubuntu: Passenger Edition">
+    <meta itemprop="datePublished" content="February 13, 2016">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Deploy Redmine to VPS by Rails way in Ubuntu 14.04
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#前言">前言</a></li>
+  <li><a href="#在-ubuntu-創造新的使用者">在 Ubuntu 創造新的使用者</a></li>
+  <li><a href="#更新-ubuntu-apt-get-的套件">更新 Ubuntu apt-get 的套件</a></li>
+  <li><a href="#安裝-mysql-或是其他資料庫">安裝 Mysql 或是其他資料庫</a></li>
+  <li><a href="#安裝-rvm">安裝 RVM</a></li>
+  <li><a href="#在-rvm-中安裝-ruby">在 RVM 中安裝 Ruby</a></li>
+  <li><a href="#安裝-rails">安裝 Rails</a></li>
+  <li><a href="#把-redmine-專案載下來">把 Redmine 專案載下來，</a></li>
+  <li><a href="#對-rails-專案的一些處理">對 Rails 專案的一些處理</a>
+    <ul>
+      <li><a href="#rails-資料庫處理">Rails 資料庫處理</a></li>
+    </ul>
+  </li>
+  <li><a href="#安裝-passenger">安裝 Passenger</a></li>
+  <li><a href="#使用-passenger-安裝-nginx">使用 Passenger 安裝 nginx</a></li>
+  <li><a href="#安装-nginx-init-script">安装 Nginx init script</a></li>
+  <li><a href="#設定-nginxconf">設定 nginx.conf</a></li>
+  <li><a href="#到-rails-project-下重啟-nginx">到 Rails project 下重啟 nginx</a></li>
+  <li><a href="#在過程中可能遇到的錯誤">在過程中可能遇到的錯誤</a>
+    <ul>
+      <li><a href="#incomplete-response-received-from-application">Incomplete response received from application</a></li>
+    </ul>
+  </li>
+  <li><a href="#參考連結">參考連結</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="前言">前言</h2>
+
+<p>Redmine 是一套以 Ruby 為基底的專案管理網頁應用程式。而且正好就是使用 Ruby on Rails 開發的。所以如果你是 Rails 工程師，使用一般部屬 Rails 專案的方式就可將 Redmine 架起來。</p>
+
+<p>本文記錄下來的方法，是我覺得最簡單，並且沒有副作用的架設方法。如果你要架設的不是 Redmine ，而是其他的 Rails 專案，也同樣適用。</p>
+
+<p>本文採用的環境：
+OS: Ubuntu 14.04
+VPS: Digital Ocean</p>
+
+<h2 id="在-ubuntu-創造新的使用者">在 Ubuntu 創造新的使用者</h2>
+
+<p>Linux 是非常嚴謹的系統，不同資料夾放的東西都有其規範。而 root 帳號在 Linux 系統中是超人，可以做任何的事情。為了維持 Linux 系統的乾淨度，我們要建立一個專用的使用者 oceanttd 而不是直接使用 root 帳號來部屬。這樣在有多人要同時使用同一個 Linux 作業系統的時候會減少很多麻煩。</p>
+
+<p>創造部屬的帳號 <code class="highlighter-rouge">oceanttd</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo adduser oceanttd
+</code></pre></div></div>
+
+<p>把 oceanttd 帳號加到 sudo 群組<a href="http://askubuntu.com/questions/7477/how-can-i-add-a-new-user-as-sudoer-using-the-command-line">(?)</a></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo adduser oceanttd sudo
+</code></pre></div></div>
+
+<p>切換到 oceanttd 帳號</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su oceanttd
+</code></pre></div></div>
+
+<h2 id="更新-ubuntu-apt-get-的套件">更新 Ubuntu apt-get 的套件</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get update
+</code></pre></div></div>
+
+<h2 id="安裝-mysql-或是其他資料庫">安裝 Mysql 或是其他資料庫</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install mysql-server
+</code></pre></div></div>
+
+<h2 id="安裝-rvm">安裝 RVM</h2>
+
+<p>輸入指令安裝 RVM，過程中可能會出現一些錯誤訊息，因為我沒有預先使用 <code class="highlighter-rouge">apt-get</code> 安裝需要的套件。不過不要緊，跟著系統會告訴哪些還沒裝好，並且會給你安裝的指令，跟著系統指示很快的就可以完成。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -L https://get.rvm.io | bash
+</code></pre></div></div>
+
+<p>重新登入 vps，輸入 <code class="highlighter-rouge">rvm -v</code> 查看 rvm 是否有裝好。</p>
+
+<h2 id="在-rvm-中安裝-ruby">在 RVM 中安裝 Ruby</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rvm install 2.2.3
+</code></pre></div></div>
+
+<p>將 ruby 2.2.3 設定成預設的 Ruby 語言，這個動作很重要一定要做，因為預設的 Ruby 會是 Ubuntu 系統中預裝的版本，換成 RVM 的版本我們才好處理 Gem 之類的安裝問題</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rvm use 2.2.3 --default
+</code></pre></div></div>
+
+<p>檢查系統中的 ruby 是否使用 rvm 的 ruby</p>
+
+<p>輸入<code class="highlighter-rouge">ruby -v</code>檢查版本
+輸入<code class="highlighter-rouge">which ruby</code> 檢查路徑，路徑裡面有 rvm 的才是正確</p>
+
+<h2 id="安裝-rails">安裝 Rails</h2>
+
+<p>記得加上 <code class="highlighter-rouge">--no-ri --no-rdoc</code> ，意思是不要裝文件，因為我們上網查就好了。可以省下很多時間。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem install rails --no-ri --no-rdoc
+</code></pre></div></div>
+
+<h2 id="把-redmine-專案載下來">把 Redmine 專案載下來，</h2>
+
+<p>( 如果你要部屬的是自己的專案，請 git clone 你自己的專案 )</p>
+
+<p>到 Redmine 官方的<a href="http://www.redmine.org/projects/redmine/wiki/Download">下載頁面</a>下載最新版本或是你想要的版本的 Redmine。我的版本是 3.2.0 有支援 markown。就以 3.2.0 為例好了，如果你想要用別的版本可以自行替換。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://www.redmine.org/releases/redmine-3.2.0.tar.gz
+</code></pre></div></div>
+
+<p>解壓縮</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tar xzf redmine-3.2.0.tar.gz
+</code></pre></div></div>
+
+<p>現在你有一個 Redmine 的 Rails 專案了。</p>
+
+<h2 id="對-rails-專案的一些處理">對 Rails 專案的一些處理</h2>
+
+<p>bundle 一下。可能會有一些 Ubuntu 的套件沒有裝會噴錯誤。不過都還滿簡單的。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle
+</code></pre></div></div>
+
+<p>缺少 imagemagick 的話可以下下面指令。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo apt-get install imagemagick
+$ sudo apt-get install libmagickwand-dev
+</code></pre></div></div>
+
+<h3 id="rails-資料庫處理">Rails 資料庫處理</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rake db:create
+rake db:migrate
+</code></pre></div></div>
+
+<p>建之前要更新一下 <code class="highlighter-rouge">config/database.yml</code> 的內容，把 VPS Server 上的 mysql 帳號密碼寫進去。</p>
+
+<h2 id="安裝-passenger">安裝 Passenger</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem install passenger --no-ri --no-rdoc
+</code></pre></div></div>
+
+<h2 id="使用-passenger-安裝-nginx">使用 Passenger 安裝 nginx</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rvmsudo passenger-install-nginx-module
+</code></pre></div></div>
+
+<h2 id="安装-nginx-init-script">安装 Nginx init script</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~/
+$ git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
+$ sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
+$ sudo chmod +x /etc/init.d/nginx
+</code></pre></div></div>
+
+<p>開機自動啟動</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo update-rc.d nginx defaults
+</code></pre></div></div>
+
+<p>(內容來自 ruby china 文尾有連結)</p>
+
+<h2 id="設定-nginxconf">設定 nginx.conf</h2>
+
+<p>打開 nginx.conf</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo vim /opt/nginx/conf/nginx.conf
+</code></pre></div></div>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span> <span class="n">jason</span>; <span class="c"># 修改成你的系统帐号名，不然项目目录 /home/jason/www 这里没有权限
+</span><span class="n">worker_processes</span> <span class="m">8</span>; <span class="c"># 修改成和你 CPU 核数一样
+</span><span class="n">pid</span> /<span class="n">var</span>/<span class="n">run</span>/<span class="n">nginx</span>.<span class="n">pid</span>;
+
+<span class="n">http</span> {
+  <span class="n">include</span>       <span class="n">mime</span>.<span class="n">types</span>;
+  <span class="n">default_type</span>  <span class="n">application</span>/<span class="n">octet</span>-<span class="n">stream</span>;
+
+  <span class="n">client_max_body_size</span> <span class="m">50</span><span class="n">m</span>;
+
+  <span class="n">sendfile</span>        <span class="n">on</span>;
+
+  <span class="n">access_log</span> /<span class="n">var</span>/<span class="n">log</span>/<span class="n">nginx</span>/<span class="n">access</span>.<span class="n">log</span>;
+  <span class="n">error_log</span> /<span class="n">var</span>/<span class="n">log</span>/<span class="n">nginx</span>/<span class="n">error</span>.<span class="n">log</span>;
+
+  <span class="n">gzip</span> <span class="n">on</span>;
+  <span class="n">gzip_disable</span> <span class="s2">"msie6"</span>;
+
+  <span class="c">## ------------ 重点修改内容 --------
+</span>
+  <span class="n">server</span> {
+    <span class="c"># 此处用于防止其他的域名绑定到你的网站上面
+</span>    <span class="n">listen</span> <span class="m">80</span> <span class="n">default</span>;
+    <span class="n">return</span> <span class="m">403</span>;
+  }
+
+  <span class="n">server</span> {
+    <span class="n">listen</span>       <span class="m">80</span>;
+    <span class="n">server_name</span>  <span class="n">you</span>.<span class="n">host</span>.<span class="n">name</span>; <span class="c"># 请替换成你网站的域名
+</span>    <span class="n">rails_env</span>    <span class="n">production</span>;
+    <span class="n">root</span>         /<span class="n">home</span>/<span class="n">jason</span>/<span class="n">www</span>/<span class="n">gitlab</span>/<span class="n">public</span>;
+    <span class="n">passenger_enabled</span> <span class="n">on</span>;
+
+    <span class="n">location</span> ~ ^(/<span class="n">assets</span>) {
+      <span class="n">access_log</span>        <span class="n">off</span>;
+      <span class="c"># 设置 assets 下面的浏览器缓存时间为最大值（由于 Rails Assets Pipline 的文件名是根据文件修改产生的 MD5 digest 文件名，所以此处可以放心开启）
+</span>      <span class="n">expires</span>           <span class="n">max</span>;
+    }
+  }
+
+  <span class="c">## ---------------------------------
+</span>}
+</code></pre></div></div>
+
+<p>重新啟動 Nginx</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo /etc/init.d/nginx start
+</code></pre></div></div>
+
+<h2 id="到-rails-project-下重啟-nginx">到 Rails project 下重啟 nginx</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>touch tmp/restart.txt
+</code></pre></div></div>
+
+<p>大功告成，現在你應該可以透過你的 server ip，連接到你架設的 Redmine 上了^^</p>
+
+<h2 id="在過程中可能遇到的錯誤">在過程中可能遇到的錯誤</h2>
+<h3 id="incomplete-response-received-from-application">Incomplete response received from application</h3>
+
+<p>打開瀏覽器看到 <code class="highlighter-rouge">Incomplete response received from application</code> 時。這時候我們可以去看看<code class="highlighter-rouge">/opt/nginx/logs/error.log</code>。發現有以下訊息：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>*** Exception RuntimeError in Rack application object (Missing `secret_token` and `secret_key_base` for 'production' environment, set these values in `config/secrets.yml`) (process 5076, thread 0x007fd841f79d58(Worker 1)):
+</code></pre></div></div>
+
+<p>這時候我們在 secret.yml 中加入 secret_token 即可。</p>
+
+<h2 id="參考連結">參考連結</h2>
+
+<p><a href="https://gorails.com/deploy/ubuntu/14.04">Deploy Ruby On Rails on Ubuntu 14.04 Trusty Tahr - GoRails</a></p>
+
+<p><a href="http://billy3321.blogspot.tw/2013/09/ubuntu-1304-serverruby-on-rails-app.html">雨蒼的終端機: 如何在Ubuntu 13.04 Server上部署Ruby on Rails app</a></p>
+
+<p><a href="https://ruby-china.org/wiki/install-rails-on-ubuntu-14-04-server">在 Ubuntu 14.04 Server 上安装部署 Ruby on Rails 应用 - Wiki » Ruby China</a></p>
+
+<p><a href="http://ryanbigg.com/2015/07/deploying-a-rails-application-on-ubuntu-passenger-edition/">Blog of Ryan Bigg - Deploying a Rails application on Ubuntu: Passenger Edition</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#rails" class="page__taxonomy-item" rel="tag">Rails</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#redmine" class="page__taxonomy-item" rel="tag">Redmine</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2016-02-13T10:30:00+00:00">February 13, 2016</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/install-go-in-mac-osx-with-homebrew/" class="pagination--pager" title="在 Mac OS X 下使用 brew 安裝 Go
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/rails-activerecord-enum-api/" class="pagination--pager" title="Rails 筆記 - 使用 ActiveRecord::Enum 設定狀態
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

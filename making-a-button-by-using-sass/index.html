@@ -1,0 +1,524 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>使用 SMACSS 製作button - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="module抽離出常用元件，負責大致的外觀SMACSS是Jonathan Snook所發表的一個CSS/SASS的設計模式。在製作button時我們會把它放在module資料夾底下，並存成檔名為_btn.scss。在modules資料夾中的_btn.scss裡面撰寫Button的外觀，需要注意的是不包含顏色和其他特效。這樣是為了將顏色和細部調整放到之後的_theme.scss檔案中做調整。為什麼要這樣做呢？這樣做可以在有多個佈景主題的時候很方便的切換。也比較知道現在在這個檔案我要做哪些事情。不會一堆css碼做了什麼事情要一一去解讀。modules/_btn.scss負責大致上的外觀.btn {	display: inline-block;	height: 3rem;	padding: 0 1rem;	outline: none;	border: 1px solid;	font-size: 1.125rem;	@include border-radius(3px);}完成圖片theme負責顏色、陰影…等佈景主題需要的修飾在theme/_theme.scss中將按鈕的顏色、陰影效果、hover效果補上。因為主題可能有多個，所以我們抽離出來撰寫。以後想要加上別的主題的時候CSS碼就步會搞的很混亂。/* Buttons */.btn {	background-color: $color-1;	color: $color-text;	border-color: darken($color-1, 20%);	@include box-shadow(0 -2px 0 0 darken($color-1, 20%) inset);	&amp;:hover {		background-color: darken($color-1, 5%);	}}.btn-primary {	background-color: $color-link;	color: #fff;	border-color: darken($color-link, 20%);	@include box-shadow(0 -2px 0 0 darken($color-link, 20%) inset);	&amp;:hover {		background-color: darken($color-link, 5%);	}}.btn-secondary {	background-color: $color-2;	color: #fff;	border-color: darken($color-2, 20%);	@include box-shadow(0 -2px 0 0 darken($color-2, 20%) inset);	&amp;:hover {		background-color: darken($color-2, 5%);	}}使用的技巧有  利用box-shadow來製造陰影效果  box-shadow的顏色使用compass的darken函式來完成。使用方法是darken($color-2, 5%)，第一個參數是要跟黑色混和的顏色，第二個參數是要混和的比例。完成畫面">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="使用 SMACSS 製作button">
+
+
+  <link rel="canonical" href="https://lukahuang.com/making-a-button-by-using-sass/">
+  <meta property="og:url" content="https://lukahuang.com/making-a-button-by-using-sass/">
+
+
+
+  <meta property="og:description" content="module抽離出常用元件，負責大致的外觀SMACSS是Jonathan Snook所發表的一個CSS/SASS的設計模式。在製作button時我們會把它放在module資料夾底下，並存成檔名為_btn.scss。在modules資料夾中的_btn.scss裡面撰寫Button的外觀，需要注意的是不包含顏色和其他特效。這樣是為了將顏色和細部調整放到之後的_theme.scss檔案中做調整。為什麼要這樣做呢？這樣做可以在有多個佈景主題的時候很方便的切換。也比較知道現在在這個檔案我要做哪些事情。不會一堆css碼做了什麼事情要一一去解讀。modules/_btn.scss負責大致上的外觀.btn {	display: inline-block;	height: 3rem;	padding: 0 1rem;	outline: none;	border: 1px solid;	font-size: 1.125rem;	@include border-radius(3px);}完成圖片theme負責顏色、陰影…等佈景主題需要的修飾在theme/_theme.scss中將按鈕的顏色、陰影效果、hover效果補上。因為主題可能有多個，所以我們抽離出來撰寫。以後想要加上別的主題的時候CSS碼就步會搞的很混亂。/* Buttons */.btn {	background-color: $color-1;	color: $color-text;	border-color: darken($color-1, 20%);	@include box-shadow(0 -2px 0 0 darken($color-1, 20%) inset);	&amp;:hover {		background-color: darken($color-1, 5%);	}}.btn-primary {	background-color: $color-link;	color: #fff;	border-color: darken($color-link, 20%);	@include box-shadow(0 -2px 0 0 darken($color-link, 20%) inset);	&amp;:hover {		background-color: darken($color-link, 5%);	}}.btn-secondary {	background-color: $color-2;	color: #fff;	border-color: darken($color-2, 20%);	@include box-shadow(0 -2px 0 0 darken($color-2, 20%) inset);	&amp;:hover {		background-color: darken($color-2, 5%);	}}使用的技巧有  利用box-shadow來製造陰影效果  box-shadow的顏色使用compass的darken函式來完成。使用方法是darken($color-2, 5%)，第一個參數是要跟黑色混和的顏色，第二個參數是要混和的比例。完成畫面">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-06-03T03:55:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="使用 SMACSS 製作button">
+    <meta itemprop="description" content="module抽離出常用元件，負責大致的外觀SMACSS是Jonathan Snook所發表的一個CSS/SASS的設計模式。在製作button時我們會把它放在module資料夾底下，並存成檔名為_btn.scss。在modules資料夾中的_btn.scss裡面撰寫Button的外觀，需要注意的是不包含顏色和其他特效。這樣是為了將顏色和細部調整放到之後的_theme.scss檔案中做調整。為什麼要這樣做呢？這樣做可以在有多個佈景主題的時候很方便的切換。也比較知道現在在這個檔案我要做哪些事情。不會一堆css碼做了什麼事情要一一去解讀。modules/_btn.scss負責大致上的外觀.btn {	display: inline-block;	height: 3rem;	padding: 0 1rem;	outline: none;	border: 1px solid;	font-size: 1.125rem;	@include border-radius(3px);}完成圖片theme負責顏色、陰影…等佈景主題需要的修飾在theme/_theme.scss中將按鈕的顏色、陰影效果、hover效果補上。因為主題可能有多個，所以我們抽離出來撰寫。以後想要加上別的主題的時候CSS碼就步會搞的很混亂。/* Buttons */.btn {	background-color: $color-1;	color: $color-text;	border-color: darken($color-1, 20%);	@include box-shadow(0 -2px 0 0 darken($color-1, 20%) inset);	&amp;:hover {		background-color: darken($color-1, 5%);	}}.btn-primary {	background-color: $color-link;	color: #fff;	border-color: darken($color-link, 20%);	@include box-shadow(0 -2px 0 0 darken($color-link, 20%) inset);	&amp;:hover {		background-color: darken($color-link, 5%);	}}.btn-secondary {	background-color: $color-2;	color: #fff;	border-color: darken($color-2, 20%);	@include box-shadow(0 -2px 0 0 darken($color-2, 20%) inset);	&amp;:hover {		background-color: darken($color-2, 5%);	}}使用的技巧有  利用box-shadow來製造陰影效果  box-shadow的顏色使用compass的darken函式來完成。使用方法是darken($color-2, 5%)，第一個參數是要跟黑色混和的顏色，第二個參數是要混和的比例。完成畫面">
+    <meta itemprop="datePublished" content="June 03, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">使用 SMACSS 製作button
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#module抽離出常用元件負責大致的外觀">module抽離出常用元件，負責大致的外觀</a></li>
+  <li><a href="#theme負責顏色陰影等佈景主題需要的修飾">theme負責顏色、陰影…等佈景主題需要的修飾</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="module抽離出常用元件負責大致的外觀">module抽離出常用元件，負責大致的外觀</h2>
+
+<p>SMACSS是Jonathan Snook所發表的一個CSS/SASS的設計模式。在製作button時我們會把它放在<code class="highlighter-rouge">module</code>資料夾底下，並存成檔名為_btn.scss。在modules資料夾中的_btn.scss裡面撰寫Button的外觀，需要注意的是<strong>不包含顏色和其他特效</strong>。這樣是為了將顏色和細部調整放到之後的_theme.scss檔案中做調整。為什麼要這樣做呢？這樣做可以在有多個佈景主題的時候很方便的切換。也比較知道現在在這個檔案我要做哪些事情。不會一堆css碼做了什麼事情要一一去解讀。</p>
+
+<p><code class="highlighter-rouge">modules/_btn.scss</code>負責大致上的外觀</p>
+
+<div class="language-scss highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.btn</span> <span class="p">{</span>
+	<span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="p">;</span>
+	<span class="nl">height</span><span class="p">:</span> <span class="m">3rem</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">0</span> <span class="m">1rem</span><span class="p">;</span>
+	<span class="nl">outline</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+
+	<span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span><span class="p">;</span>
+
+	<span class="nl">font-size</span><span class="p">:</span> <span class="m">1</span><span class="mi">.125rem</span><span class="p">;</span>
+
+	<span class="k">@include</span> <span class="nd">border-radius</span><span class="p">(</span><span class="m">3px</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>完成圖片</p>
+
+<p><img src="https://lh3.googleusercontent.com/nlDElyGFFKjzH0IcnR_6NMW1idUKClgZ_mHMUm0nd6s=w177-h49-no" alt="" /></p>
+
+<h2 id="theme負責顏色陰影等佈景主題需要的修飾">theme負責顏色、陰影…等佈景主題需要的修飾</h2>
+
+<p>在<code class="highlighter-rouge">theme/_theme.scss</code>中將按鈕的顏色、陰影效果、hover效果補上。因為主題可能有多個，所以我們抽離出來撰寫。以後想要加上別的主題的時候CSS碼就步會搞的很混亂。</p>
+
+<div class="language-scss highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* Buttons */</span>
+<span class="nc">.btn</span> <span class="p">{</span>
+	<span class="nl">background-color</span><span class="p">:</span> <span class="nv">$color-1</span><span class="p">;</span>
+
+	<span class="nl">color</span><span class="p">:</span> <span class="nv">$color-text</span><span class="p">;</span>
+
+	<span class="nl">border-color</span><span class="p">:</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-1</span><span class="o">,</span> <span class="m">20%</span><span class="p">);</span>
+
+	<span class="k">@include</span> <span class="nd">box-shadow</span><span class="p">(</span><span class="m">0</span> <span class="m">-2px</span> <span class="m">0</span> <span class="m">0</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-1</span><span class="o">,</span> <span class="m">20%</span><span class="p">)</span> <span class="nb">inset</span><span class="p">);</span>
+
+	<span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
+		<span class="nl">background-color</span><span class="p">:</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-1</span><span class="o">,</span> <span class="m">5%</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nc">.btn-primary</span> <span class="p">{</span>
+	<span class="nl">background-color</span><span class="p">:</span> <span class="nv">$color-link</span><span class="p">;</span>
+
+	<span class="nl">color</span><span class="p">:</span> <span class="mh">#fff</span><span class="p">;</span>
+
+	<span class="nl">border-color</span><span class="p">:</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-link</span><span class="o">,</span> <span class="m">20%</span><span class="p">);</span>
+
+	<span class="k">@include</span> <span class="nd">box-shadow</span><span class="p">(</span><span class="m">0</span> <span class="m">-2px</span> <span class="m">0</span> <span class="m">0</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-link</span><span class="o">,</span> <span class="m">20%</span><span class="p">)</span> <span class="nb">inset</span><span class="p">);</span>
+
+	<span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
+		<span class="nl">background-color</span><span class="p">:</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-link</span><span class="o">,</span> <span class="m">5%</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nc">.btn-secondary</span> <span class="p">{</span>
+	<span class="nl">background-color</span><span class="p">:</span> <span class="nv">$color-2</span><span class="p">;</span>
+
+	<span class="nl">color</span><span class="p">:</span> <span class="mh">#fff</span><span class="p">;</span>
+
+	<span class="nl">border-color</span><span class="p">:</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-2</span><span class="o">,</span> <span class="m">20%</span><span class="p">);</span>
+
+	<span class="k">@include</span> <span class="nd">box-shadow</span><span class="p">(</span><span class="m">0</span> <span class="m">-2px</span> <span class="m">0</span> <span class="m">0</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-2</span><span class="o">,</span> <span class="m">20%</span><span class="p">)</span> <span class="nb">inset</span><span class="p">);</span>
+
+	<span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
+		<span class="nl">background-color</span><span class="p">:</span> <span class="nf">darken</span><span class="p">(</span><span class="nv">$color-2</span><span class="o">,</span> <span class="m">5%</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>使用的技巧有</p>
+
+<ol>
+  <li>利用<code class="highlighter-rouge">box-shadow</code>來製造陰影效果</li>
+  <li>box-shadow的顏色使用compass的darken函式來完成。使用方法是<code class="highlighter-rouge">darken($color-2, 5%)</code>，第一個參數是要跟黑色混和的顏色，第二個參數是要混和的比例。</li>
+</ol>
+
+<p>完成畫面</p>
+
+<p><img src="https://lh3.googleusercontent.com/tGXeVpBNfHcKUYZ3KlSDG0YHtsZu9ApomgC3VnH6mBc=w210-h62-no" alt="" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#html" class="page__taxonomy-item" rel="tag">HTML</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#scss" class="page__taxonomy-item" rel="tag">SCSS</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-06-03T03:55:00+00:00">June 03, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/sass/" class="pagination--pager" title="SASS 的 @import @mixin @content @extend 與 @function
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/psd-to-html-practice-using-sass-development-portfolio/" class="pagination--pager" title="練習：使用SASS開發Portfolio (1) Header 與 Footer
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,577 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Ruby bits ( 3 )：Class - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="上一個禮拜想要嘗試更多的動手記憶，經過實驗證明，還是需要筆記的輔助反覆記憶會比較好。經過這次的練習之後會更注重學習本身的強度。ENCAPSULATION封裝跟物件本身有關的method，使用class會比使用許多的method來的好。VISIBILITY有一些method你並不想給外面的人直接使用他，那麼宣告成private，限制這些private method不能給外面的人所使用。class User  def up_vote(friend)    bump_karma    friend.bump_karma  end  protected  def bump_karma    puts &quot;karma up for #{name}&quot;  endendINHERITANCE重複的程式碼使用繼承來避免。原來程式碼：class Image	attr_accessor :title, :size, :url  def to_s  	&quot;#{@title},{@size}&quot;	endendclass Video	attr_accessor :title, :size, :url  def to_s  	&quot;{@title}, {@size}&quot;  endend使用繼承後：class Attachment  attr_accessor :title, :size, :url  def to_s    &quot;#{@title}, #{@size}&quot;end endclass Image &lt; Attachmentendclass Video &lt; Attachmentendruby內的繼承就用箭頭&lt;來表示SUPERruby的super跟java的super只能夠繼承constructor一樣。（見下圖）super的省略寫法super不僅可以在method裡面用，而且有省略寫法。不過一開始學習還是把參數加上去避免混淆。overideing methods以加強執行效率原來寫法：使用case來判斷。class Attachment  def preview    case @type    when :jpg, :png, :gif			thumbnail    when :mp3      player		end  endend不如直接使用subclass，增加效率。class Attachment  def preview    thumbnail  endendclass Audio &lt; Attachment  def preview    player	endendHIDE INSTANCE VARIABLES這節要討論的是如何簡化程式碼原本class User  def tweet_header    [@first_name, @last_name].join(&#39; &#39;)  end  def profile    [@first_name, @last_name].join(&#39; &#39;) + @description	endend可以看到method內有重複的地方。把他們包起來獨立出來。class User  def display_name    [@first_name, @last_name].join(&#39; &#39;)  end  def tweet_header    display_name  end  def profile    display_name + @description  endend更漂亮的寫法?class User  def display_name    title = case @gender      when :female        married? ? &quot;Mrs.&quot; : &quot;Miss&quot;      when :male        &quot;Mr.&quot;    end    [title, @first_name, @last_name].join(&#39; &#39;)  endendOverrideOverride的方法很簡單，直接取相同的method名稱，就可以複寫掉父類別的method。最後一關重構程式碼 refactoring">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Ruby bits ( 3 )：Class">
+
+
+  <link rel="canonical" href="https://lukahuang.com/ruby-bits-3-class/">
+  <meta property="og:url" content="https://lukahuang.com/ruby-bits-3-class/">
+
+
+
+  <meta property="og:description" content="上一個禮拜想要嘗試更多的動手記憶，經過實驗證明，還是需要筆記的輔助反覆記憶會比較好。經過這次的練習之後會更注重學習本身的強度。ENCAPSULATION封裝跟物件本身有關的method，使用class會比使用許多的method來的好。VISIBILITY有一些method你並不想給外面的人直接使用他，那麼宣告成private，限制這些private method不能給外面的人所使用。class User  def up_vote(friend)    bump_karma    friend.bump_karma  end  protected  def bump_karma    puts &quot;karma up for #{name}&quot;  endendINHERITANCE重複的程式碼使用繼承來避免。原來程式碼：class Image	attr_accessor :title, :size, :url  def to_s  	&quot;#{@title},{@size}&quot;	endendclass Video	attr_accessor :title, :size, :url  def to_s  	&quot;{@title}, {@size}&quot;  endend使用繼承後：class Attachment  attr_accessor :title, :size, :url  def to_s    &quot;#{@title}, #{@size}&quot;end endclass Image &lt; Attachmentendclass Video &lt; Attachmentendruby內的繼承就用箭頭&lt;來表示SUPERruby的super跟java的super只能夠繼承constructor一樣。（見下圖）super的省略寫法super不僅可以在method裡面用，而且有省略寫法。不過一開始學習還是把參數加上去避免混淆。overideing methods以加強執行效率原來寫法：使用case來判斷。class Attachment  def preview    case @type    when :jpg, :png, :gif			thumbnail    when :mp3      player		end  endend不如直接使用subclass，增加效率。class Attachment  def preview    thumbnail  endendclass Audio &lt; Attachment  def preview    player	endendHIDE INSTANCE VARIABLES這節要討論的是如何簡化程式碼原本class User  def tweet_header    [@first_name, @last_name].join(&#39; &#39;)  end  def profile    [@first_name, @last_name].join(&#39; &#39;) + @description	endend可以看到method內有重複的地方。把他們包起來獨立出來。class User  def display_name    [@first_name, @last_name].join(&#39; &#39;)  end  def tweet_header    display_name  end  def profile    display_name + @description  endend更漂亮的寫法?class User  def display_name    title = case @gender      when :female        married? ? &quot;Mrs.&quot; : &quot;Miss&quot;      when :male        &quot;Mr.&quot;    end    [title, @first_name, @last_name].join(&#39; &#39;)  endendOverrideOverride的方法很簡單，直接取相同的method名稱，就可以複寫掉父類別的method。最後一關重構程式碼 refactoring">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-05T06:41:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Ruby bits ( 3 )：Class">
+    <meta itemprop="description" content="上一個禮拜想要嘗試更多的動手記憶，經過實驗證明，還是需要筆記的輔助反覆記憶會比較好。經過這次的練習之後會更注重學習本身的強度。ENCAPSULATION封裝跟物件本身有關的method，使用class會比使用許多的method來的好。VISIBILITY有一些method你並不想給外面的人直接使用他，那麼宣告成private，限制這些private method不能給外面的人所使用。class User  def up_vote(friend)    bump_karma    friend.bump_karma  end  protected  def bump_karma    puts &quot;karma up for #{name}&quot;  endendINHERITANCE重複的程式碼使用繼承來避免。原來程式碼：class Image	attr_accessor :title, :size, :url  def to_s  	&quot;#{@title},{@size}&quot;	endendclass Video	attr_accessor :title, :size, :url  def to_s  	&quot;{@title}, {@size}&quot;  endend使用繼承後：class Attachment  attr_accessor :title, :size, :url  def to_s    &quot;#{@title}, #{@size}&quot;end endclass Image &lt; Attachmentendclass Video &lt; Attachmentendruby內的繼承就用箭頭&lt;來表示SUPERruby的super跟java的super只能夠繼承constructor一樣。（見下圖）super的省略寫法super不僅可以在method裡面用，而且有省略寫法。不過一開始學習還是把參數加上去避免混淆。overideing methods以加強執行效率原來寫法：使用case來判斷。class Attachment  def preview    case @type    when :jpg, :png, :gif			thumbnail    when :mp3      player		end  endend不如直接使用subclass，增加效率。class Attachment  def preview    thumbnail  endendclass Audio &lt; Attachment  def preview    player	endendHIDE INSTANCE VARIABLES這節要討論的是如何簡化程式碼原本class User  def tweet_header    [@first_name, @last_name].join(&#39; &#39;)  end  def profile    [@first_name, @last_name].join(&#39; &#39;) + @description	endend可以看到method內有重複的地方。把他們包起來獨立出來。class User  def display_name    [@first_name, @last_name].join(&#39; &#39;)  end  def tweet_header    display_name  end  def profile    display_name + @description  endend更漂亮的寫法?class User  def display_name    title = case @gender      when :female        married? ? &quot;Mrs.&quot; : &quot;Miss&quot;      when :male        &quot;Mr.&quot;    end    [title, @first_name, @last_name].join(&#39; &#39;)  endendOverrideOverride的方法很簡單，直接取相同的method名稱，就可以複寫掉父類別的method。最後一關重構程式碼 refactoring">
+    <meta itemprop="datePublished" content="September 05, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Ruby bits ( 3 )：Class
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#encapsulation封裝">ENCAPSULATION封裝</a></li>
+  <li><a href="#visibility">VISIBILITY</a></li>
+  <li><a href="#super">SUPER</a>
+    <ul>
+      <li><a href="#super的省略寫法">super的省略寫法</a></li>
+      <li><a href="#overideing-methods以加強執行效率">overideing methods以加強執行效率</a></li>
+    </ul>
+  </li>
+  <li><a href="#hide-instance-variables">HIDE INSTANCE VARIABLES</a></li>
+  <li><a href="#override">Override</a></li>
+  <li><a href="#最後一關">最後一關</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>上一個禮拜想要嘗試更多的動手記憶，經過實驗證明，還是需要筆記的輔助反覆記憶會比較好。經過這次的練習之後會更注重學習本身的強度。</p>
+
+<h2 id="encapsulation封裝">ENCAPSULATION封裝</h2>
+<p>跟物件本身有關的method，使用class會比使用許多的method來的好。</p>
+
+<h2 id="visibility">VISIBILITY</h2>
+<p>有一些method你並不想給外面的人直接使用他，那麼宣告成private，限制這些private method不能給外面的人所使用。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+  <span class="k">def</span> <span class="nf">up_vote</span><span class="p">(</span><span class="n">friend</span><span class="p">)</span>
+    <span class="n">bump_karma</span>
+    <span class="n">friend</span><span class="p">.</span><span class="nf">bump_karma</span>
+  <span class="k">end</span>
+  <span class="kp">protected</span>
+  <span class="k">def</span> <span class="nf">bump_karma</span>
+    <span class="nb">puts</span> <span class="s2">"karma up for </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<h1 id="inheritance">INHERITANCE</h1>
+<p>重複的程式碼使用繼承來避免。
+原來程式碼：</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Image</span>
+	<span class="nb">attr_accessor</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:size</span><span class="p">,</span> <span class="ss">:url</span>
+  <span class="k">def</span> <span class="nf">to_s</span>
+  	<span class="s2">"</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">,{@size}"</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Video</span>
+	<span class="nb">attr_accessor</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:size</span><span class="p">,</span> <span class="ss">:url</span>
+  <span class="k">def</span> <span class="nf">to_s</span>
+  	<span class="s2">"{@title}, {@size}"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>使用繼承後：</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Attachment</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:size</span><span class="p">,</span> <span class="ss">:url</span>
+  <span class="k">def</span> <span class="nf">to_s</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="vi">@size</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">end</span> <span class="k">end</span>
+<span class="k">class</span> <span class="nc">Image</span> <span class="o">&lt;</span> <span class="no">Attachment</span>
+<span class="k">end</span>
+<span class="k">class</span> <span class="nc">Video</span> <span class="o">&lt;</span> <span class="no">Attachment</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>ruby內的繼承就用箭頭<code class="highlighter-rouge">&lt;</code>來表示</p>
+<h2 id="super">SUPER</h2>
+<p>ruby的super跟java的super只能夠繼承constructor一樣。（見下圖）
+<img src="https://lh3.googleusercontent.com/AXTNO38rF_Z5-Bvn6HEX96KsojxntcHjnKFdkpT-5-4=w1755-h923-no" alt="" /></p>
+
+<h3 id="super的省略寫法">super的省略寫法</h3>
+<p>super不僅可以在method裡面用，而且有省略寫法。
+不過一開始學習還是把參數加上去避免混淆。
+<img src="https://lh4.googleusercontent.com/-3UdY2F0B16k/VAlinCbjwRI/AAAAAAAAC3c/aFwDasJziEo/w1755-h833-no/Screen%2BShot%2B2014-09-05%2Bat%2B15.12.39.png" alt="" /></p>
+
+<h3 id="overideing-methods以加強執行效率">overideing methods以加強執行效率</h3>
+<p>原來寫法：使用case來判斷。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Attachment</span>
+  <span class="k">def</span> <span class="nf">preview</span>
+    <span class="k">case</span> <span class="vi">@type</span>
+    <span class="k">when</span> <span class="ss">:jpg</span><span class="p">,</span> <span class="ss">:png</span><span class="p">,</span> <span class="ss">:gif</span>
+			<span class="n">thumbnail</span>
+    <span class="k">when</span> <span class="ss">:mp3</span>
+      <span class="n">player</span>
+		<span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>不如直接使用subclass，增加效率。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Attachment</span>
+  <span class="k">def</span> <span class="nf">preview</span>
+    <span class="n">thumbnail</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Audio</span> <span class="o">&lt;</span> <span class="no">Attachment</span>
+  <span class="k">def</span> <span class="nf">preview</span>
+    <span class="n">player</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="hide-instance-variables">HIDE INSTANCE VARIABLES</h2>
+<p>這節要討論的是如何簡化程式碼
+原本</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+  <span class="k">def</span> <span class="nf">tweet_header</span>
+    <span class="p">[</span><span class="vi">@first_name</span><span class="p">,</span> <span class="vi">@last_name</span><span class="p">].</span><span class="nf">join</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">profile</span>
+    <span class="p">[</span><span class="vi">@first_name</span><span class="p">,</span> <span class="vi">@last_name</span><span class="p">].</span><span class="nf">join</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span> <span class="o">+</span> <span class="vi">@description</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>可以看到method內有重複的地方。把他們包起來獨立出來。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+  <span class="k">def</span> <span class="nf">display_name</span>
+    <span class="p">[</span><span class="vi">@first_name</span><span class="p">,</span> <span class="vi">@last_name</span><span class="p">].</span><span class="nf">join</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">tweet_header</span>
+    <span class="n">display_name</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">profile</span>
+    <span class="n">display_name</span> <span class="o">+</span> <span class="vi">@description</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>更漂亮的寫法?</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+  <span class="k">def</span> <span class="nf">display_name</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="k">case</span> <span class="vi">@gender</span>
+      <span class="k">when</span> <span class="ss">:female</span>
+        <span class="n">married?</span> <span class="p">?</span> <span class="s2">"Mrs."</span> <span class="p">:</span> <span class="s2">"Miss"</span>
+      <span class="k">when</span> <span class="ss">:male</span>
+        <span class="s2">"Mr."</span>
+    <span class="k">end</span>
+    <span class="p">[</span><span class="n">title</span><span class="p">,</span> <span class="vi">@first_name</span><span class="p">,</span> <span class="vi">@last_name</span><span class="p">].</span><span class="nf">join</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<h2 id="override">Override</h2>
+<p>Override的方法很簡單，直接取相同的method名稱，就可以複寫掉父類別的method。</p>
+
+<h2 id="最後一關">最後一關</h2>
+<p>重構程式碼 refactoring</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby-bit" class="page__taxonomy-item" rel="tag">Ruby Bit</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby" class="page__taxonomy-item" rel="tag">Ruby</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-05T06:41:00+00:00">September 05, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/ruby-bits-2-methods-and-classes/" class="pagination--pager" title="Ruby bits ( 2 ) : Methods and Classes
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/ruby-bits-4-active-support/" class="pagination--pager" title="Ruby bits ( 4 )：ActiveSupport
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

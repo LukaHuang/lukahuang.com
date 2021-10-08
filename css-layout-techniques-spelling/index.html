@@ -1,0 +1,701 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>CSS排版技巧 - 文繞圖 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="文繞圖先看效果，這次要做的是文繞圖技巧，可以選擇靠左或靠右。html結構圖片(img)必須在段落(p)的上面，當圖片加上float:left屬性時，圖片的空間會消失，變成浮在畫面上，利用這個技巧，我們來做到文繞圖的效果。&lt;div class=&quot;image-container&quot;&gt;      &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;      &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley o.......(略)&lt;/p&gt;完整範例&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 20%;        }        .image1{          float: right;        }        .image2{          float: left;          margin-right: 20px;        }    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;image-container&quot;&gt;      &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;      &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;      &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;      &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;    &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;  容器水平置中是使用把最大寬度設成60%，並使用margin:auto技巧。想要分段的時候用div包起來並加上.clear-fix如果段落(p)高比圖片(img)小的時候會出現這樣的情況。有時候我們想要段落分明，這時候使用div包覆並幫div加上.clear-fix。加完之後的效果，圖片一已經展開了一個長方形的空間。完整範例&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;          clear:right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;image-container&quot;&gt;      &lt;div class=&quot;clear-fix image1-wrapper&quot;&gt;        &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;        &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;        &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;      &lt;/div&gt;&lt;!-- clear-fix --&gt;      &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;幫段落左邊加上斷行效果用clear:left這次段落和img的html是：&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;          clear:right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;  &lt;div class=&quot;image-container&quot;&gt;    &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;  &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;呈現的效果：幫段落(p)加上clear:left後：程式碼&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        .pp2{          clear: left;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;  &lt;div class=&quot;image-container&quot;&gt;    &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;  &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;結論  加上 float 屬性之後在空間會受到外部 .image-wrapper 的限制。  然而對同層元素來說，設成 float 的 img 空間會消失，因此在float img 下方的同層元素會直接浮上來，空間跟下方的同層元素共用，內容卻是流動的，形成文繞圖的效果。  如果想要斷行在 p 的左方幫p加上float:left，想要斷行在 p 右方幫 p 加上 float:right。  .image-wrapper高度比圖片的時候需要加上clear-fix。參考資料float與clear用法 - 布魯克斯- 點部落CSS - 關於 float 屬性">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="CSS排版技巧 - 文繞圖">
+
+
+  <link rel="canonical" href="https://lukahuang.com/css-layout-techniques-spelling/">
+  <meta property="og:url" content="https://lukahuang.com/css-layout-techniques-spelling/">
+
+
+
+  <meta property="og:description" content="文繞圖先看效果，這次要做的是文繞圖技巧，可以選擇靠左或靠右。html結構圖片(img)必須在段落(p)的上面，當圖片加上float:left屬性時，圖片的空間會消失，變成浮在畫面上，利用這個技巧，我們來做到文繞圖的效果。&lt;div class=&quot;image-container&quot;&gt;      &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;      &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley o.......(略)&lt;/p&gt;完整範例&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 20%;        }        .image1{          float: right;        }        .image2{          float: left;          margin-right: 20px;        }    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;image-container&quot;&gt;      &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;      &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;      &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;      &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;    &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;  容器水平置中是使用把最大寬度設成60%，並使用margin:auto技巧。想要分段的時候用div包起來並加上.clear-fix如果段落(p)高比圖片(img)小的時候會出現這樣的情況。有時候我們想要段落分明，這時候使用div包覆並幫div加上.clear-fix。加完之後的效果，圖片一已經展開了一個長方形的空間。完整範例&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;          clear:right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;image-container&quot;&gt;      &lt;div class=&quot;clear-fix image1-wrapper&quot;&gt;        &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;        &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;        &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;      &lt;/div&gt;&lt;!-- clear-fix --&gt;      &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;幫段落左邊加上斷行效果用clear:left這次段落和img的html是：&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;          clear:right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;  &lt;div class=&quot;image-container&quot;&gt;    &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;  &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;呈現的效果：幫段落(p)加上clear:left後：程式碼&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        .pp2{          clear: left;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;  &lt;div class=&quot;image-container&quot;&gt;    &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;  &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;結論  加上 float 屬性之後在空間會受到外部 .image-wrapper 的限制。  然而對同層元素來說，設成 float 的 img 空間會消失，因此在float img 下方的同層元素會直接浮上來，空間跟下方的同層元素共用，內容卻是流動的，形成文繞圖的效果。  如果想要斷行在 p 的左方幫p加上float:left，想要斷行在 p 右方幫 p 加上 float:right。  .image-wrapper高度比圖片的時候需要加上clear-fix。參考資料float與clear用法 - 布魯克斯- 點部落CSS - 關於 float 屬性">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-11-12T16:16:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="CSS排版技巧 - 文繞圖">
+    <meta itemprop="description" content="文繞圖先看效果，這次要做的是文繞圖技巧，可以選擇靠左或靠右。html結構圖片(img)必須在段落(p)的上面，當圖片加上float:left屬性時，圖片的空間會消失，變成浮在畫面上，利用這個技巧，我們來做到文繞圖的效果。&lt;div class=&quot;image-container&quot;&gt;      &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;      &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley o.......(略)&lt;/p&gt;完整範例&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 20%;        }        .image1{          float: right;        }        .image2{          float: left;          margin-right: 20px;        }    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;image-container&quot;&gt;      &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;      &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;      &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;      &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.&lt;/p&gt;    &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;  容器水平置中是使用把最大寬度設成60%，並使用margin:auto技巧。想要分段的時候用div包起來並加上.clear-fix如果段落(p)高比圖片(img)小的時候會出現這樣的情況。有時候我們想要段落分明，這時候使用div包覆並幫div加上.clear-fix。加完之後的效果，圖片一已經展開了一個長方形的空間。完整範例&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;          clear:right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;image-container&quot;&gt;      &lt;div class=&quot;clear-fix image1-wrapper&quot;&gt;        &lt;img class=&quot;image1&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot;  alt=&quot;&quot;/&gt;        &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;        &lt;p class=&quot;pp1&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;      &lt;/div&gt;&lt;!-- clear-fix --&gt;      &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;幫段落左邊加上斷行效果用clear:left這次段落和img的html是：&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;          clear:right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;  &lt;div class=&quot;image-container&quot;&gt;    &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;  &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;呈現的效果：幫段落(p)加上clear:left後：程式碼&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;    &lt;style&gt;        .image-container{          max-width: 60%;          margin: 0 auto;        }        .image1{          float: right;        }        .image2{          float: left;          margin-right: 20px;        }        .image1-wrapper{          border: 3px dashed black;        }        .clear-fix{          overflow: auto;          zoom: 1;        }        .pp2{          clear: left;        }        @media screen and (max-width: 767px) {          .image-container {            background-color: lightgreen;            max-width: 100%;          }        }    &lt;/style&gt;    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;styke.css&quot; media=&quot;all&quot;&gt;&lt;/head&gt;&lt;body&gt;  &lt;div class=&quot;image-container&quot;&gt;    &lt;img class=&quot;image2&quot; src=&quot;http://zh-tw.learnlayout.com/images/ilta.png&quot; alt=&quot;&quot; /&gt;    &lt;p class=&quot;pp2&quot;&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type&lt;/p&gt;  &lt;/div&gt;&lt;!-- image-container --&gt;&lt;/body&gt;&lt;/html&gt;結論  加上 float 屬性之後在空間會受到外部 .image-wrapper 的限制。  然而對同層元素來說，設成 float 的 img 空間會消失，因此在float img 下方的同層元素會直接浮上來，空間跟下方的同層元素共用，內容卻是流動的，形成文繞圖的效果。  如果想要斷行在 p 的左方幫p加上float:left，想要斷行在 p 右方幫 p 加上 float:right。  .image-wrapper高度比圖片的時候需要加上clear-fix。參考資料float與clear用法 - 布魯克斯- 點部落CSS - 關於 float 屬性">
+    <meta itemprop="datePublished" content="November 12, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">CSS排版技巧 - 文繞圖
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#文繞圖">文繞圖</a>
+    <ul>
+      <li><a href="#html結構">html結構</a></li>
+      <li><a href="#想要分段的時候用div包起來並加上clear-fix">想要分段的時候用div包起來並加上.clear-fix</a></li>
+      <li><a href="#幫段落左邊加上斷行效果用clearleft">幫段落左邊加上斷行效果用clear:left</a></li>
+      <li><a href="#結論">結論</a></li>
+    </ul>
+  </li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="文繞圖">文繞圖</h2>
+
+<p>先看效果，這次要做的是文繞圖技巧，可以選擇靠左或靠右。</p>
+
+<p><img src="https://lh3.googleusercontent.com/oP3fnp8f8uhuc0mxk_0mU9xYtmakaKKgF_Wc6_GeBrsKZl4CbQj8gR81SreC_lD2Wge2f2CDdmq4sx8ywUJSPdsN1P7GC1W0196lhH0VMLt1fUQ8wpnvUlxcqqJgvWwv7k-wnp5Zvptd234xOCVoeVD1EgluELO_c2pcejlRwMZqUGcufr_o1o1DpsmsqrPm0iQ-T7bgNskMImC4ZaEnfiE2J43jpgR6fknJ5rvYSpAP1rUOsS-n7UTxVyVZeFwJl7SrjCxmVQAQQ-dsDSWxvFKIfNcktfpEYFrm5oUf8AFWue-66DFGoZ4gXPV2LpBpyiqh4GA5q535SGNy01jrZKCKzEv-jIwwscd1n7dEfWFBlVZsfvxQ-SEm1E1fdaTZafF15bSmRxQlae96ibtUUYy4zSaEa5g2ycBFELJ61gmABHehSLsGYQwtZjeM-a4SESSwQSAtxiGIN2p6rz46wLPRK6y5JKkflhazE9gSK88dUVD5XnBuP4JiBcBnmg-RQJ8o_cT-NE0LgspEZ_MkB7Q6X1L2ci--utG7u6TVVxo=w1805-h761-no" alt="" /></p>
+
+<h3 id="html結構">html結構</h3>
+
+<p>圖片(img)必須在段落(p)的上面，當圖片加上<code class="highlighter-rouge">float:left</code>屬性時，圖片的空間會消失，變成浮在畫面上，利用這個技巧，我們來做到文繞圖的效果。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"image-container"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image1"</span> <span class="na">src=</span><span class="s">"http://zh-tw.learnlayout.com/images/ilta.png"</span>  <span class="na">alt=</span><span class="s">""</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"pp1"</span><span class="nt">&gt;</span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley o.......(略)<span class="nt">&lt;/p&gt;</span>
+</code></pre></div></div>
+
+<p>完整範例</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        <span class="nc">.image-container</span><span class="p">{</span>
+          <span class="nl">max-width</span><span class="p">:</span> <span class="m">60%</span><span class="p">;</span>
+
+          <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span> <span class="m">20%</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image1</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image2</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+          <span class="nl">margin-right</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"image-container"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image1"</span> <span class="na">src=</span><span class="s">"http://zh-tw.learnlayout.com/images/ilta.png"</span>  <span class="na">alt=</span><span class="s">""</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"pp1"</span><span class="nt">&gt;</span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<span class="nt">&lt;/p&gt;</span>
+
+      <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image2"</span> <span class="na">src=</span><span class="s">"http://zh-tw.learnlayout.com/images/ilta.png"</span> <span class="na">alt=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"pp2"</span><span class="nt">&gt;</span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- image-container --&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>容器水平置中是使用把最大寬度設成60%，並使用<code class="highlighter-rouge">margin:auto</code>技巧。</p>
+</blockquote>
+
+<h3 id="想要分段的時候用div包起來並加上clear-fix">想要分段的時候用div包起來並加上<code class="highlighter-rouge">.clear-fix</code></h3>
+
+<p>如果段落(p)高比圖片(img)小的時候會出現這樣的情況。有時候我們想要段落分明，這時候使用div包覆並幫div加上<code class="highlighter-rouge">.clear-fix</code>。</p>
+
+<p><img src="https://lh3.googleusercontent.com/XPE7PCrLNc_xKHE_J32rggtUNIVM2G8XMJJwobHk-7AaeAYLpoLBa7YnkyXFskjfzsa1kIlDPH6Jd02Lc2H2yQ6Zlb1fbPek016YPeJ4KWTK3OnMfZalsnEr3XiWeB3AkTRAK1ycxVJOARSbfIUC09i2tqow3yBy3cHmbQ4xm_mwIbqVSbbSsbHNbNlxyLqKb5fVbI_FLyyAS8jXjB6lgjMrI0cPf2x3GCA8kR_Jzwkepluy0I5gqc-LSlJe55G5f9fLmBoHr_4wN_X212TNKYB-wCKEAN7pQUXsl8nf7N3KG0Zso20TJ2lAOgZDVHOtZzLCUpsANVDVs-KpdA8GPBuskGLGz9aVd-XRZKCvM0yI3QZPHG6-3l9GaOsfF35ALn0gv20duMZvnPyHQqgCvAhzwVgWig5c2J77quPhxwZ4eq6TOYPC7e1xrRbPhfBRlYG14AMuDmfHTHjkA7ltt-Rn2D_irzzHZ-jYw3lhSa6y74TVgTukijsnt72QNckgBOy4_82VF_4YmVZFjbxTrPPrQ2EIfy2z7a8TLrU2BKI=w1199-h542-no" alt="" /></p>
+
+<p>加完之後的效果，圖片一已經展開了一個長方形的空間。</p>
+
+<p><img src="https://lh3.googleusercontent.com/PBecy4_K22FloAL4wjCo4L921QvxF_7n8_d1t0DNaTi_CspASA_w1pQ2mFC9yr2h4PAEFsvcuQa2WNnUSLaF_K2SHYBALBl27pQiGKqdC88EsY-nrTgnEpaP2th-n-IY1N82gMbhJ6WOJwVk_oUjO7w7EA9yIyOBv0v-QVpF_7d2vj-VrwzBbxDyiu35ysSYiMxZxvY-saN0y2k9SgdNHUPGfTVsndFt-4iy5UaWgYEtxi28YtpSAeZXUov-Q27Biz5UYpwoLZutWYPet6cDmst3WMkHsouOcNPZSQR6qL2FSNIPOkYJkp5NaaKXSPiGEtg7asloDHGNMwOwht1Sz_oTznA53atrf3M36gKslKcxl71iercxW9Ip7nv9o7NacXxm-ycAXDuNZf4synvCvZhstX21YUUgaBZqSxK3mF4RXH2MI5lqa4Ml1XQOMrEKGcOXaLSqmMIZLnyj3utqpcWzk8WksidXSpaFX_Hw0m8w_FhJ73A0qEb1DTb-Cfbg4p73n3rFkG73boH0GnpKAansWNDWDf_nwc7l0bZN0Gs=w1471-h624-no" alt="" /></p>
+
+<p>完整範例</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        <span class="nc">.image-container</span><span class="p">{</span>
+          <span class="nl">max-width</span><span class="p">:</span> <span class="m">60%</span><span class="p">;</span>
+
+          <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span> <span class="nb">auto</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image1</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+          <span class="nl">clear</span><span class="p">:</span><span class="nb">right</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image2</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+
+          <span class="nl">margin-right</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image1-wrapper</span><span class="p">{</span>
+          <span class="nl">border</span><span class="p">:</span> <span class="m">3px</span> <span class="nb">dashed</span> <span class="no">black</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.clear-fix</span><span class="p">{</span>
+          <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+          <span class="py">zoom</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">@media</span> <span class="n">screen</span> <span class="n">and</span> <span class="p">(</span><span class="n">max-width</span><span class="p">:</span> <span class="m">767px</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nc">.image-container</span> <span class="p">{</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="no">lightgreen</span><span class="p">;</span>
+            <span class="nl">max-width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="nt">&lt;/style&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"styke.css"</span> <span class="na">media=</span><span class="s">"all"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"image-container"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"clear-fix image1-wrapper"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image1"</span> <span class="na">src=</span><span class="s">"http://zh-tw.learnlayout.com/images/ilta.png"</span>  <span class="na">alt=</span><span class="s">""</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"pp1"</span><span class="nt">&gt;</span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"pp1"</span><span class="nt">&gt;</span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- clear-fix --&gt;</span>
+      <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image2"</span> <span class="na">src=</span><span class="s">"http://zh-tw.learnlayout.com/images/ilta.png"</span> <span class="na">alt=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- image-container --&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
+</code></pre></div></div>
+
+<h3 id="幫段落左邊加上斷行效果用clearleft">幫段落左邊加上斷行效果用<code class="highlighter-rouge">clear:left</code></h3>
+
+<p>這次段落和img的html是：</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        <span class="nc">.image-container</span><span class="p">{</span>
+          <span class="nl">max-width</span><span class="p">:</span> <span class="m">60%</span><span class="p">;</span>
+
+          <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span> <span class="nb">auto</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image1</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+          <span class="nl">clear</span><span class="p">:</span><span class="nb">right</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image2</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+
+          <span class="nl">margin-right</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image1-wrapper</span><span class="p">{</span>
+          <span class="nl">border</span><span class="p">:</span> <span class="m">3px</span> <span class="nb">dashed</span> <span class="no">black</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.clear-fix</span><span class="p">{</span>
+          <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+          <span class="py">zoom</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
+        <span class="p">}</span>
+
+
+
+        <span class="k">@media</span> <span class="n">screen</span> <span class="n">and</span> <span class="p">(</span><span class="n">max-width</span><span class="p">:</span> <span class="m">767px</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nc">.image-container</span> <span class="p">{</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="no">lightgreen</span><span class="p">;</span>
+            <span class="nl">max-width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="nt">&lt;/style&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"styke.css"</span> <span class="na">media=</span><span class="s">"all"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"image-container"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image2"</span> <span class="na">src=</span><span class="s">"http://zh-tw.learnlayout.com/images/ilta.png"</span> <span class="na">alt=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"pp2"</span><span class="nt">&gt;</span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- image-container --&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>呈現的效果：</p>
+
+<p><img src="https://lh3.googleusercontent.com/s51Inw1zkH1TZuCWGTukzpBMZZzJiw14R0xlrnY1Z0CAL03O59ukaPszTltWQlTpV_dVi_88FDMb6Hpb2h0cZ_VEtjZqcRkRosNQMYH0XCV0ABIy49LwXr4L8y6jsuv1klTh0nX9dG4FRkEew5R7ACgBBWDgKN3eNSD1kBeN90ORWraxJRGT0fihrYF7-8wKPS40VAGU3yk5KTBbfsj3zSs_chipiKSndIxPprRmdHHzvp1iHCQl5uNT_53l5mmJSquzP_fTCJ8TVvCLdLfkdGeC_waeviW30Ar9qUUXexLBfZ-nmaVXOhl7ILtYYQs4tdAGf8oyDV9-c0a8LLcupnV9qZ8qGIvafK2of3vIicEbHOJJwL1ppDhqCaZU720dyZebh2l9yJ-ukWu4ZOq5CFST7bawCSYxWVb81tePxckEogsgo0LQkHF9CcZCLLkLl2MKbBcWUVKcnqrNUnMLCX_9ZhyjVxpREXZ1HLcBCCZDyF8mi6ArIz3SXXqQqnuMnIr4sJOJ87V7HEOiNMVJkCj3YgvpKmhgDfnYsarqMdN8eqjZYz1J7lW-A5LN_HRG8wqKZJwWGqfR3SqcRsP4xIV-0pMfLcb7nD-r6Q_duU8E10s9=w1229-h349-no" alt="" /></p>
+
+<p>幫段落(p)加上<code class="highlighter-rouge">clear:left</code>後：</p>
+
+<p><img src="https://lh3.googleusercontent.com/q8lUS9aZ57kO_SkLiCcv7BvSwTin-tPY0BybMYnYeHikLRWNzkBlsGPDkKW3r50N0Z6kV8slZ3_aqnd8VqYBJY81N-ATQ-TQfovXZeykXSfQEBocJFWq_LFHBNyUahj5qrZo69lS0JEeBdi7cybLw6fuvVKVu_oJTuX9WGzLw4bcoH_SI0dmkolr0CD1bCRwDtRBkZvKpi0aPtnebBK1AdP8F7Cgbi0O09LA02yh_jFPdT9p326oUIkjf-8hii2ovQ7BN86JDd_UvWc5YXZBNbFOOPxix0rDBzjst6ajzXJt9vujVx4IL40Mse_0WGC_XLyv3dmfk8lp_9xGAJ2ClFDOgz4iIwWaKeMBlVU-0Sb7cMAST-6O4R_uPwqKPILF05geZ9wG6PQb-hOq3MDiRJrg6ArksK5Ow0BLX2ANbu90HR_ogG0nbl99qDi9aFc7sMjoOD3iVfGOOuh6RqVoiVbkIh4NeEUjubMr9Sm0hFYOI3hQQ4462S50h_znvrP-DEYg-Qoxa-K_CtOp1A1juRe8eKkIjEyrCZgE1qCBQ64=w1164-h391-no" alt="" /></p>
+
+<p>程式碼</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        <span class="nc">.image-container</span><span class="p">{</span>
+          <span class="nl">max-width</span><span class="p">:</span> <span class="m">60%</span><span class="p">;</span>
+
+          <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span> <span class="nb">auto</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image1</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image2</span><span class="p">{</span>
+          <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+          <span class="nl">margin-right</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.image1-wrapper</span><span class="p">{</span>
+          <span class="nl">border</span><span class="p">:</span> <span class="m">3px</span> <span class="nb">dashed</span> <span class="no">black</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.clear-fix</span><span class="p">{</span>
+          <span class="nl">overflow</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+          <span class="py">zoom</span><span class="p">:</span> <span class="m">1</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nc">.pp2</span><span class="p">{</span>
+          <span class="nl">clear</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+        <span class="p">}</span>
+
+
+
+        <span class="k">@media</span> <span class="n">screen</span> <span class="n">and</span> <span class="p">(</span><span class="n">max-width</span><span class="p">:</span> <span class="m">767px</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nc">.image-container</span> <span class="p">{</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="no">lightgreen</span><span class="p">;</span>
+            <span class="nl">max-width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="nt">&lt;/style&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"styke.css"</span> <span class="na">media=</span><span class="s">"all"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"image-container"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image2"</span> <span class="na">src=</span><span class="s">"http://zh-tw.learnlayout.com/images/ilta.png"</span> <span class="na">alt=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"pp2"</span><span class="nt">&gt;</span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- image-container --&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
+</code></pre></div></div>
+
+<h3 id="結論">結論</h3>
+
+<ol>
+  <li>加上 float 屬性之後在<code class="highlighter-rouge">空間會受到外部 .image-wrapper 的限制</code>。</li>
+  <li>然而對同層元素來說，設成 float 的 img 空間會消失，因此在<code class="highlighter-rouge">float img 下方的同層元素會直接浮上來</code>，空間跟下方的同層元素共用，內容卻是流動的，形成文繞圖的效果。</li>
+  <li>如果想要斷行在 p 的左方幫p加上<code class="highlighter-rouge">float:left</code>，想要斷行在 p 右方幫 p 加上 <code class="highlighter-rouge">float:right</code>。</li>
+  <li><code class="highlighter-rouge">.image-wrapper</code>高度比圖片的時候需要加上<code class="highlighter-rouge">clear-fix</code>。</li>
+</ol>
+
+<h4 id="參考資料">參考資料</h4>
+
+<p><a href="http://www.dotblogs.com.tw/brooke/archive/2015/04/21/151108.aspx">float與clear用法 - 布魯克斯- 點部落</a>
+<a href="http://zh-tw.learnlayout.com/float.html">CSS - 關於 float 屬性</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#css" class="page__taxonomy-item" rel="tag">CSS</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#html" class="page__taxonomy-item" rel="tag">HTML</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-11-12T16:16:00+00:00">November 12, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/rails-how-to-solve-the-problem-of-ajax-without-csrf-key/" class="pagination--pager" title="Rails - 如何解決ajax沒有CSRF Key的問題
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/rails-use-dropzonejs-for-file-upload/" class="pagination--pager" title="Rails - 使用 dropzone.js 實現檔案上傳
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

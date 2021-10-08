@@ -1,0 +1,547 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>EDX Linux Foundation 補充筆記 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="  七層筆記＋tcp/ip筆記  ip  mac  socket  基本知識乙太網路了解封包內容名詞釐清IEEE國際上專業制定單位的組織LAN (LOCAL AREA NETWORK)區域網路WAN (WIDE  AREA NETWORK)廣域網路NIC(NETWORK INTERFACE CARD)NI1. OSI (Open System Interconnection) 七層協定layer 1 phisical layerlayer 2 data link layer偏軟體的子層 MAC(media access control)MAC 是網路媒體所能處理的主要資料包裹，這也是最終被實體層編碼成位元串的資料。MAC frame偏硬體的子層LLC(logical link control)主要在多工處理來自上層的封包資料 (packet) 並轉成 MAC 的格式layer 3 Network layerIProutelayer 4 transport layerlayer 5 session layerlayer 6 presentation layerlayer 7 application layer2. TCP/IP是什麼？如何運作？2.TCP/IP 如何運作那 TCP/IP 是如何運作的呢？我們就拿妳常常連上的 Yahoo 入口網站來做個說明好了，整個連線的狀態可以這樣看：  應用程式階段：妳打開瀏覽器，在瀏覽器上面輸入網址列，按下 [Enter]。此時網址列與相關資料會被瀏覽器包成一個資料， 並向下傳給 TCP/IP 的應用層；  應用層：由應用層提供的 HTTP 通訊協定，將來自瀏覽器的資料包起來，並給予一個應用層表頭，再向傳送層丟去；  傳送層：由於 HTTP 為可靠連線，因此將該資料丟入 TCP 封包內，並給予一個 TCP 封包的表頭，向網路層丟去；  網路層：將 TCP 包裹包進 IP 封包內，再給予一個 IP 表頭 (主要就是來源與目標的 IP 囉)，向鏈結層丟去；  鏈結層：如果使用乙太網路時，此時 IP 會依據 CSMA/CD 的標準，包裹到 MAC 訊框中，並給予 MAC 表頭，再轉成位元串後， 利用傳輸媒體傳送到遠端主機上。等到 Yahoo 收到你的包裹後，在依據相反方向拆解開來，然後交給對應的層級進行分析，最後就讓 Yahoo 的 WWW 伺服器軟體得到你所想要的資料，該伺服器軟體再根據你的要求，取得正確的資料後，又依循上述的流程，一層一層的包裝起來， 最後傳送到你的手上！就是這樣囉！MACMAC 其實就是我們上面一直講到的訊框 (frame) 囉！ 只是這個訊框上面有兩個很重要的資料，就是目標與來源的網卡卡號，因此我們又簡稱網卡卡號為 MAC 而已。 簡單的說，你可以把MAC想成是一個在網路線上面傳遞的包裹，而這個包裹是整個網路硬體上面傳送資料的最小單位了。 也就是說，網路線可想成是一條『一次僅可通過一個人』的獨木橋， 而 MAC 就是在這個獨木橋上面動的人啦！乙太網路乙太網路已經是一項公認的標準介面了，如此一來，大家都可以依據這個標準來設定與開發自己的硬體， 只要硬體符合這個標準，理論上，他就能夠加入乙太網路的世界，所以，購買乙太網路時， 僅需要查看這個乙太網路卡支援哪些標準就能夠知道這個硬體的功能有哪些， 而不必知道這個乙太網路卡是由哪家公司所製造的吶RJ-45接頭乙太網路的傳輸協定：CSMA/CD每張乙太網路卡出廠時，就會賦予一個獨一無二的卡號，那就是所謂的 MAC (Media Access Control) 啦！routeIP 的取得方式staticDHCP(Dynamic Host Configuration Protocol)透過撥接取得：向你的 ISP 申請註冊，取得帳號密碼後，直接撥接到 ISP ，你的 ISP 會透過他們自己的設定，讓你的作業系統取得正確的網路參數。IP 是門牌，TCP 是樓層，真正提供服務的，是在該樓層的那個人 (Protocol)！ICMP 協定ICMP 的全名是『 Internet Control Message Protocol, 網際網路訊息控制協定 』。 基本上，ICMP 是一個錯誤偵測與回報的機制，最大的功能就是可以確保我們網路的連線狀態與連線的正確性！ ICMP 也是網路層的重要封包之一，不過，這個封包並非獨立存在，而是納入到 IP 的封包中！">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="EDX Linux Foundation 補充筆記">
+
+
+  <link rel="canonical" href="https://lukahuang.com/edx-linux-foundation-to-add-notes/">
+  <meta property="og:url" content="https://lukahuang.com/edx-linux-foundation-to-add-notes/">
+
+
+
+  <meta property="og:description" content="  七層筆記＋tcp/ip筆記  ip  mac  socket  基本知識乙太網路了解封包內容名詞釐清IEEE國際上專業制定單位的組織LAN (LOCAL AREA NETWORK)區域網路WAN (WIDE  AREA NETWORK)廣域網路NIC(NETWORK INTERFACE CARD)NI1. OSI (Open System Interconnection) 七層協定layer 1 phisical layerlayer 2 data link layer偏軟體的子層 MAC(media access control)MAC 是網路媒體所能處理的主要資料包裹，這也是最終被實體層編碼成位元串的資料。MAC frame偏硬體的子層LLC(logical link control)主要在多工處理來自上層的封包資料 (packet) 並轉成 MAC 的格式layer 3 Network layerIProutelayer 4 transport layerlayer 5 session layerlayer 6 presentation layerlayer 7 application layer2. TCP/IP是什麼？如何運作？2.TCP/IP 如何運作那 TCP/IP 是如何運作的呢？我們就拿妳常常連上的 Yahoo 入口網站來做個說明好了，整個連線的狀態可以這樣看：  應用程式階段：妳打開瀏覽器，在瀏覽器上面輸入網址列，按下 [Enter]。此時網址列與相關資料會被瀏覽器包成一個資料， 並向下傳給 TCP/IP 的應用層；  應用層：由應用層提供的 HTTP 通訊協定，將來自瀏覽器的資料包起來，並給予一個應用層表頭，再向傳送層丟去；  傳送層：由於 HTTP 為可靠連線，因此將該資料丟入 TCP 封包內，並給予一個 TCP 封包的表頭，向網路層丟去；  網路層：將 TCP 包裹包進 IP 封包內，再給予一個 IP 表頭 (主要就是來源與目標的 IP 囉)，向鏈結層丟去；  鏈結層：如果使用乙太網路時，此時 IP 會依據 CSMA/CD 的標準，包裹到 MAC 訊框中，並給予 MAC 表頭，再轉成位元串後， 利用傳輸媒體傳送到遠端主機上。等到 Yahoo 收到你的包裹後，在依據相反方向拆解開來，然後交給對應的層級進行分析，最後就讓 Yahoo 的 WWW 伺服器軟體得到你所想要的資料，該伺服器軟體再根據你的要求，取得正確的資料後，又依循上述的流程，一層一層的包裝起來， 最後傳送到你的手上！就是這樣囉！MACMAC 其實就是我們上面一直講到的訊框 (frame) 囉！ 只是這個訊框上面有兩個很重要的資料，就是目標與來源的網卡卡號，因此我們又簡稱網卡卡號為 MAC 而已。 簡單的說，你可以把MAC想成是一個在網路線上面傳遞的包裹，而這個包裹是整個網路硬體上面傳送資料的最小單位了。 也就是說，網路線可想成是一條『一次僅可通過一個人』的獨木橋， 而 MAC 就是在這個獨木橋上面動的人啦！乙太網路乙太網路已經是一項公認的標準介面了，如此一來，大家都可以依據這個標準來設定與開發自己的硬體， 只要硬體符合這個標準，理論上，他就能夠加入乙太網路的世界，所以，購買乙太網路時， 僅需要查看這個乙太網路卡支援哪些標準就能夠知道這個硬體的功能有哪些， 而不必知道這個乙太網路卡是由哪家公司所製造的吶RJ-45接頭乙太網路的傳輸協定：CSMA/CD每張乙太網路卡出廠時，就會賦予一個獨一無二的卡號，那就是所謂的 MAC (Media Access Control) 啦！routeIP 的取得方式staticDHCP(Dynamic Host Configuration Protocol)透過撥接取得：向你的 ISP 申請註冊，取得帳號密碼後，直接撥接到 ISP ，你的 ISP 會透過他們自己的設定，讓你的作業系統取得正確的網路參數。IP 是門牌，TCP 是樓層，真正提供服務的，是在該樓層的那個人 (Protocol)！ICMP 協定ICMP 的全名是『 Internet Control Message Protocol, 網際網路訊息控制協定 』。 基本上，ICMP 是一個錯誤偵測與回報的機制，最大的功能就是可以確保我們網路的連線狀態與連線的正確性！ ICMP 也是網路層的重要封包之一，不過，這個封包並非獨立存在，而是納入到 IP 的封包中！">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-30T17:18:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="EDX Linux Foundation 補充筆記">
+    <meta itemprop="description" content="  七層筆記＋tcp/ip筆記  ip  mac  socket  基本知識乙太網路了解封包內容名詞釐清IEEE國際上專業制定單位的組織LAN (LOCAL AREA NETWORK)區域網路WAN (WIDE  AREA NETWORK)廣域網路NIC(NETWORK INTERFACE CARD)NI1. OSI (Open System Interconnection) 七層協定layer 1 phisical layerlayer 2 data link layer偏軟體的子層 MAC(media access control)MAC 是網路媒體所能處理的主要資料包裹，這也是最終被實體層編碼成位元串的資料。MAC frame偏硬體的子層LLC(logical link control)主要在多工處理來自上層的封包資料 (packet) 並轉成 MAC 的格式layer 3 Network layerIProutelayer 4 transport layerlayer 5 session layerlayer 6 presentation layerlayer 7 application layer2. TCP/IP是什麼？如何運作？2.TCP/IP 如何運作那 TCP/IP 是如何運作的呢？我們就拿妳常常連上的 Yahoo 入口網站來做個說明好了，整個連線的狀態可以這樣看：  應用程式階段：妳打開瀏覽器，在瀏覽器上面輸入網址列，按下 [Enter]。此時網址列與相關資料會被瀏覽器包成一個資料， 並向下傳給 TCP/IP 的應用層；  應用層：由應用層提供的 HTTP 通訊協定，將來自瀏覽器的資料包起來，並給予一個應用層表頭，再向傳送層丟去；  傳送層：由於 HTTP 為可靠連線，因此將該資料丟入 TCP 封包內，並給予一個 TCP 封包的表頭，向網路層丟去；  網路層：將 TCP 包裹包進 IP 封包內，再給予一個 IP 表頭 (主要就是來源與目標的 IP 囉)，向鏈結層丟去；  鏈結層：如果使用乙太網路時，此時 IP 會依據 CSMA/CD 的標準，包裹到 MAC 訊框中，並給予 MAC 表頭，再轉成位元串後， 利用傳輸媒體傳送到遠端主機上。等到 Yahoo 收到你的包裹後，在依據相反方向拆解開來，然後交給對應的層級進行分析，最後就讓 Yahoo 的 WWW 伺服器軟體得到你所想要的資料，該伺服器軟體再根據你的要求，取得正確的資料後，又依循上述的流程，一層一層的包裝起來， 最後傳送到你的手上！就是這樣囉！MACMAC 其實就是我們上面一直講到的訊框 (frame) 囉！ 只是這個訊框上面有兩個很重要的資料，就是目標與來源的網卡卡號，因此我們又簡稱網卡卡號為 MAC 而已。 簡單的說，你可以把MAC想成是一個在網路線上面傳遞的包裹，而這個包裹是整個網路硬體上面傳送資料的最小單位了。 也就是說，網路線可想成是一條『一次僅可通過一個人』的獨木橋， 而 MAC 就是在這個獨木橋上面動的人啦！乙太網路乙太網路已經是一項公認的標準介面了，如此一來，大家都可以依據這個標準來設定與開發自己的硬體， 只要硬體符合這個標準，理論上，他就能夠加入乙太網路的世界，所以，購買乙太網路時， 僅需要查看這個乙太網路卡支援哪些標準就能夠知道這個硬體的功能有哪些， 而不必知道這個乙太網路卡是由哪家公司所製造的吶RJ-45接頭乙太網路的傳輸協定：CSMA/CD每張乙太網路卡出廠時，就會賦予一個獨一無二的卡號，那就是所謂的 MAC (Media Access Control) 啦！routeIP 的取得方式staticDHCP(Dynamic Host Configuration Protocol)透過撥接取得：向你的 ISP 申請註冊，取得帳號密碼後，直接撥接到 ISP ，你的 ISP 會透過他們自己的設定，讓你的作業系統取得正確的網路參數。IP 是門牌，TCP 是樓層，真正提供服務的，是在該樓層的那個人 (Protocol)！ICMP 協定ICMP 的全名是『 Internet Control Message Protocol, 網際網路訊息控制協定 』。 基本上，ICMP 是一個錯誤偵測與回報的機制，最大的功能就是可以確保我們網路的連線狀態與連線的正確性！ ICMP 也是網路層的重要封包之一，不過，這個封包並非獨立存在，而是納入到 IP 的封包中！">
+    <meta itemprop="datePublished" content="September 30, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">EDX Linux Foundation 補充筆記
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#名詞釐清">名詞釐清</a></li>
+  <li><a href="#layer-1-phisical-layer">layer 1 phisical layer</a></li>
+  <li><a href="#layer-2-data-link-layer">layer 2 data link layer</a>
+    <ul>
+      <li><a href="#偏軟體的子層-macmedia-access-control">偏軟體的子層 MAC(media access control)</a></li>
+      <li><a href="#偏硬體的子層llclogical-link-control">偏硬體的子層LLC(logical link control)</a></li>
+    </ul>
+  </li>
+  <li><a href="#layer-3-network-layer">layer 3 Network layer</a>
+    <ul>
+      <li><a href="#ip">IP</a></li>
+      <li><a href="#route">route</a></li>
+    </ul>
+  </li>
+  <li><a href="#layer-4-transport-layer">layer 4 transport layer</a></li>
+  <li><a href="#layer-5-session-layer">layer 5 session layer</a></li>
+  <li><a href="#layer-6-presentation-layer">layer 6 presentation layer</a></li>
+  <li><a href="#layer-7-application-layer">layer 7 application layer</a></li>
+  <li><a href="#2tcpip-如何運作">2.TCP/IP 如何運作</a></li>
+  <li><a href="#mac">MAC</a></li>
+  <li><a href="#乙太網路">乙太網路</a></li>
+  <li><a href="#rj-45接頭">RJ-45接頭</a>
+    <ul>
+      <li><a href="#乙太網路的傳輸協定csmacd">乙太網路的傳輸協定：CSMA/CD</a></li>
+    </ul>
+  </li>
+  <li><a href="#route-1">route</a></li>
+  <li><a href="#static">static</a></li>
+  <li><a href="#dhcpdynamic-host-configuration-protocol">DHCP(Dynamic Host Configuration Protocol)</a></li>
+  <li><a href="#透過撥接取得">透過撥接取得：</a></li>
+  <li><a href="#icmp-協定">ICMP 協定</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <ol>
+  <li>七層筆記＋tcp/ip筆記</li>
+  <li>ip</li>
+  <li>mac</li>
+  <li>socket</li>
+  <li>基本知識
+乙太網路
+了解封包內容</li>
+</ol>
+
+<h2 id="名詞釐清">名詞釐清</h2>
+<p>IEEE
+國際上專業制定單位的組織
+LAN (LOCAL AREA NETWORK)
+區域網路
+WAN (WIDE  AREA NETWORK)
+廣域網路
+NIC(NETWORK INTERFACE CARD)
+NI</p>
+
+<h1 id="1-osi-open-system-interconnection-七層協定">1. OSI (Open System Interconnection) 七層協定</h1>
+<h2 id="layer-1-phisical-layer">layer 1 phisical layer</h2>
+<h2 id="layer-2-data-link-layer">layer 2 data link layer</h2>
+<h3 id="偏軟體的子層-macmedia-access-control">偏軟體的子層 MAC(media access control)</h3>
+<p>MAC 是網路媒體所能處理的主要資料包裹，這也是最終被實體層編碼成位元串的資料。</p>
+<h4 id="mac-frame">MAC frame</h4>
+<h3 id="偏硬體的子層llclogical-link-control">偏硬體的子層LLC(logical link control)</h3>
+<p>主要在多工處理來自上層的封包資料 (packet) 並轉成 MAC 的格式</p>
+
+<h2 id="layer-3-network-layer">layer 3 Network layer</h2>
+<h3 id="ip">IP</h3>
+<h3 id="route">route</h3>
+
+<h2 id="layer-4-transport-layer">layer 4 transport layer</h2>
+<h2 id="layer-5-session-layer">layer 5 session layer</h2>
+<h2 id="layer-6-presentation-layer">layer 6 presentation layer</h2>
+<h2 id="layer-7-application-layer">layer 7 application layer</h2>
+
+<h1 id="2-tcpip是什麼如何運作">2. TCP/IP是什麼？如何運作？</h1>
+
+<h2 id="2tcpip-如何運作">2.TCP/IP 如何運作</h2>
+<p>那 TCP/IP 是如何運作的呢？我們就拿妳常常連上的 Yahoo 入口網站來做個說明好了，整個連線的狀態可以這樣看：</p>
+
+<ol>
+  <li>應用程式階段：妳打開瀏覽器，在瀏覽器上面輸入網址列，按下 [Enter]。此時網址列與相關資料會被瀏覽器包成一個資料， 並向下傳給 TCP/IP 的應用層；</li>
+  <li>應用層：由應用層提供的 HTTP 通訊協定，將來自瀏覽器的資料包起來，並給予一個應用層表頭，再向傳送層丟去；</li>
+  <li>傳送層：由於 HTTP 為可靠連線，因此將該資料丟入 TCP 封包內，並給予一個 TCP 封包的表頭，向網路層丟去；</li>
+  <li>網路層：將 TCP 包裹包進 IP 封包內，再給予一個 IP 表頭 (主要就是來源與目標的 IP 囉)，向鏈結層丟去；</li>
+  <li>鏈結層：如果使用乙太網路時，此時 IP 會依據 CSMA/CD 的標準，包裹到 MAC 訊框中，並給予 MAC 表頭，再轉成位元串後， 利用傳輸媒體傳送到遠端主機上。
+等到 Yahoo 收到你的包裹後，在依據相反方向拆解開來，然後交給對應的層級進行分析，最後就讓 Yahoo 的 WWW 伺服器軟體得到你所想要的資料，該伺服器軟體再根據你的要求，取得正確的資料後，又依循上述的流程，一層一層的包裝起來， 最後傳送到你的手上！就是這樣囉！</li>
+</ol>
+
+<h2 id="mac">MAC</h2>
+<p>MAC 其實就是我們上面一直講到的訊框 (frame) 囉！ 只是這個訊框上面有兩個很重要的資料，就是目標與來源的網卡卡號，因此我們又簡稱網卡卡號為 MAC 而已。 簡單的說，你可以把MAC想成是一個在網路線上面傳遞的包裹，而這個包裹是整個網路硬體上面傳送資料的最小單位了。 也就是說，網路線可想成是一條『一次僅可通過一個人』的獨木橋， 而 MAC 就是在這個獨木橋上面動的人啦！</p>
+
+<h2 id="乙太網路">乙太網路</h2>
+<p>乙太網路已經是一項公認的標準介面了，如此一來，大家都可以依據這個標準來設定與開發自己的硬體， 只要硬體符合這個標準，理論上，他就能夠加入乙太網路的世界，所以，購買乙太網路時， 僅需要查看這個乙太網路卡支援哪些標準就能夠知道這個硬體的功能有哪些， 而不必知道這個乙太網路卡是由哪家公司所製造的吶</p>
+
+<h2 id="rj-45接頭">RJ-45接頭</h2>
+
+<h3 id="乙太網路的傳輸協定csmacd">乙太網路的傳輸協定：CSMA/CD</h3>
+<p>每張乙太網路卡出廠時，就會賦予一個獨一無二的卡號，那就是所謂的 MAC (Media Access Control) 啦！</p>
+
+<h2 id="route-1">route</h2>
+
+<h1 id="ip-的取得方式">IP 的取得方式</h1>
+<h2 id="static">static</h2>
+<h2 id="dhcpdynamic-host-configuration-protocol">DHCP(Dynamic Host Configuration Protocol)</h2>
+<h2 id="透過撥接取得">透過撥接取得：</h2>
+<p>向你的 ISP 申請註冊，取
+得帳號密碼後，直接撥接到 ISP ，你的 ISP 會透過他們自己的設定，讓你的作業系統取得正確的網路參數。</p>
+
+<p>IP 是門牌，TCP 是樓層，真正提供服務的，是在該樓層的那個人 (Protocol)！</p>
+
+<h2 id="icmp-協定">ICMP 協定</h2>
+<p>ICMP 的全名是『 Internet Control Message Protocol, 網際網路訊息控制協定 』。 基本上，ICMP 是一個錯誤偵測與回報的機制，最大的功能就是可以確保我們網路的連線狀態與連線的正確性！ ICMP 也是網路層的重要封包之一，不過，這個封包並非獨立存在，而是納入到 IP 的封包中！</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#edx-linux-foundation" class="page__taxonomy-item" rel="tag">EDX Linux Foundation</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#linux" class="page__taxonomy-item" rel="tag">Linux</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-30T17:18:00+00:00">September 30, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/edx-linux-foundation-ch12-network/" class="pagination--pager" title="EDX Linux Foundation Ch12：Network
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/techday-videos/" class="pagination--pager" title="Techdays Videos 釋出
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

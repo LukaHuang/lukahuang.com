@@ -1,0 +1,643 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>從 Github 開源指南｜學習如何貢獻開源專案 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="從 Github 開源指南｜學習如何貢獻開源專案">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="從 Github 開源指南｜學習如何貢獻開源專案">
+
+
+  <link rel="canonical" href="https://lukahuang.com/introduction-to-open-source-guild/">
+  <meta property="og:url" content="https://lukahuang.com/introduction-to-open-source-guild/">
+
+
+
+  <meta property="og:description" content="從 Github 開源指南｜學習如何貢獻開源專案">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-08-15T20:50:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="從 Github 開源指南｜學習如何貢獻開源專案">
+    <meta itemprop="description" content="從 Github 開源指南｜學習如何貢獻開源專案">
+    <meta itemprop="datePublished" content="August 15, 2020">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">從 Github 開源指南｜學習如何貢獻開源專案
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#為何要貢獻開源專案">為何要貢獻開源專案？</a>
+    <ul>
+      <li><a href="#1-打磨你的專業技能">1. 打磨你的專業技能</a></li>
+      <li><a href="#2-認識與你有相似興趣的人">2. 認識與你有相似興趣的人</a></li>
+      <li><a href="#3-鍛鍊溝通能力">3. 鍛鍊溝通能力</a></li>
+      <li><a href="#4-建立名聲">4. 建立名聲</a></li>
+      <li><a href="#5-學習人際關係的能力">5. 學習人際關係的能力</a></li>
+    </ul>
+  </li>
+  <li><a href="#找尋專案開始貢獻">找尋專案開始貢獻</a></li>
+  <li><a href="#找到專案時先確保專案是否接受貢獻">找到專案時，先確保專案是否接受貢獻</a></li>
+  <li><a href="#如何將成果貢獻至開源專案">如何將成果貢獻至開源專案</a>
+    <ul>
+      <li><a href="#1-交代來龍去脈">1. 交代來龍去脈</a></li>
+      <li><a href="#2-做好準備工作">2. 做好準備工作</a></li>
+      <li><a href="#3-溝通時力求精簡明瞭">3. 溝通時力求精簡明瞭</a></li>
+      <li><a href="#4-大膽的提問但是要有耐心">4. 大膽的提問（但是要有耐心！）</a></li>
+      <li><a href="#5-尊重社群的決定">5. 尊重社群的決定</a></li>
+    </ul>
+  </li>
+  <li><a href="#提交之後">提交之後</a>
+    <ul>
+      <li><a href="#有可能沒有人理你">😭有可能沒有人理你</a></li>
+      <li><a href="#有人希望你修改你的貢獻">🚧有人希望你修改你的貢獻</a></li>
+      <li><a href="#你的貢獻沒有被採納">👎你的貢獻沒有被採納</a></li>
+      <li><a href="#-你的貢獻被接受">🎉 你的貢獻被接受。</a></li>
+    </ul>
+  </li>
+  <li><a href="#延伸閱讀">延伸閱讀</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h1 id="從-github-開源指南學習如何貢獻開源專案">從 Github 開源指南｜學習如何貢獻開源專案</h1>
+
+<p><img src="https://cdn-images-1.medium.com/max/7872/0*8Mqb8j7gMZ3_R-UI" alt="Photo by [Tim Mossholder](https://unsplash.com/@timmossholder?utm_source=medium&amp;utm_medium=referral) on [Unsplash](https://unsplash.com?utm_source=medium&amp;utm_medium=referral)" /></p>
+
+<p>本週我們來讀一下「如何為開源做貢獻」。這份文件是 Github 的 Open Source Guide 開源指南，約莫兩年前剛出的時候全部是英文版的，已經三年了，拖到現在才讀（汗）。</p>
+<blockquote>
+  <p>（這篇是閱讀開源指南的筆記，原創內容偏少，原文在下方連結）
+<a href="https://opensource.guide/zh-hant/how-to-contribute/"><strong>如何為開源做貢獻？</strong>
+<em>透過為開源貢獻力量，能從中學習、幫助他人並且從中累積相關技能的經驗 - 任何你能想像得到的技能。 為什麼會有人為開源做出貢獻？有數不清的原因！…</em>opensource.guide</a></p>
+</blockquote>
+
+<p>是 Github 7000 顆星星的開源專案
+<a href="https://github.com/github/opensource.guide"><strong>github/opensource.guide</strong>
+<em>Open Source Guides ( https://opensource.guide/) are a collection of resources for individuals, communities, and…</em>github.com</a></p>
+
+<h2 id="為何要貢獻開源專案"><strong>為何要貢獻開源專案？</strong></h2>
+<blockquote>
+  <p>原文寫的很好，我用我的話說出來。</p>
+</blockquote>
+
+<h3 id="1-打磨你的專業技能">1. 打磨你的專業技能</h3>
+
+<p>專案中包含了撰寫程式碼、平面設計、使用者體驗設計、撰寫文章 … 等等的工作。只要你想，你就可以在開源專案中找到你的位置。</p>
+
+<h3 id="2-認識與你有相似興趣的人">2. 認識與你有相似興趣的人</h3>
+
+<p>我覺得這真的滿重要，在現實生活中要找到相同興趣的人就很困難了，但是透過貢獻開源，你可以無遠弗屆的認識世界各地與你有相似興趣的人。</p>
+
+<h3 id="3-鍛鍊溝通能力">3. 鍛鍊溝通能力</h3>
+
+<p>因為開源專案是一個「共同協做」的專案。你需要向他人解釋自己是用什麼方法實作，也會需要其他人的幫助。</p>
+
+<h3 id="4-建立名聲">4. 建立名聲</h3>
+
+<p>你在開源專案中實作的成果一切都是看的到的，這也意味開源專案是一個能好好火力展示的地方。</p>
+
+<h3 id="5-學習人際關係的能力">5. 學習人際關係的能力</h3>
+
+<p>開源為練習領導及管理的能力提供了很好的機會。例如如何解決衝突、組織團隊以及如何為工作的優先順序排列。</p>
+<blockquote>
+  <p>小訣竅：走進開源專案，就像你走進一群陌生人中，想要嘗試融入。這群人討論的非常深入了，你突然打岔肯定會讓人覺得奇怪。
+ 與其盲目地在社群中拋出你自己的看法，不如先觀察一下社群的氛圍後再提出，這樣你的想法被注意到的機會才會增加。</p>
+</blockquote>
+
+<h2 id="找尋專案開始貢獻">找尋專案開始貢獻</h2>
+
+<p>如果你還未貢獻任何一個開源專案的話，可以想想，你能夠為開源專案做些什麼？</p>
+
+<p>可以從你有使用過的開源專案開始著手，跟你比較有關係的開源專案，或是你比較感興趣的開源專案，你才會積極的參加。</p>
+
+<p>平均一個專案有 28% 的貢獻是隨意且偶然的，像是 Readme、改錯字、失效連結 … 等等的小地方。</p>
+
+<h2 id="找到專案時先確保專案是否接受貢獻"><strong>找到專案時，先確保專案是否接受貢獻</strong></h2>
+
+<p>可以從幾個地方，看出專案是否活躍，樂於接受貢獻：</p>
+
+<p>從 Master 分支上看看觀察</p>
+
+<ul>
+  <li>
+    <p>最近一次的 Commit 是什麼時候？</p>
+  </li>
+  <li>
+    <p>Commit 的次數頻繁嘛？</p>
+  </li>
+  <li>
+    <p>專案目前有多少貢獻者？</p>
+  </li>
+</ul>
+
+<p>從 Issue 觀察</p>
+
+<ul>
+  <li>
+    <p>目前有多少個 issue</p>
+  </li>
+  <li>
+    <p>維護者回覆 issue 是否迅速</p>
+  </li>
+  <li>
+    <p>是否有討論熱絡的 issue</p>
+  </li>
+  <li>
+    <p>issue 是否已經大量累積</p>
+  </li>
+  <li>
+    <p>最近 close 的 issue 是多久以前</p>
+  </li>
+</ul>
+
+<p>從 PR 觀察</p>
+
+<ul>
+  <li>
+    <p>有多少處於進行中的 PR</p>
+  </li>
+  <li>
+    <p>提交 PR 後維護者回覆是否迅速</p>
+  </li>
+  <li>
+    <p>最近有多少 PR 被 Merge</p>
+  </li>
+</ul>
+
+<p>觀察專案的友善程度</p>
+
+<ul>
+  <li>
+    <p>維護者的回應是否有幫助</p>
+  </li>
+  <li>
+    <p>討論過程是否親切</p>
+  </li>
+  <li>
+    <p>會不會審查 PR</p>
+  </li>
+</ul>
+
+<h2 id="如何將成果貢獻至開源專案">如何將成果貢獻至開源專案</h2>
+
+<p>最重要的是「有效的溝通」，把握幾個要點：</p>
+
+<h3 id="1-交代來龍去脈">1. 交代來龍去脈</h3>
+
+<p>讓他人快速的理解。如果是 Bug 交代清楚你想做的事情是什麼，你當實作了哪些步驟，以便重現錯誤。如果你想要發起一個新的想法，你要解釋為什麼你要這樣做，為什麼你覺得這樣會對專案有幫助。</p>
+
+<h3 id="2-做好準備工作">2. 做好準備工作</h3>
+
+<p>在尋求幫助之前，先確保你看過文件、相關 Issue 的討論，當你表達出強烈的意願時，人們會很樂意幫助你的。</p>
+
+<h3 id="3-溝通時力求精簡明瞭">3. 溝通時力求精簡明瞭</h3>
+
+<p>開源專案每次提交都是需要他人檢閱的，如果你能夠精準的表達你的看法，那麼你得到別人幫助的機會就會大幅提昇。</p>
+
+<h3 id="4-大膽的提問但是要有耐心"><strong>4. 大膽的提問（但是要有耐心！）</strong></h3>
+
+<p>每個人都有新手的時候，不要怕提問。需要注意的是長期維護的人不一定熟悉專案的每一個部分。協作時表現出你的耐心，你會得到相同回報。</p>
+
+<h3 id="5-尊重社群的決定">5. 尊重社群的決定</h3>
+
+<p>有時候你的看法跟社群的看法不一定相同。他們可能不接受你的建議。可能社群最後不接納你的建議。這時你可以試試看討論出折衷方案，或者將專案 fork 另起爐灶。</p>
+
+<h2 id="提交之後">提交之後</h2>
+
+<h3 id="有可能沒有人理你">😭有可能沒有人理你</h3>
+
+<p>因為大家都很忙，尤其是熱門的開源專案。Issue 很多，維護者的人手不夠，此時就先耐心的等待。</p>
+<blockquote>
+  <p><em>千萬不要私下聯絡，在開源專案中，一切的溝通都應該是公開的。</em></p>
+</blockquote>
+
+<h3 id="有人希望你修改你的貢獻">🚧有人希望你修改你的貢獻</h3>
+
+<p>這是好的開始，溝通、改進直到符合維護者得期待。</p>
+
+<h3 id="你的貢獻沒有被採納">👎你的貢獻沒有被採納</h3>
+
+<p>你的工作最後沒有被採納，這時你可以問問維護者，為什麼沒有被採納。需要注意的是別花時間在爭論上，這會讓你樹立更多敵人。</p>
+
+<h3 id="-你的貢獻被接受">🎉 你的貢獻被接受。</h3>
+
+<p>太棒了！你完成了一次開源貢獻！</p>
+
+<h2 id="延伸閱讀">延伸閱讀</h2>
+<p><a href="https://opensource.guide/zh-hant/starting-a-project/"><strong>發起一個開源專案</strong>
+<em>所以你在考慮開始參與開源？恭喜！世界讚賞你的貢獻。讓我們來談談開源是什麼，以及人們這樣做。 當一個專案被開源，這意味着 任何人都可以出於任何目的查看，使用，修改和分發你的專案。 這些權限通過 開源許可 強制實施。…</em>opensource.gu</a>
+<a href="https://opensource.guide/zh-hant/best-practices/"><strong>維護者最佳實踐</strong>
+<em>如果你維護著一個非常流行的專案，你可能就會意識到自己寫程式的時間變少，而花費在回答issue的時間越來越多。…</em>opensource.guide</a>
+<a href="https://opensource.guide/zh-hant/leadership-and-governance/"><strong>領導與治理</strong>
+<em>當專案開始有條不紊的進行，人員也開始穩定，那麼你就應該開始社群的治理了。對於社群的治理，你或許有一些疑問，諸如如何將常規專案的貢獻者納入你的工作流？如何才能判斷應該賦予誰提交的權限？又或者是如何解決社群的債務？如果你對這些有疑問的話，我們這…</em>opensource.guide</a>
+<a href="https://opensource.guide/zh-hant/code-of-conduct/"><strong>建立一套行為準則</strong>
+<em>行爲守則是一份確立專案參與者行爲規範的文件。採用和執行行爲守則可以幫助你們的社群營造積極的氛圍。…</em>opensource.guide</a>
+<a href="https://opensource.guide/zh-hant/finding-users/"><strong>找尋專案的使用者</strong>
+<em>沒有規定說應該怎麼去倡導剛創建的開源專案。但沒有任何理由說必須默默無聞的在開源專案上工作。相反，如果你向有更多的人發現和使用你的開源專案，你就應該讓所有人知道你所努力的成果！…</em>opensource.guide</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#github" class="page__taxonomy-item" rel="tag">Github</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#open-source" class="page__taxonomy-item" rel="tag">Open Source</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2020-08-15T20:50:00+00:00">August 15, 2020</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/tldr/" class="pagination--pager" title="TLDR 命令列神兵｜Linux 入門必裝
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/introduction-to-gitops-via-argocd/" class="pagination--pager" title="ArgoCD - 透過 ArgoCD 認識 GitOps
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tmp-let-your-tmux-better/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TPM — 套件管理工具 ，讓你的 TMUX 更好用
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

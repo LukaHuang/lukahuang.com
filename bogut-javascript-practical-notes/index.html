@@ -1,0 +1,669 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>保哥 javascript 實戰課程筆記 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="javascript 語言特性      javascript是個動態型別語言，無法在開發期間宣告型別，意味著javascript的單一變數可能會隨時改變型別!        javascript是個弱型別的語言：意味著在開發時期無法指定javascript型別。只能在執行期間檢查型別。如果真的要知道這個變數的型態，只能在執行時透過typeof的方式將該變數目前的型別使用字串顯示。        javascript是個物件導向程式語言，除了五種 primitive type 以外其他都是物件。這部份會在下一節詳細的說明。  javascript 是個物件導向程式語言這節會從javascript是物件導向語言這個觀點延伸了解javascript的型別(type)。      除了數值(number) 字串(string) 布林(boolean) null undefined 這五個是原始型別(Primitive Type)外，所有的東西都是物件。(引用自Are You Still Confuse with Data Types in JavaScript ?)    Primitive Wrapper 是將 primitive type 包裝成物件， 提供了許多方便的方法。但其實primitive type也可以調用這些方法，因為在使用這些方法時，javascript運作的環境會自動將 prinitive type 轉換成 Primitive Wrapper。  下圖中橢圓形的是primitive type而方形的就代表的是物件，可以看出primitive wrapper也是一種物件。（引用自What is the difference between JavaScript null and undefined? – Wintellect DevCenter)javascript 的物件特性了解javascript的型別之後，接下來我們要來了解javascript的物件特性。1. JavaScript物件是個容器(Container)。每個物件包含了屬性(Property)和方法(Method或Function)。var car={};           //宣告物件(Object)car.nume = &quot;BMW&quot;;     //name是car的屬性(Property)car.start=function(){ //函式(Function)    return &quot;OK&quot;;}var car_name = car[&#39;name&#39;];2. JavaScript 物件其實就是 HashMap      所有屬性名稱一定是字串        取得car的屬性name的內容有兩種取法 一種是物件取法car.name 和 另一種是陣列取法car[&#39;name&#39;]。        需要注意的是不能用數字當變數，所以cat.007 is undefined ，但是妳可以使用cat[&#39;007&#39;]。  （這部份code school的javascript課程有更多範例，未來有時間的時候再補充。）3. JavaScript沒有Class概念，所以你可以不需要constructor，就能建立物件  javascript的constructor(建構式)就是函式，又稱建構式函式。  使用 new 關鍵字，透過建構式建立物件。function person(first, last, age, eyecolor) {    this.firstName = first;    this.lastName = last;    this.age = age;    this.eyeColor = eyecolor;}var myFather = new person(&quot;John&quot;, &quot;Doe&quot;, 50, &quot;blue&quot;);var myMother = new person(&quot;Sally&quot;, &quot;Rally&quot;, 48, &quot;green&quot;);var myFather = new person(&quot;John&quot;, &quot;Doe&quot;, 50, &quot;blue&quot;);var myMother = new person(&quot;Sally&quot;, &quot;Rally&quot;, 48, &quot;green&quot;);  因為javascript沒有Class概念，所以必須借助prototype的特性。4. javascript的物件可以不需先行宣告就可以自由擴充屬性      這點是我之前學習時沒有發現的微妙之處，一般物件導向程式語言如java一定要先行宣告變數才能使用，而javascript卻不需要。        因為原始型別無法自由擴增屬性，所以針對 number,string,boolean有提供原始型別包裹方式，包裹成物件後，即可透過該物件自由擴增屬性。        物件也可以透過下列的方法轉換成原始型別。valueOf() : 物件型別轉成原始型別。toString() : 物件型別轉成字串型別。    //物件範例  var obj = { &#39;a&#39;:1, &#39;b&#39;:2 };  //擴增屬性  obj.c = 3;  //這時候obj就會有a, b, c三個屬性了  //刪除屬性  elete obj.b;  //這時候obj又只剩下a, c三個屬性了5. 原生物件與宿主物件javascript有兩種物件：  原生物件(Native)，也可以叫做內建物件，例如Array、Date或是使用者自行定義(後面會提到)  宿主物件(Host)，例如window物件和所有DOM物件。  所有物件資料都從根物件(就是window)開始連結(chain)。怎麼去分辨這兩種物件，只要看看物件能不能在瀏覽器底下執行就可以，如果只能在瀏覽器底下執行，就是Host物件，如果在非瀏覽器的地方也可以執行，那就是Native。物件、變數與型別的關係  物件(object)          記憶體中的資料      僅存在執行時期        變數(variable)          用來儲存物件的記憶體位址(指標)      在開發時期進行宣告(使用var關鍵字)        型別(type)          用來標示物件的種類      不同型別可能會有不同的預設屬性與方法      (引用自梅西的小腦袋)範例：物件、變數與型別之間的關係請問以下出現過幾個記憶體物件? 出現過幾個變數? 出現過幾個型別? var a; a=1; a=&quot;a&quot;; a=&quot;a&quot;+a;(引用自梅西的小腦袋)ANS : 5個記憶體物件、1個變數、3個型別  ‘函式物件( funciton )函式是個特殊的物件(其實函式本身有一個內部物件，用來存放在函式中宣告的變數、物件與屬性，只是外部無法存取該內部物件。)，有兩大特色  函式是Javascript的一級物件(first-class object)          可以被動態建立      可以指定給變數，也可以複製給其他變數      可以擁有自己的屬性或方法(如同物件的特性)        提供變數的作用域(scope)，換句話說，作用域是看function範圍，而不是 {} 的符號範圍，跟C#不一樣。函式表示法  表式式          具名表示        var add = function add(a, b){return a+b;};                    匿名表示        var add = function (a, b){return a+b;};                      宣告式  具名宣告    function add(a, b){return a+b;};        匿名宣告    function (a, b){return a+b;};      使用匿名的方式，在偵錯或是效能調教時，會無法看出確切的函式位置，盡量避免。後記保哥javascript實戰開發課程中還有更多的內容，本篇學習筆記重點放在理解 javascript 的重要特性和 javascript 的物件特性，函式部分只有稍稍帶過，更詳細的筆記將會在研讀JavaScript語言核心系列的時候記錄。參考資料  JavaScript觀念整理-保哥上課心得 (1) « Coding For Fun  JavaScript觀念整理-保哥上課心得 (2) « Coding For Fun  Wilson.S.Weng: JavaScript 基礎訓練">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="保哥 javascript 實戰課程筆記">
+
+
+  <link rel="canonical" href="https://lukahuang.com/bogut-javascript-practical-notes/">
+  <meta property="og:url" content="https://lukahuang.com/bogut-javascript-practical-notes/">
+
+
+
+  <meta property="og:description" content="javascript 語言特性      javascript是個動態型別語言，無法在開發期間宣告型別，意味著javascript的單一變數可能會隨時改變型別!        javascript是個弱型別的語言：意味著在開發時期無法指定javascript型別。只能在執行期間檢查型別。如果真的要知道這個變數的型態，只能在執行時透過typeof的方式將該變數目前的型別使用字串顯示。        javascript是個物件導向程式語言，除了五種 primitive type 以外其他都是物件。這部份會在下一節詳細的說明。  javascript 是個物件導向程式語言這節會從javascript是物件導向語言這個觀點延伸了解javascript的型別(type)。      除了數值(number) 字串(string) 布林(boolean) null undefined 這五個是原始型別(Primitive Type)外，所有的東西都是物件。(引用自Are You Still Confuse with Data Types in JavaScript ?)    Primitive Wrapper 是將 primitive type 包裝成物件， 提供了許多方便的方法。但其實primitive type也可以調用這些方法，因為在使用這些方法時，javascript運作的環境會自動將 prinitive type 轉換成 Primitive Wrapper。  下圖中橢圓形的是primitive type而方形的就代表的是物件，可以看出primitive wrapper也是一種物件。（引用自What is the difference between JavaScript null and undefined? – Wintellect DevCenter)javascript 的物件特性了解javascript的型別之後，接下來我們要來了解javascript的物件特性。1. JavaScript物件是個容器(Container)。每個物件包含了屬性(Property)和方法(Method或Function)。var car={};           //宣告物件(Object)car.nume = &quot;BMW&quot;;     //name是car的屬性(Property)car.start=function(){ //函式(Function)    return &quot;OK&quot;;}var car_name = car[&#39;name&#39;];2. JavaScript 物件其實就是 HashMap      所有屬性名稱一定是字串        取得car的屬性name的內容有兩種取法 一種是物件取法car.name 和 另一種是陣列取法car[&#39;name&#39;]。        需要注意的是不能用數字當變數，所以cat.007 is undefined ，但是妳可以使用cat[&#39;007&#39;]。  （這部份code school的javascript課程有更多範例，未來有時間的時候再補充。）3. JavaScript沒有Class概念，所以你可以不需要constructor，就能建立物件  javascript的constructor(建構式)就是函式，又稱建構式函式。  使用 new 關鍵字，透過建構式建立物件。function person(first, last, age, eyecolor) {    this.firstName = first;    this.lastName = last;    this.age = age;    this.eyeColor = eyecolor;}var myFather = new person(&quot;John&quot;, &quot;Doe&quot;, 50, &quot;blue&quot;);var myMother = new person(&quot;Sally&quot;, &quot;Rally&quot;, 48, &quot;green&quot;);var myFather = new person(&quot;John&quot;, &quot;Doe&quot;, 50, &quot;blue&quot;);var myMother = new person(&quot;Sally&quot;, &quot;Rally&quot;, 48, &quot;green&quot;);  因為javascript沒有Class概念，所以必須借助prototype的特性。4. javascript的物件可以不需先行宣告就可以自由擴充屬性      這點是我之前學習時沒有發現的微妙之處，一般物件導向程式語言如java一定要先行宣告變數才能使用，而javascript卻不需要。        因為原始型別無法自由擴增屬性，所以針對 number,string,boolean有提供原始型別包裹方式，包裹成物件後，即可透過該物件自由擴增屬性。        物件也可以透過下列的方法轉換成原始型別。valueOf() : 物件型別轉成原始型別。toString() : 物件型別轉成字串型別。    //物件範例  var obj = { &#39;a&#39;:1, &#39;b&#39;:2 };  //擴增屬性  obj.c = 3;  //這時候obj就會有a, b, c三個屬性了  //刪除屬性  elete obj.b;  //這時候obj又只剩下a, c三個屬性了5. 原生物件與宿主物件javascript有兩種物件：  原生物件(Native)，也可以叫做內建物件，例如Array、Date或是使用者自行定義(後面會提到)  宿主物件(Host)，例如window物件和所有DOM物件。  所有物件資料都從根物件(就是window)開始連結(chain)。怎麼去分辨這兩種物件，只要看看物件能不能在瀏覽器底下執行就可以，如果只能在瀏覽器底下執行，就是Host物件，如果在非瀏覽器的地方也可以執行，那就是Native。物件、變數與型別的關係  物件(object)          記憶體中的資料      僅存在執行時期        變數(variable)          用來儲存物件的記憶體位址(指標)      在開發時期進行宣告(使用var關鍵字)        型別(type)          用來標示物件的種類      不同型別可能會有不同的預設屬性與方法      (引用自梅西的小腦袋)範例：物件、變數與型別之間的關係請問以下出現過幾個記憶體物件? 出現過幾個變數? 出現過幾個型別? var a; a=1; a=&quot;a&quot;; a=&quot;a&quot;+a;(引用自梅西的小腦袋)ANS : 5個記憶體物件、1個變數、3個型別  ‘函式物件( funciton )函式是個特殊的物件(其實函式本身有一個內部物件，用來存放在函式中宣告的變數、物件與屬性，只是外部無法存取該內部物件。)，有兩大特色  函式是Javascript的一級物件(first-class object)          可以被動態建立      可以指定給變數，也可以複製給其他變數      可以擁有自己的屬性或方法(如同物件的特性)        提供變數的作用域(scope)，換句話說，作用域是看function範圍，而不是 {} 的符號範圍，跟C#不一樣。函式表示法  表式式          具名表示        var add = function add(a, b){return a+b;};                    匿名表示        var add = function (a, b){return a+b;};                      宣告式  具名宣告    function add(a, b){return a+b;};        匿名宣告    function (a, b){return a+b;};      使用匿名的方式，在偵錯或是效能調教時，會無法看出確切的函式位置，盡量避免。後記保哥javascript實戰開發課程中還有更多的內容，本篇學習筆記重點放在理解 javascript 的重要特性和 javascript 的物件特性，函式部分只有稍稍帶過，更詳細的筆記將會在研讀JavaScript語言核心系列的時候記錄。參考資料  JavaScript觀念整理-保哥上課心得 (1) « Coding For Fun  JavaScript觀念整理-保哥上課心得 (2) « Coding For Fun  Wilson.S.Weng: JavaScript 基礎訓練">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-02-22T06:09:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="保哥 javascript 實戰課程筆記">
+    <meta itemprop="description" content="javascript 語言特性      javascript是個動態型別語言，無法在開發期間宣告型別，意味著javascript的單一變數可能會隨時改變型別!        javascript是個弱型別的語言：意味著在開發時期無法指定javascript型別。只能在執行期間檢查型別。如果真的要知道這個變數的型態，只能在執行時透過typeof的方式將該變數目前的型別使用字串顯示。        javascript是個物件導向程式語言，除了五種 primitive type 以外其他都是物件。這部份會在下一節詳細的說明。  javascript 是個物件導向程式語言這節會從javascript是物件導向語言這個觀點延伸了解javascript的型別(type)。      除了數值(number) 字串(string) 布林(boolean) null undefined 這五個是原始型別(Primitive Type)外，所有的東西都是物件。(引用自Are You Still Confuse with Data Types in JavaScript ?)    Primitive Wrapper 是將 primitive type 包裝成物件， 提供了許多方便的方法。但其實primitive type也可以調用這些方法，因為在使用這些方法時，javascript運作的環境會自動將 prinitive type 轉換成 Primitive Wrapper。  下圖中橢圓形的是primitive type而方形的就代表的是物件，可以看出primitive wrapper也是一種物件。（引用自What is the difference between JavaScript null and undefined? – Wintellect DevCenter)javascript 的物件特性了解javascript的型別之後，接下來我們要來了解javascript的物件特性。1. JavaScript物件是個容器(Container)。每個物件包含了屬性(Property)和方法(Method或Function)。var car={};           //宣告物件(Object)car.nume = &quot;BMW&quot;;     //name是car的屬性(Property)car.start=function(){ //函式(Function)    return &quot;OK&quot;;}var car_name = car[&#39;name&#39;];2. JavaScript 物件其實就是 HashMap      所有屬性名稱一定是字串        取得car的屬性name的內容有兩種取法 一種是物件取法car.name 和 另一種是陣列取法car[&#39;name&#39;]。        需要注意的是不能用數字當變數，所以cat.007 is undefined ，但是妳可以使用cat[&#39;007&#39;]。  （這部份code school的javascript課程有更多範例，未來有時間的時候再補充。）3. JavaScript沒有Class概念，所以你可以不需要constructor，就能建立物件  javascript的constructor(建構式)就是函式，又稱建構式函式。  使用 new 關鍵字，透過建構式建立物件。function person(first, last, age, eyecolor) {    this.firstName = first;    this.lastName = last;    this.age = age;    this.eyeColor = eyecolor;}var myFather = new person(&quot;John&quot;, &quot;Doe&quot;, 50, &quot;blue&quot;);var myMother = new person(&quot;Sally&quot;, &quot;Rally&quot;, 48, &quot;green&quot;);var myFather = new person(&quot;John&quot;, &quot;Doe&quot;, 50, &quot;blue&quot;);var myMother = new person(&quot;Sally&quot;, &quot;Rally&quot;, 48, &quot;green&quot;);  因為javascript沒有Class概念，所以必須借助prototype的特性。4. javascript的物件可以不需先行宣告就可以自由擴充屬性      這點是我之前學習時沒有發現的微妙之處，一般物件導向程式語言如java一定要先行宣告變數才能使用，而javascript卻不需要。        因為原始型別無法自由擴增屬性，所以針對 number,string,boolean有提供原始型別包裹方式，包裹成物件後，即可透過該物件自由擴增屬性。        物件也可以透過下列的方法轉換成原始型別。valueOf() : 物件型別轉成原始型別。toString() : 物件型別轉成字串型別。    //物件範例  var obj = { &#39;a&#39;:1, &#39;b&#39;:2 };  //擴增屬性  obj.c = 3;  //這時候obj就會有a, b, c三個屬性了  //刪除屬性  elete obj.b;  //這時候obj又只剩下a, c三個屬性了5. 原生物件與宿主物件javascript有兩種物件：  原生物件(Native)，也可以叫做內建物件，例如Array、Date或是使用者自行定義(後面會提到)  宿主物件(Host)，例如window物件和所有DOM物件。  所有物件資料都從根物件(就是window)開始連結(chain)。怎麼去分辨這兩種物件，只要看看物件能不能在瀏覽器底下執行就可以，如果只能在瀏覽器底下執行，就是Host物件，如果在非瀏覽器的地方也可以執行，那就是Native。物件、變數與型別的關係  物件(object)          記憶體中的資料      僅存在執行時期        變數(variable)          用來儲存物件的記憶體位址(指標)      在開發時期進行宣告(使用var關鍵字)        型別(type)          用來標示物件的種類      不同型別可能會有不同的預設屬性與方法      (引用自梅西的小腦袋)範例：物件、變數與型別之間的關係請問以下出現過幾個記憶體物件? 出現過幾個變數? 出現過幾個型別? var a; a=1; a=&quot;a&quot;; a=&quot;a&quot;+a;(引用自梅西的小腦袋)ANS : 5個記憶體物件、1個變數、3個型別  ‘函式物件( funciton )函式是個特殊的物件(其實函式本身有一個內部物件，用來存放在函式中宣告的變數、物件與屬性，只是外部無法存取該內部物件。)，有兩大特色  函式是Javascript的一級物件(first-class object)          可以被動態建立      可以指定給變數，也可以複製給其他變數      可以擁有自己的屬性或方法(如同物件的特性)        提供變數的作用域(scope)，換句話說，作用域是看function範圍，而不是 {} 的符號範圍，跟C#不一樣。函式表示法  表式式          具名表示        var add = function add(a, b){return a+b;};                    匿名表示        var add = function (a, b){return a+b;};                      宣告式  具名宣告    function add(a, b){return a+b;};        匿名宣告    function (a, b){return a+b;};      使用匿名的方式，在偵錯或是效能調教時，會無法看出確切的函式位置，盡量避免。後記保哥javascript實戰開發課程中還有更多的內容，本篇學習筆記重點放在理解 javascript 的重要特性和 javascript 的物件特性，函式部分只有稍稍帶過，更詳細的筆記將會在研讀JavaScript語言核心系列的時候記錄。參考資料  JavaScript觀念整理-保哥上課心得 (1) « Coding For Fun  JavaScript觀念整理-保哥上課心得 (2) « Coding For Fun  Wilson.S.Weng: JavaScript 基礎訓練">
+    <meta itemprop="datePublished" content="February 22, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">保哥 javascript 實戰課程筆記
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#javascript-語言特性">javascript 語言特性</a></li>
+  <li><a href="#javascript-是個物件導向程式語言">javascript 是個物件導向程式語言</a></li>
+  <li><a href="#javascript-的物件特性">javascript 的物件特性</a>
+    <ul>
+      <li><a href="#1-javascript物件是個容器container">1. JavaScript物件是個容器(Container)。</a></li>
+      <li><a href="#2-javascript-物件其實就是-hashmap">2. JavaScript 物件其實就是 HashMap</a></li>
+      <li><a href="#3-javascript沒有class概念所以你可以不需要constructor就能建立物件">3. JavaScript沒有Class概念，所以你可以不需要constructor，就能建立物件</a></li>
+      <li><a href="#4-javascript的物件可以不需先行宣告就可以自由擴充屬性">4. javascript的物件可以不需先行宣告就可以自由擴充屬性</a></li>
+      <li><a href="#5-原生物件與宿主物件">5. 原生物件與宿主物件</a></li>
+    </ul>
+  </li>
+  <li><a href="#物件變數與型別的關係">物件、變數與型別的關係</a>
+    <ul>
+      <li><a href="#範例物件變數與型別之間的關係">範例：物件、變數與型別之間的關係</a></li>
+    </ul>
+  </li>
+  <li><a href="#函式物件-funciton-">函式物件( funciton )</a>
+    <ul>
+      <li><a href="#函式表示法">函式表示法</a></li>
+    </ul>
+  </li>
+  <li><a href="#後記">後記</a></li>
+  <li><a href="#參考資料">參考資料</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="javascript-語言特性">javascript 語言特性</h2>
+<ol>
+  <li>
+    <p>javascript是個動態型別語言，無法在開發期間宣告型別，意味著javascript的單一變數可能會隨時改變型別!</p>
+  </li>
+  <li>
+    <p>javascript是個弱型別的語言：意味著在開發時期無法指定javascript型別。只能在執行期間檢查型別。如果真的要知道這個變數的型態，只能在執行時透過typeof的方式將該變數目前的型別使用字串顯示。</p>
+  </li>
+  <li>
+    <p>javascript是個物件導向程式語言，除了五種 primitive type 以外其他都是物件。這部份會在下一節詳細的說明。</p>
+  </li>
+</ol>
+
+<h2 id="javascript-是個物件導向程式語言">javascript 是個物件導向程式語言</h2>
+<p>這節會從javascript是物件導向語言這個觀點延伸了解javascript的型別(type)。</p>
+<ol>
+  <li>
+    <p>除了數值(number) 字串(string) 布林(boolean) null undefined 這五個是原始型別(Primitive Type)外，所有的東西都是物件。
+<img src="https://lh5.googleusercontent.com/-kJ98NBVTZi4/VOltbCHXWAI/AAAAAAAAE9I/VxitLDd70sc/w734-h522-no/JavaScriptTypes1.jpg" alt="" />
+(引用自<a href="http://codesupport.info/are-you-confuse-with-data-types-in-javascript-yet/">Are You Still Confuse with Data Types in JavaScript ?</a>)</p>
+  </li>
+  <li>Primitive Wrapper 是將 primitive type 包裝成物件， 提供了許多方便的方法。但其實primitive type也可以調用這些方法，因為在使用這些方法時，javascript運作的環境會自動將 prinitive type 轉換成 Primitive Wrapper。</li>
+  <li>下圖中橢圓形的是primitive type而方形的就代表的是物件，可以看出primitive wrapper也是一種物件。
+<img src="https://lh5.googleusercontent.com/-yhcDRauPQxU/VOlwYklxcCI/AAAAAAAAE9Y/Oapb6t3gwz4/w817-h850-no/javascript%2Bprimitive%2Bwrapper.jpg" alt="" />
+（引用自<a href="http://www.wintellect.com/devcenter/mharpur/what-is-the-difference-between-javascript-null-and-undefined">What is the difference between JavaScript null and undefined? – Wintellect DevCenter</a>)</li>
+</ol>
+
+<h2 id="javascript-的物件特性">javascript 的物件特性</h2>
+
+<p>了解javascript的型別之後，接下來我們要來了解javascript的物件特性。</p>
+
+<h3 id="1-javascript物件是個容器container">1. JavaScript物件是個容器(Container)。</h3>
+
+<p>每個物件包含了<code class="highlighter-rouge">屬性(Property)</code>和<code class="highlighter-rouge">方法(Method或Function)</code>。</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">car</span><span class="o">=</span><span class="p">{};</span>           <span class="c1">//宣告物件(Object)</span>
+<span class="nx">car</span><span class="p">.</span><span class="nx">nume</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">BMW</span><span class="dl">"</span><span class="p">;</span>     <span class="c1">//name是car的屬性(Property)</span>
+<span class="nx">car</span><span class="p">.</span><span class="nx">start</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span> <span class="c1">//函式(Function)</span>
+    <span class="k">return</span> <span class="dl">"</span><span class="s2">OK</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">car_name</span> <span class="o">=</span> <span class="nx">car</span><span class="p">[</span><span class="dl">'</span><span class="s1">name</span><span class="dl">'</span><span class="p">];</span>
+</code></pre></div></div>
+
+<h3 id="2-javascript-物件其實就是-hashmap">2. JavaScript 物件其實就是 HashMap</h3>
+<ul>
+  <li>
+    <p>所有屬性名稱一定是字串</p>
+  </li>
+  <li>
+    <p>取得car的屬性name的內容有兩種取法 一種是物件取法<code class="highlighter-rouge">car.name</code> 和 另一種是陣列取法<code class="highlighter-rouge">car['name']</code>。</p>
+  </li>
+  <li>
+    <p>需要注意的是不能用數字當變數，所以<code class="highlighter-rouge">cat.007</code> is undefined ，但是妳可以使用<code class="highlighter-rouge">cat['007']</code>。</p>
+  </li>
+</ul>
+
+<p>（這部份code school的javascript課程有更多範例，未來有時間的時候再補充。）</p>
+
+<h3 id="3-javascript沒有class概念所以你可以不需要constructor就能建立物件">3. JavaScript沒有Class概念，所以你可以不需要constructor，就能建立物件</h3>
+
+<ol>
+  <li>javascript的constructor(建構式)就是函式，又稱建構式函式。</li>
+  <li>使用 new 關鍵字，透過建構式建立物件。</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">person</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">last</span><span class="p">,</span> <span class="nx">age</span><span class="p">,</span> <span class="nx">eyecolor</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">=</span> <span class="nx">first</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">lastName</span> <span class="o">=</span> <span class="nx">last</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="nx">age</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">eyeColor</span> <span class="o">=</span> <span class="nx">eyecolor</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">myFather</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">person</span><span class="p">(</span><span class="dl">"</span><span class="s2">John</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Doe</span><span class="dl">"</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="dl">"</span><span class="s2">blue</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">myMother</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">person</span><span class="p">(</span><span class="dl">"</span><span class="s2">Sally</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Rally</span><span class="dl">"</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="dl">"</span><span class="s2">green</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">myFather</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">person</span><span class="p">(</span><span class="dl">"</span><span class="s2">John</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Doe</span><span class="dl">"</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="dl">"</span><span class="s2">blue</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">myMother</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">person</span><span class="p">(</span><span class="dl">"</span><span class="s2">Sally</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">Rally</span><span class="dl">"</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="dl">"</span><span class="s2">green</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ol>
+  <li>因為javascript沒有Class概念，所以必須借助prototype的特性。</li>
+</ol>
+
+<h3 id="4-javascript的物件可以不需先行宣告就可以自由擴充屬性">4. javascript的物件可以不需先行宣告就可以自由擴充屬性</h3>
+
+<ol>
+  <li>
+    <p>這點是我之前學習時沒有發現的微妙之處，一般物件導向程式語言如java一定要先行宣告變數才能使用，而javascript卻不需要。</p>
+  </li>
+  <li>
+    <p>因為原始型別無法自由擴增屬性，所以針對 number,string,boolean有提供原始型別包裹方式，包裹成物件後，即可透過該物件自由擴增屬性。</p>
+  </li>
+  <li>
+    <p>物件也可以透過下列的方法轉換成原始型別。<code class="highlighter-rouge">valueOf()</code> : 物件型別轉成原始型別。<code class="highlighter-rouge">toString()</code> : 物件型別轉成字串型別。</p>
+  </li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">//物件範例</span>
+  <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="dl">'</span><span class="s1">b</span><span class="dl">'</span><span class="p">:</span><span class="mi">2</span> <span class="p">};</span>
+  <span class="c1">//擴增屬性</span>
+  <span class="nx">obj</span><span class="p">.</span><span class="nx">c</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="c1">//這時候obj就會有a, b, c三個屬性了</span>
+  <span class="c1">//刪除屬性</span>
+  <span class="nx">elete</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">b</span><span class="p">;</span>
+  <span class="c1">//這時候obj又只剩下a, c三個屬性了</span>
+</code></pre></div></div>
+
+<h3 id="5-原生物件與宿主物件">5. 原生物件與宿主物件</h3>
+<p>javascript有兩種物件：</p>
+<ul>
+  <li>原生物件(Native)，也可以叫做內建物件，例如Array、Date或是使用者自行定義(後面會提到)</li>
+  <li>宿主物件(Host)，例如window物件和所有DOM物件。</li>
+  <li>所有物件資料都從根物件(就是window)開始連結(chain)。</li>
+</ul>
+
+<p>怎麼去分辨這兩種物件，只要看看物件能不能在瀏覽器底下執行就可以，如果只能在瀏覽器底下執行，就是Host物件，如果在非瀏覽器的地方也可以執行，那就是Native。</p>
+
+<h2 id="物件變數與型別的關係">物件、變數與型別的關係</h2>
+<ul>
+  <li>物件(object)
+    <ul>
+      <li>記憶體中的資料</li>
+      <li>僅存在執行時期</li>
+    </ul>
+  </li>
+  <li>變數(variable)
+    <ul>
+      <li>用來儲存物件的記憶體位址(指標)</li>
+      <li>在開發時期進行宣告(使用var關鍵字)</li>
+    </ul>
+  </li>
+  <li>型別(type)
+    <ul>
+      <li>用來標示物件的種類</li>
+      <li>不同型別可能會有不同的預設屬性與方法</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="https://lh5.googleusercontent.com/-dtWA3IrgWbw/VOmNEZi5u8I/AAAAAAAAE98/m3Xk4tBMpzY/w577-h388-no/01333w234234willcourse.jpg" alt="" />
+(引用自<a href="http://windwaterbo-blog.logdown.com/posts/222722-baoge-typescript-combat-development-and-javascript-javascript-basic-beliefs-review">梅西的小腦袋</a>)</p>
+
+<h3 id="範例物件變數與型別之間的關係">範例：物件、變數與型別之間的關係</h3>
+<p>請問以下出現過幾個記憶體物件? 出現過幾個變數? 出現過幾個型別?</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">var</span> <span class="nx">a</span><span class="p">;</span>
+ <span class="nx">a</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+ <span class="nx">a</span><span class="o">=</span><span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="p">;</span>
+ <span class="nx">a</span><span class="o">=</span><span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="o">+</span><span class="nx">a</span><span class="p">;</span>
+</code></pre></div></div>
+<p><img src="https://lh6.googleusercontent.com/-CLFAmse7xK8/VOmLPzb_mAI/AAAAAAAAE9s/0h3IJXlCU8o/w673-h500-no/02willcourse.jpg" alt="" />
+(引用自<a href="http://windwaterbo-blog.logdown.com/posts/222722-baoge-typescript-combat-development-and-javascript-javascript-basic-beliefs-review">梅西的小腦袋</a>)</p>
+
+<p>ANS : 5個記憶體物件、1個變數、3個型別  ‘</p>
+
+<h2 id="函式物件-funciton-">函式物件( funciton )</h2>
+
+<p>函式是個特殊的物件(其實函式本身有一個內部物件，用來存放在函式中宣告的變數、物件與屬性，只是外部無法存取該內部物件。)，有兩大特色</p>
+
+<ol>
+  <li>函式是Javascript的一級物件(first-class object)
+    <ul>
+      <li>可以被動態建立</li>
+      <li>可以指定給變數，也可以複製給其他變數</li>
+      <li>可以擁有自己的屬性或方法(如同物件的特性)</li>
+    </ul>
+  </li>
+  <li>提供變數的作用域(scope)，換句話說，作用域是看function範圍，而不是 {} 的符號範圍，跟C#不一樣。</li>
+</ol>
+
+<h3 id="函式表示法">函式表示法</h3>
+
+<ul>
+  <li>表式式
+    <ul>
+      <li>具名表示
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var add = function add(a, b){return a+b;};
+</code></pre></div>        </div>
+      </li>
+      <li>匿名表示
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var add = function (a, b){return a+b;};
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li>宣告式</li>
+  <li>具名宣告
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function add(a, b){return a+b;};
+</code></pre></div>    </div>
+  </li>
+  <li>匿名宣告
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function (a, b){return a+b;};
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>使用匿名的方式，在偵錯或是效能調教時，會無法看出確切的函式位置，盡量避免。</p>
+
+<h2 id="後記">後記</h2>
+<p>保哥javascript實戰開發課程中還有更多的內容，本篇學習筆記重點放在理解 javascript 的重要特性和 javascript 的物件特性，函式部分只有稍稍帶過，更詳細的筆記將會在研讀<a href="http://www.codedata.com.tw/category/javascript/5">JavaScript語言核心系列</a>的時候記錄。</p>
+
+<h2 id="參考資料">參考資料</h2>
+<ul>
+  <li><a href="http://sfcer0414.logdown.com/posts/193415-javascript-concept-of-finishing-school-experience-1">JavaScript觀念整理-保哥上課心得 (1) « Coding For Fun</a></li>
+  <li><a href="http://sfcer0414.logdown.com/posts/194246-javascript-concept-of-finishing-school-experience-2">JavaScript觀念整理-保哥上課心得 (2) « Coding For Fun</a></li>
+  <li><a href="http://l7960261.blogspot.tw/2014/01/javascript.html">Wilson.S.Weng: JavaScript 基礎訓練</a></li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#course" class="page__taxonomy-item" rel="tag">Course</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-02-22T06:09:00+00:00">February 22, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/psd-to-html-with-bootstrap/" class="pagination--pager" title="排版練習2：PSD to html with Bootstrap
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/ajax/" class="pagination--pager" title="Ajax 學習筆記
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

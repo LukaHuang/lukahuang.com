@@ -1,0 +1,601 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>javascript核心筆記：Object - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="在 JavaScript 中，物件是 Object 的實例。你可以如下建立一個新的物件：var obj = new Object();實際上，現在已經很少人這麼撰寫了，使用物件實字（Object literal）語法就可以建立一個物件：var obj = {};上面你所看到的函式撰寫方式，稱之為函式實字（Function literal），這就像你寫下一個數值實字、物件實字或陣列實字，會產生數值或物件等：搜尋物件上的特性想要知道物件上有哪些自定義特性，可以使用 for in 語法，逐一取出物件的特性名稱。例如：&gt; for(var prop in obj) {...     console.log(prop);...     console.log(typeof prop);... }xstringystringundefined&gt; &#39;x&#39; in obj;true&gt;物件個性化在 JavaScript 中，每個物件都可以是獨一無二，不一定是由其建構式來規範，這能力稱為物件個性化（Object individuation），你可以隨時為物件新增特性（Properties），也可以隨時用 delete 運算子來刪除特性。有些內建特性無法被刪除，舉例來說，Array 實例有個 length 特性，你無法刪除它：&gt; var arr = [];undefined&gt; arr.length;0&gt; delete arr.length;false&gt;js物件的本質就像是Map物件JavaScript的物件本質上，其實是個特性與值的群集（Collection），要比喻的話，有點像是 Java 中的 Map 物件。如果你要使用 for in 取得物件上的特性與值，則可以如下：&gt; var obj = {...     x : 10,...     y : 20... };undefined&gt; for(var prop in obj) {...     console.log(prop + &#39;: &#39;, obj[prop]);... }x:  10y:  20undefined&gt;使用 [] 運算子的場合之一，就是當你的特性會包括空白、.字元、數字…等時。特性偵測特性便是javascript物件中的key。我們要偵測物件是否存在某特性時可以用以下兩種方式：  使用 in 測試物件上是否存在特性之外。  由於物件上不存在某個特性時，你試圖存取時會傳回 undefined，而undefined若在判斷是否成立時會被當作 false，所以就有了特性偵測的作法：    &gt; var obj = {};undefined&gt; obj.x ? &#39;has x&#39; : &#39;has no x&#39;;&#39;has no x&#39;&gt; obj.x = 10;10&gt; obj.x ? &#39;has x&#39; : &#39;has no x&#39;;&#39;has x&#39;&gt;      javascript是個弱型別語言JavaScript是個弱型別語言，在需要將物件的型別(Type)轉為number的時候，會呼叫 valueOf 方法。例如：&gt; var obj = {...     valueOf : function() {.....       return 100;.....   }... };undefined&gt; 100 + obj;200&gt; obj + 200;300&gt; obj &gt; 100;false&gt; obj &gt;= 100;true&gt;在需要將物件的Type轉換為字串的場合，則會呼叫toString方法。例如：&gt; var caterpillar = {...     name : &#39;Justin Lin&#39;,...     url  : &#39;openhome.cc&#39;,...     toString : function() {.....         return &#39;[name: &#39; + this.name + &#39;, url: &#39; + this.url + &#39;]&#39;;.....     }... };undefined&gt; &#39;My info: &#39; + caterpillar;&#39;My info: [name: Justin Lin, url: openhome.cc]&#39;&gt;比較”===”與”==”=== 用在物件比較時，是比較參考的對象是否為同一物件，而不是物件實際內含值（== 得考慮型態轉換後的結果)。如果你要比較兩個物件實際上是否為同一物件，必須自行定義專屬方法。可以命名為equals。function equals(other) {    return (this.name === other.name) &amp;&amp;  (this.url === other.url);}var man1 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equals};var man2 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equalsÂ};var man3 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equals};console.log(man1.equals(man2));  // trueconsole.log(man1.equals(man3));  // true如果了解prototype的概念，可以改寫成下面這樣。function Man(name, url) {    this.name = name;    this.url = url;}Man.prototype.equals = function(other) {    return (this.name === other.name) &amp;&amp;  (this.url === other.url);};var man1 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);var man2 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);var man3 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);console.log(man1.equals(man2));console.log(man1.equals(man3));參考資料JavaScript 語言核心（6）鍵值聚合體的物件 by caterpillar CodeData">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="javascript核心筆記：Object">
+
+
+  <link rel="canonical" href="https://lukahuang.com/javascript-core-note/">
+  <meta property="og:url" content="https://lukahuang.com/javascript-core-note/">
+
+
+
+  <meta property="og:description" content="在 JavaScript 中，物件是 Object 的實例。你可以如下建立一個新的物件：var obj = new Object();實際上，現在已經很少人這麼撰寫了，使用物件實字（Object literal）語法就可以建立一個物件：var obj = {};上面你所看到的函式撰寫方式，稱之為函式實字（Function literal），這就像你寫下一個數值實字、物件實字或陣列實字，會產生數值或物件等：搜尋物件上的特性想要知道物件上有哪些自定義特性，可以使用 for in 語法，逐一取出物件的特性名稱。例如：&gt; for(var prop in obj) {...     console.log(prop);...     console.log(typeof prop);... }xstringystringundefined&gt; &#39;x&#39; in obj;true&gt;物件個性化在 JavaScript 中，每個物件都可以是獨一無二，不一定是由其建構式來規範，這能力稱為物件個性化（Object individuation），你可以隨時為物件新增特性（Properties），也可以隨時用 delete 運算子來刪除特性。有些內建特性無法被刪除，舉例來說，Array 實例有個 length 特性，你無法刪除它：&gt; var arr = [];undefined&gt; arr.length;0&gt; delete arr.length;false&gt;js物件的本質就像是Map物件JavaScript的物件本質上，其實是個特性與值的群集（Collection），要比喻的話，有點像是 Java 中的 Map 物件。如果你要使用 for in 取得物件上的特性與值，則可以如下：&gt; var obj = {...     x : 10,...     y : 20... };undefined&gt; for(var prop in obj) {...     console.log(prop + &#39;: &#39;, obj[prop]);... }x:  10y:  20undefined&gt;使用 [] 運算子的場合之一，就是當你的特性會包括空白、.字元、數字…等時。特性偵測特性便是javascript物件中的key。我們要偵測物件是否存在某特性時可以用以下兩種方式：  使用 in 測試物件上是否存在特性之外。  由於物件上不存在某個特性時，你試圖存取時會傳回 undefined，而undefined若在判斷是否成立時會被當作 false，所以就有了特性偵測的作法：    &gt; var obj = {};undefined&gt; obj.x ? &#39;has x&#39; : &#39;has no x&#39;;&#39;has no x&#39;&gt; obj.x = 10;10&gt; obj.x ? &#39;has x&#39; : &#39;has no x&#39;;&#39;has x&#39;&gt;      javascript是個弱型別語言JavaScript是個弱型別語言，在需要將物件的型別(Type)轉為number的時候，會呼叫 valueOf 方法。例如：&gt; var obj = {...     valueOf : function() {.....       return 100;.....   }... };undefined&gt; 100 + obj;200&gt; obj + 200;300&gt; obj &gt; 100;false&gt; obj &gt;= 100;true&gt;在需要將物件的Type轉換為字串的場合，則會呼叫toString方法。例如：&gt; var caterpillar = {...     name : &#39;Justin Lin&#39;,...     url  : &#39;openhome.cc&#39;,...     toString : function() {.....         return &#39;[name: &#39; + this.name + &#39;, url: &#39; + this.url + &#39;]&#39;;.....     }... };undefined&gt; &#39;My info: &#39; + caterpillar;&#39;My info: [name: Justin Lin, url: openhome.cc]&#39;&gt;比較”===”與”==”=== 用在物件比較時，是比較參考的對象是否為同一物件，而不是物件實際內含值（== 得考慮型態轉換後的結果)。如果你要比較兩個物件實際上是否為同一物件，必須自行定義專屬方法。可以命名為equals。function equals(other) {    return (this.name === other.name) &amp;&amp;  (this.url === other.url);}var man1 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equals};var man2 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equalsÂ};var man3 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equals};console.log(man1.equals(man2));  // trueconsole.log(man1.equals(man3));  // true如果了解prototype的概念，可以改寫成下面這樣。function Man(name, url) {    this.name = name;    this.url = url;}Man.prototype.equals = function(other) {    return (this.name === other.name) &amp;&amp;  (this.url === other.url);};var man1 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);var man2 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);var man3 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);console.log(man1.equals(man2));console.log(man1.equals(man3));參考資料JavaScript 語言核心（6）鍵值聚合體的物件 by caterpillar CodeData">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-02-24T02:50:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="javascript核心筆記：Object">
+    <meta itemprop="description" content="在 JavaScript 中，物件是 Object 的實例。你可以如下建立一個新的物件：var obj = new Object();實際上，現在已經很少人這麼撰寫了，使用物件實字（Object literal）語法就可以建立一個物件：var obj = {};上面你所看到的函式撰寫方式，稱之為函式實字（Function literal），這就像你寫下一個數值實字、物件實字或陣列實字，會產生數值或物件等：搜尋物件上的特性想要知道物件上有哪些自定義特性，可以使用 for in 語法，逐一取出物件的特性名稱。例如：&gt; for(var prop in obj) {...     console.log(prop);...     console.log(typeof prop);... }xstringystringundefined&gt; &#39;x&#39; in obj;true&gt;物件個性化在 JavaScript 中，每個物件都可以是獨一無二，不一定是由其建構式來規範，這能力稱為物件個性化（Object individuation），你可以隨時為物件新增特性（Properties），也可以隨時用 delete 運算子來刪除特性。有些內建特性無法被刪除，舉例來說，Array 實例有個 length 特性，你無法刪除它：&gt; var arr = [];undefined&gt; arr.length;0&gt; delete arr.length;false&gt;js物件的本質就像是Map物件JavaScript的物件本質上，其實是個特性與值的群集（Collection），要比喻的話，有點像是 Java 中的 Map 物件。如果你要使用 for in 取得物件上的特性與值，則可以如下：&gt; var obj = {...     x : 10,...     y : 20... };undefined&gt; for(var prop in obj) {...     console.log(prop + &#39;: &#39;, obj[prop]);... }x:  10y:  20undefined&gt;使用 [] 運算子的場合之一，就是當你的特性會包括空白、.字元、數字…等時。特性偵測特性便是javascript物件中的key。我們要偵測物件是否存在某特性時可以用以下兩種方式：  使用 in 測試物件上是否存在特性之外。  由於物件上不存在某個特性時，你試圖存取時會傳回 undefined，而undefined若在判斷是否成立時會被當作 false，所以就有了特性偵測的作法：    &gt; var obj = {};undefined&gt; obj.x ? &#39;has x&#39; : &#39;has no x&#39;;&#39;has no x&#39;&gt; obj.x = 10;10&gt; obj.x ? &#39;has x&#39; : &#39;has no x&#39;;&#39;has x&#39;&gt;      javascript是個弱型別語言JavaScript是個弱型別語言，在需要將物件的型別(Type)轉為number的時候，會呼叫 valueOf 方法。例如：&gt; var obj = {...     valueOf : function() {.....       return 100;.....   }... };undefined&gt; 100 + obj;200&gt; obj + 200;300&gt; obj &gt; 100;false&gt; obj &gt;= 100;true&gt;在需要將物件的Type轉換為字串的場合，則會呼叫toString方法。例如：&gt; var caterpillar = {...     name : &#39;Justin Lin&#39;,...     url  : &#39;openhome.cc&#39;,...     toString : function() {.....         return &#39;[name: &#39; + this.name + &#39;, url: &#39; + this.url + &#39;]&#39;;.....     }... };undefined&gt; &#39;My info: &#39; + caterpillar;&#39;My info: [name: Justin Lin, url: openhome.cc]&#39;&gt;比較”===”與”==”=== 用在物件比較時，是比較參考的對象是否為同一物件，而不是物件實際內含值（== 得考慮型態轉換後的結果)。如果你要比較兩個物件實際上是否為同一物件，必須自行定義專屬方法。可以命名為equals。function equals(other) {    return (this.name === other.name) &amp;&amp;  (this.url === other.url);}var man1 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equals};var man2 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equalsÂ};var man3 = {    name : &#39;Justin Lin&#39;,    url  : &#39;openhome.cc&#39;,    equals : equals};console.log(man1.equals(man2));  // trueconsole.log(man1.equals(man3));  // true如果了解prototype的概念，可以改寫成下面這樣。function Man(name, url) {    this.name = name;    this.url = url;}Man.prototype.equals = function(other) {    return (this.name === other.name) &amp;&amp;  (this.url === other.url);};var man1 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);var man2 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);var man3 = new Man(&#39;Justin Lin&#39;, &#39;openhome.cc&#39;);console.log(man1.equals(man2));console.log(man1.equals(man3));參考資料JavaScript 語言核心（6）鍵值聚合體的物件 by caterpillar CodeData">
+    <meta itemprop="datePublished" content="February 24, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">javascript核心筆記：Object
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#搜尋物件上的特性">搜尋物件上的特性</a></li>
+  <li><a href="#物件個性化">物件個性化</a></li>
+  <li><a href="#js物件的本質就像是map物件">js物件的本質就像是Map物件</a></li>
+  <li><a href="#特性偵測">特性偵測</a></li>
+  <li><a href="#javascript是個弱型別語言">javascript是個弱型別語言</a></li>
+  <li><a href="#比較與">比較”===”與”==”</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>在 JavaScript 中，物件是 Object 的實例。你可以如下建立一個新的物件：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</code></pre></div></div>
+<p>實際上，現在已經很少人這麼撰寫了，使用物件實字（Object literal）語法就可以建立一個物件：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{};</span>
+</code></pre></div></div>
+<p>上面你所看到的函式撰寫方式，稱之為<code class="highlighter-rouge">函式實字（Function literal）</code>，這就像你寫下一個數值實字、物件實字或陣列實字，會產生數值或物件等：</p>
+
+<h3 id="搜尋物件上的特性">搜尋物件上的特性</h3>
+
+<p>想要知道物件上有哪些自定義特性，可以使用 for in 語法，逐一取出物件的特性名稱。例如：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">prop</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">...</span>     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prop</span><span class="p">);</span>
+<span class="p">...</span>     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">prop</span><span class="p">);</span>
+<span class="p">...</span> <span class="p">}</span>
+<span class="nx">x</span>
+<span class="nx">string</span>
+<span class="nx">y</span>
+<span class="nx">string</span>
+<span class="kc">undefined</span>
+<span class="o">&gt;</span> <span class="dl">'</span><span class="s1">x</span><span class="dl">'</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">;</span>
+<span class="kc">true</span>
+<span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="物件個性化">物件個性化</h3>
+<p>在 JavaScript 中，每個物件都可以是獨一無二，不一定是由其建構式來規範，這能力稱為物件個性化（Object individuation），你可以隨時為物件新增特性（Properties），也可以隨時用 delete 運算子來刪除特性。</p>
+
+<p>有些內建特性無法被刪除，舉例來說，Array 實例有個 length 特性，你無法刪除它：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kc">undefined</span>
+<span class="o">&gt;</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="mi">0</span>
+<span class="o">&gt;</span> <span class="k">delete</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="kc">false</span>
+<span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="js物件的本質就像是map物件">js物件的本質就像是Map物件</h3>
+
+<p>JavaScript的物件本質上，其實是個特性與值的群集（Collection），要比喻的話，有點像是 Java 中的 Map 物件。如果你要使用 for in 取得物件上的特性與值，則可以如下：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+<span class="p">...</span>     <span class="na">x</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">...</span>     <span class="na">y</span> <span class="p">:</span> <span class="mi">20</span>
+<span class="p">...</span> <span class="p">};</span>
+<span class="kc">undefined</span>
+<span class="o">&gt;</span> <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">prop</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">...</span>     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prop</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">: </span><span class="dl">'</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]);</span>
+<span class="p">...</span> <span class="p">}</span>
+<span class="nl">x</span><span class="p">:</span>  <span class="mi">10</span>
+<span class="nx">y</span><span class="p">:</span>  <span class="mi">20</span>
+<span class="kc">undefined</span>
+<span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>使用 [] 運算子的場合之一，就是當你的特性會包括空白、<code class="highlighter-rouge">.</code>字元、數字…等時。</p>
+
+<h3 id="特性偵測">特性偵測</h3>
+<p>特性便是javascript物件中的key。我們要偵測物件是否存在某特性時可以用以下兩種方式：</p>
+
+<ol>
+  <li>使用 in 測試物件上是否存在特性之外。</li>
+  <li>由於物件上不存在某個特性時，你試圖存取時會傳回 undefined，而undefined若在判斷是否成立時會被當作 false，所以就有了特性偵測的作法：
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kc">undefined</span>
+<span class="o">&gt;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">x</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">has x</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">has no x</span><span class="dl">'</span><span class="p">;</span>
+<span class="dl">'</span><span class="s1">has no x</span><span class="dl">'</span>
+<span class="o">&gt;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="mi">10</span>
+<span class="o">&gt;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">x</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">has x</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">has no x</span><span class="dl">'</span><span class="p">;</span>
+<span class="dl">'</span><span class="s1">has x</span><span class="dl">'</span>
+<span class="o">&gt;</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="javascript是個弱型別語言">javascript是個弱型別語言</h3>
+
+<p>JavaScript是個弱型別語言，在需要將物件的型別(Type)轉為number的時候，會呼叫 <code class="highlighter-rouge">valueOf</code> 方法。例如：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+<span class="p">...</span>     <span class="na">valueOf</span> <span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">.....</span>       <span class="k">return</span> <span class="mi">100</span><span class="p">;</span>
+<span class="p">.....</span>   <span class="p">}</span>
+<span class="p">...</span> <span class="p">};</span>
+<span class="kc">undefined</span>
+<span class="o">&gt;</span> <span class="mi">100</span> <span class="o">+</span> <span class="nx">obj</span><span class="p">;</span>
+<span class="mi">200</span>
+<span class="o">&gt;</span> <span class="nx">obj</span> <span class="o">+</span> <span class="mi">200</span><span class="p">;</span>
+<span class="mi">300</span>
+<span class="o">&gt;</span> <span class="nx">obj</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">;</span>
+<span class="kc">false</span>
+<span class="o">&gt;</span> <span class="nx">obj</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="kc">true</span>
+<span class="o">&gt;</span>
+</code></pre></div></div>
+<p>在需要將物件的Type轉換為字串的場合，則會呼叫<code class="highlighter-rouge">toString</code>方法。例如：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="kd">var</span> <span class="nx">caterpillar</span> <span class="o">=</span> <span class="p">{</span>
+<span class="p">...</span>     <span class="na">name</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">Justin Lin</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">...</span>     <span class="na">url</span>  <span class="p">:</span> <span class="dl">'</span><span class="s1">openhome.cc</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">...</span>     <span class="na">toString</span> <span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">.....</span>         <span class="k">return</span> <span class="dl">'</span><span class="s1">[name: </span><span class="dl">'</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">, url: </span><span class="dl">'</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">url</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">]</span><span class="dl">'</span><span class="p">;</span>
+<span class="p">.....</span>     <span class="p">}</span>
+<span class="p">...</span> <span class="p">};</span>
+<span class="kc">undefined</span>
+<span class="o">&gt;</span> <span class="dl">'</span><span class="s1">My info: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">caterpillar</span><span class="p">;</span>
+<span class="dl">'</span><span class="s1">My info: [name: Justin Lin, url: openhome.cc]</span><span class="dl">'</span>
+<span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="比較與">比較”===”與”==”</h3>
+
+<p><code class="highlighter-rouge">===</code> 用在物件比較時，是比較參考的對象是否為同一物件，而不是物件實際內含值（<code class="highlighter-rouge">==</code> 得考慮型態轉換後的結果)。</p>
+
+<p>如果你要比較兩個物件實際上是否為同一物件，必須自行定義專屬方法。可以命名為<code class="highlighter-rouge">equals</code>。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">equals</span><span class="p">(</span><span class="nx">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">===</span> <span class="nx">other</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span> <span class="o">&amp;&amp;</span>  <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="nx">other</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">man1</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">Justin Lin</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">url</span>  <span class="p">:</span> <span class="dl">'</span><span class="s1">openhome.cc</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">equals</span> <span class="p">:</span> <span class="nx">equals</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">man2</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">Justin Lin</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">url</span>  <span class="p">:</span> <span class="dl">'</span><span class="s1">openhome.cc</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">equals</span> <span class="p">:</span> <span class="nx">equalsÂ</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">man3</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">Justin Lin</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">url</span>  <span class="p">:</span> <span class="dl">'</span><span class="s1">openhome.cc</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">equals</span> <span class="p">:</span> <span class="nx">equals</span>
+<span class="p">};</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">man1</span><span class="p">.</span><span class="nx">equals</span><span class="p">(</span><span class="nx">man2</span><span class="p">));</span>  <span class="c1">// true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">man1</span><span class="p">.</span><span class="nx">equals</span><span class="p">(</span><span class="nx">man3</span><span class="p">));</span>  <span class="c1">// true</span>
+</code></pre></div></div>
+
+<p>如果了解prototype的概念，可以改寫成下面這樣。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">Man</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">url</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">Man</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">equals</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">other</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">===</span> <span class="nx">other</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span> <span class="o">&amp;&amp;</span>  <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="nx">other</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">man1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Man</span><span class="p">(</span><span class="dl">'</span><span class="s1">Justin Lin</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">openhome.cc</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">man2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Man</span><span class="p">(</span><span class="dl">'</span><span class="s1">Justin Lin</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">openhome.cc</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">man3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Man</span><span class="p">(</span><span class="dl">'</span><span class="s1">Justin Lin</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">openhome.cc</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">man1</span><span class="p">.</span><span class="nx">equals</span><span class="p">(</span><span class="nx">man2</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">man1</span><span class="p">.</span><span class="nx">equals</span><span class="p">(</span><span class="nx">man3</span><span class="p">));</span>
+</code></pre></div></div>
+<h2 id="參考資料">參考資料</h2>
+<p><a href="http://www.codedata.com.tw/javascript/essential-javascript-6-object/">JavaScript 語言核心（6）鍵值聚合體的物件 by caterpillar CodeData</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-02-24T02:50:00+00:00">February 24, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/ajax/" class="pagination--pager" title="Ajax 學習筆記
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/javascript-this/" class="pagination--pager" title="Javascript核心筆記：this
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,583 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>EFK(3) - Rails 與 Fluentd 的串接方法 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="幾種可以跟 Rails 串接的方式      gem ‘fluent-logger’ Centralize Logs from Ruby Applications        自定解析 fluent/fluent-plugin-grok-parser: Fluentd’s Grok parser        使用 Rails-logger 來蒐集, 如果你的目標是讓 EFK 變成一個 log 整合系統，這個方式是你的最佳選項。搭配 act-fluent-logger-rails&#39; 與 lograge 這兩個 gem, 可以將你的 log 更加的組織化。詳細教學請參照下方連結: Collecting and Analyzing Ruby on Rails Logs | Fluentd  這篇我們採用的方式是 1，優點是可以自定義 log 的形式，缺點是需要自行設計 log 系統。如果你只是想把原本存在於 log/prodcution.log 搜集到 EFK Stack，那可以使用 3 的方式來整合 Rails-app 的 log。而如果你想蒐集 Rails 以外的 log 如 apache 或是 nginx 的 log，則可以使用 2 的方式。Fluentd agent 與 Rails 的串接step 1: 使用 Gem 安裝 Fluentd這邊使用的方法是使用 gem 安裝，配合 rvm 方便管理，不會污染環境gem install fluentd -v &quot;~&gt; 0.12.0&quot; --no-ri --no-rdoc  Error: 因為我的開發環境用的 Rails 版本較舊，bundler 使用的是 1.14.4，在開發的時候遇到錯誤訊息gems/bundler-1.14.4/lib/bundler/rubygems_ext.rb:45:in full_gem_path&#39;。Solution：輸入 gem update --system 更新系統 gem 的版本。step 2: 產生設定檔輸入以下指令fluentd --setup ./fluent資料夾會變成這樣$ tree ..└── fluent    ├── fluent.conf    └── pluginstep 3: 啟動 fluentdfluentd -c ./fluent/fluent.conf -vv &amp;輸入後 fluentd 就可以順利跑起來了step 4: 測試 fluentd 功能是否正常require &#39;fluent-logger&#39;初始化 FluentdFluent::Logger::FluentLogger.open(nil, :host=&gt;&#39;localhost&#39;, :port=&gt;24224)來測試一下訊息Fluent::Logger.post(&quot;fluentd.test.follow&quot;, {&quot;from&quot;=&gt;&quot;userA&quot;, &quot;to&quot;=&gt;&quot;userB&quot;})結果2017-05-09 15:09:00 +0800 [warn]: fluent/agent.rb:170:emit: no patterns matched tag=&quot;fluentd.test.follow&quot;可以看到 fluentd 並沒有成功收到我們想記錄的 log，並發現警告訊息，原因是 Fluentd 蒐集 log pattern 並沒有包含 fluentd.test.followstep 5: 讓 Fluentd 可以蒐集到我們要的 log pattern來修改 Fluentd 的設定檔，打開設定檔：vim ./fluent/fluent.conf加入 pattern&lt;match fluentd.test.follow.**&gt;  @type stdout  @id stdout_output&lt;/match&gt;重新啟動 fluentd，再記錄一次 log 看看：Fluent::Logger::FluentLogger.open(nil, :host=&gt;&#39;localhost&#39;, :port=&gt;24224)Fluent::Logger.post(&quot;fluentd.test.follow&quot;, {&quot;from&quot;=&gt;&quot;userA&quot;, &quot;to&quot;=&gt;&quot;userB&quot;})結果2017-05-09 15:16:19 +0800 fluentd.test.follow: {&quot;from&quot;:&quot;userA&quot;,&quot;to&quot;:&quot;userB&quot;}這樣就完成單機上的 fluentd-agent 與 Rails Application 的串接了。介紹 Forward Input PluginFluentd 蒐集 Rails 的 Log 的時候，並不是使用讀取檔案的方式。而是使用 forward input plugin 來幫助蒐集。forward input plugin 是一個可以蒐集 tcp 或是 utp 協定的 fluentd plugin。forward Input Plugin - Fluentd參考資料Quickstart Guide - FluentdInstalling Fluentd Using Ruby Gem - FluentdCentralize Logs from Ruby Applications - Fluentd">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="EFK(3) - Rails 與 Fluentd 的串接方法">
+
+
+  <link rel="canonical" href="https://lukahuang.com/rails-connect-to-fluentd/">
+  <meta property="og:url" content="https://lukahuang.com/rails-connect-to-fluentd/">
+
+
+
+  <meta property="og:description" content="幾種可以跟 Rails 串接的方式      gem ‘fluent-logger’ Centralize Logs from Ruby Applications        自定解析 fluent/fluent-plugin-grok-parser: Fluentd’s Grok parser        使用 Rails-logger 來蒐集, 如果你的目標是讓 EFK 變成一個 log 整合系統，這個方式是你的最佳選項。搭配 act-fluent-logger-rails&#39; 與 lograge 這兩個 gem, 可以將你的 log 更加的組織化。詳細教學請參照下方連結: Collecting and Analyzing Ruby on Rails Logs | Fluentd  這篇我們採用的方式是 1，優點是可以自定義 log 的形式，缺點是需要自行設計 log 系統。如果你只是想把原本存在於 log/prodcution.log 搜集到 EFK Stack，那可以使用 3 的方式來整合 Rails-app 的 log。而如果你想蒐集 Rails 以外的 log 如 apache 或是 nginx 的 log，則可以使用 2 的方式。Fluentd agent 與 Rails 的串接step 1: 使用 Gem 安裝 Fluentd這邊使用的方法是使用 gem 安裝，配合 rvm 方便管理，不會污染環境gem install fluentd -v &quot;~&gt; 0.12.0&quot; --no-ri --no-rdoc  Error: 因為我的開發環境用的 Rails 版本較舊，bundler 使用的是 1.14.4，在開發的時候遇到錯誤訊息gems/bundler-1.14.4/lib/bundler/rubygems_ext.rb:45:in full_gem_path&#39;。Solution：輸入 gem update --system 更新系統 gem 的版本。step 2: 產生設定檔輸入以下指令fluentd --setup ./fluent資料夾會變成這樣$ tree ..└── fluent    ├── fluent.conf    └── pluginstep 3: 啟動 fluentdfluentd -c ./fluent/fluent.conf -vv &amp;輸入後 fluentd 就可以順利跑起來了step 4: 測試 fluentd 功能是否正常require &#39;fluent-logger&#39;初始化 FluentdFluent::Logger::FluentLogger.open(nil, :host=&gt;&#39;localhost&#39;, :port=&gt;24224)來測試一下訊息Fluent::Logger.post(&quot;fluentd.test.follow&quot;, {&quot;from&quot;=&gt;&quot;userA&quot;, &quot;to&quot;=&gt;&quot;userB&quot;})結果2017-05-09 15:09:00 +0800 [warn]: fluent/agent.rb:170:emit: no patterns matched tag=&quot;fluentd.test.follow&quot;可以看到 fluentd 並沒有成功收到我們想記錄的 log，並發現警告訊息，原因是 Fluentd 蒐集 log pattern 並沒有包含 fluentd.test.followstep 5: 讓 Fluentd 可以蒐集到我們要的 log pattern來修改 Fluentd 的設定檔，打開設定檔：vim ./fluent/fluent.conf加入 pattern&lt;match fluentd.test.follow.**&gt;  @type stdout  @id stdout_output&lt;/match&gt;重新啟動 fluentd，再記錄一次 log 看看：Fluent::Logger::FluentLogger.open(nil, :host=&gt;&#39;localhost&#39;, :port=&gt;24224)Fluent::Logger.post(&quot;fluentd.test.follow&quot;, {&quot;from&quot;=&gt;&quot;userA&quot;, &quot;to&quot;=&gt;&quot;userB&quot;})結果2017-05-09 15:16:19 +0800 fluentd.test.follow: {&quot;from&quot;:&quot;userA&quot;,&quot;to&quot;:&quot;userB&quot;}這樣就完成單機上的 fluentd-agent 與 Rails Application 的串接了。介紹 Forward Input PluginFluentd 蒐集 Rails 的 Log 的時候，並不是使用讀取檔案的方式。而是使用 forward input plugin 來幫助蒐集。forward input plugin 是一個可以蒐集 tcp 或是 utp 協定的 fluentd plugin。forward Input Plugin - Fluentd參考資料Quickstart Guide - FluentdInstalling Fluentd Using Ruby Gem - FluentdCentralize Logs from Ruby Applications - Fluentd">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2017-05-16T21:23:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="EFK(3) - Rails 與 Fluentd 的串接方法">
+    <meta itemprop="description" content="幾種可以跟 Rails 串接的方式      gem ‘fluent-logger’ Centralize Logs from Ruby Applications        自定解析 fluent/fluent-plugin-grok-parser: Fluentd’s Grok parser        使用 Rails-logger 來蒐集, 如果你的目標是讓 EFK 變成一個 log 整合系統，這個方式是你的最佳選項。搭配 act-fluent-logger-rails&#39; 與 lograge 這兩個 gem, 可以將你的 log 更加的組織化。詳細教學請參照下方連結: Collecting and Analyzing Ruby on Rails Logs | Fluentd  這篇我們採用的方式是 1，優點是可以自定義 log 的形式，缺點是需要自行設計 log 系統。如果你只是想把原本存在於 log/prodcution.log 搜集到 EFK Stack，那可以使用 3 的方式來整合 Rails-app 的 log。而如果你想蒐集 Rails 以外的 log 如 apache 或是 nginx 的 log，則可以使用 2 的方式。Fluentd agent 與 Rails 的串接step 1: 使用 Gem 安裝 Fluentd這邊使用的方法是使用 gem 安裝，配合 rvm 方便管理，不會污染環境gem install fluentd -v &quot;~&gt; 0.12.0&quot; --no-ri --no-rdoc  Error: 因為我的開發環境用的 Rails 版本較舊，bundler 使用的是 1.14.4，在開發的時候遇到錯誤訊息gems/bundler-1.14.4/lib/bundler/rubygems_ext.rb:45:in full_gem_path&#39;。Solution：輸入 gem update --system 更新系統 gem 的版本。step 2: 產生設定檔輸入以下指令fluentd --setup ./fluent資料夾會變成這樣$ tree ..└── fluent    ├── fluent.conf    └── pluginstep 3: 啟動 fluentdfluentd -c ./fluent/fluent.conf -vv &amp;輸入後 fluentd 就可以順利跑起來了step 4: 測試 fluentd 功能是否正常require &#39;fluent-logger&#39;初始化 FluentdFluent::Logger::FluentLogger.open(nil, :host=&gt;&#39;localhost&#39;, :port=&gt;24224)來測試一下訊息Fluent::Logger.post(&quot;fluentd.test.follow&quot;, {&quot;from&quot;=&gt;&quot;userA&quot;, &quot;to&quot;=&gt;&quot;userB&quot;})結果2017-05-09 15:09:00 +0800 [warn]: fluent/agent.rb:170:emit: no patterns matched tag=&quot;fluentd.test.follow&quot;可以看到 fluentd 並沒有成功收到我們想記錄的 log，並發現警告訊息，原因是 Fluentd 蒐集 log pattern 並沒有包含 fluentd.test.followstep 5: 讓 Fluentd 可以蒐集到我們要的 log pattern來修改 Fluentd 的設定檔，打開設定檔：vim ./fluent/fluent.conf加入 pattern&lt;match fluentd.test.follow.**&gt;  @type stdout  @id stdout_output&lt;/match&gt;重新啟動 fluentd，再記錄一次 log 看看：Fluent::Logger::FluentLogger.open(nil, :host=&gt;&#39;localhost&#39;, :port=&gt;24224)Fluent::Logger.post(&quot;fluentd.test.follow&quot;, {&quot;from&quot;=&gt;&quot;userA&quot;, &quot;to&quot;=&gt;&quot;userB&quot;})結果2017-05-09 15:16:19 +0800 fluentd.test.follow: {&quot;from&quot;:&quot;userA&quot;,&quot;to&quot;:&quot;userB&quot;}這樣就完成單機上的 fluentd-agent 與 Rails Application 的串接了。介紹 Forward Input PluginFluentd 蒐集 Rails 的 Log 的時候，並不是使用讀取檔案的方式。而是使用 forward input plugin 來幫助蒐集。forward input plugin 是一個可以蒐集 tcp 或是 utp 協定的 fluentd plugin。forward Input Plugin - Fluentd參考資料Quickstart Guide - FluentdInstalling Fluentd Using Ruby Gem - FluentdCentralize Logs from Ruby Applications - Fluentd">
+    <meta itemprop="datePublished" content="May 16, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">EFK(3) - Rails 與 Fluentd 的串接方法
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#幾種可以跟-rails-串接的方式">幾種可以跟 Rails 串接的方式</a></li>
+  <li><a href="#fluentd-agent-與-rails-的串接">Fluentd agent 與 Rails 的串接</a>
+    <ul>
+      <li><a href="#step-1-使用-gem-安裝-fluentd">step 1: 使用 Gem 安裝 Fluentd</a></li>
+      <li><a href="#step-2-產生設定檔">step 2: 產生設定檔</a></li>
+      <li><a href="#step-3-啟動-fluentd">step 3: 啟動 fluentd</a></li>
+      <li><a href="#step-4-測試-fluentd-功能是否正常">step 4: 測試 fluentd 功能是否正常</a></li>
+      <li><a href="#step-5-讓-fluentd-可以蒐集到我們要的-log-pattern">step 5: 讓 Fluentd 可以蒐集到我們要的 log pattern</a></li>
+    </ul>
+  </li>
+  <li><a href="#介紹-forward-input-plugin">介紹 Forward Input Plugin</a></li>
+  <li><a href="#參考資料">參考資料</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="幾種可以跟-rails-串接的方式">幾種可以跟 Rails 串接的方式</h2>
+
+<ol>
+  <li>
+    <p>gem ‘fluent-logger’
+ <a href="http://docs.fluentd.org/v0.12/articles/ruby">Centralize Logs from Ruby Applications</a></p>
+  </li>
+  <li>
+    <p>自定解析
+ <a href="https://github.com/fluent/fluent-plugin-grok-parser">fluent/fluent-plugin-grok-parser: Fluentd’s Grok parser</a></p>
+  </li>
+  <li>
+    <p>使用 Rails-logger 來蒐集, 如果你的目標是讓 EFK 變成一個 log 整合系統，這個方式是你的最佳選項。搭配 <code class="highlighter-rouge">act-fluent-logger-rails'
+</code> 與 <code class="highlighter-rouge">lograge</code> 這兩個 gem, 可以將你的 log 更加的組織化。詳細教學請參照下方連結:
+ <a href="http://www.fluentd.org/datasources/rails">Collecting and Analyzing Ruby on Rails Logs | Fluentd</a></p>
+  </li>
+</ol>
+
+<p>這篇我們採用的方式是 1，優點是可以自定義 log 的形式，缺點是需要自行設計 log 系統。如果你只是想把原本存在於 <code class="highlighter-rouge">log/prodcution.log</code> 搜集到 EFK Stack，那可以使用 3 的方式來整合 Rails-app 的 log。而如果你想蒐集 Rails 以外的 log 如 apache 或是 nginx 的 log，則可以使用 2 的方式。</p>
+
+<h2 id="fluentd-agent-與-rails-的串接">Fluentd agent 與 Rails 的串接</h2>
+
+<h3 id="step-1-使用-gem-安裝-fluentd">step 1: 使用 Gem 安裝 Fluentd</h3>
+
+<p>這邊使用的方法是使用 gem 安裝，
+配合 rvm 方便管理，不會污染環境</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem install fluentd -v "~&gt; 0.12.0" --no-ri --no-rdoc
+</code></pre></div></div>
+
+<blockquote>
+  <p>Error: 因為我的開發環境用的 Rails 版本較舊，bundler 使用的是 1.14.4，在開發的時候遇到錯誤訊息<code class="highlighter-rouge">gems/bundler-1.14.4/lib/bundler/rubygems_ext.rb:45:in full_gem_path'</code>。
+Solution：輸入 <code class="highlighter-rouge">gem update --system</code> 更新系統 gem 的版本。</p>
+</blockquote>
+
+<h3 id="step-2-產生設定檔">step 2: 產生設定檔</h3>
+
+<p>輸入以下指令</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fluentd --setup ./fluent
+</code></pre></div></div>
+
+<p>資料夾會變成這樣</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tree .
+.
+└── fluent
+    ├── fluent.conf
+    └── plugin
+</code></pre></div></div>
+
+<h3 id="step-3-啟動-fluentd">step 3: 啟動 fluentd</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fluentd -c ./fluent/fluent.conf -vv &amp;
+</code></pre></div></div>
+
+<p>輸入後 fluentd 就可以順利跑起來了</p>
+
+<p><img src="media/14943115845575/14943128690870.jpg" alt="" /></p>
+
+<h3 id="step-4-測試-fluentd-功能是否正常">step 4: 測試 fluentd 功能是否正常</h3>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'fluent-logger'</span>
+</code></pre></div></div>
+
+<p>初始化 Fluentd</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Fluent::Logger::FluentLogger.open(nil, :host=&gt;'localhost', :port=&gt;24224)
+</code></pre></div></div>
+
+<p>來測試一下訊息</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Fluent</span><span class="o">::</span><span class="no">Logger</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="s2">"fluentd.test.follow"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"from"</span><span class="o">=&gt;</span><span class="s2">"userA"</span><span class="p">,</span> <span class="s2">"to"</span><span class="o">=&gt;</span><span class="s2">"userB"</span><span class="p">})</span>
+</code></pre></div></div>
+
+<p>結果</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2017-05-09 15:09:00 +0800 [warn]: fluent/agent.rb:170:emit: no patterns matched tag="fluentd.test.follow"
+</code></pre></div></div>
+
+<p>可以看到 fluentd 並沒有成功收到我們想記錄的 log，並發現警告訊息，原因是 Fluentd 蒐集 log pattern 並沒有包含 <code class="highlighter-rouge">fluentd.test.follow</code></p>
+
+<h3 id="step-5-讓-fluentd-可以蒐集到我們要的-log-pattern">step 5: 讓 Fluentd 可以蒐集到我們要的 log pattern</h3>
+
+<p>來修改 Fluentd 的設定檔，打開設定檔：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim ./fluent/fluent.conf
+</code></pre></div></div>
+
+<p>加入 pattern</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;match fluentd.test.follow.**&gt;
+  @type stdout
+  @id stdout_output
+&lt;/match&gt;
+</code></pre></div></div>
+
+<p>重新啟動 fluentd，再記錄一次 log 看看：</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Fluent</span><span class="o">::</span><span class="no">Logger</span><span class="o">::</span><span class="no">FluentLogger</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="ss">:host</span><span class="o">=&gt;</span><span class="s1">'localhost'</span><span class="p">,</span> <span class="ss">:port</span><span class="o">=&gt;</span><span class="mi">24224</span><span class="p">)</span>
+<span class="no">Fluent</span><span class="o">::</span><span class="no">Logger</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="s2">"fluentd.test.follow"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"from"</span><span class="o">=&gt;</span><span class="s2">"userA"</span><span class="p">,</span> <span class="s2">"to"</span><span class="o">=&gt;</span><span class="s2">"userB"</span><span class="p">})</span>
+</code></pre></div></div>
+
+<p>結果</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2017-05-09 15:16:19 +0800 fluentd.test.follow: {"from":"userA","to":"userB"}
+</code></pre></div></div>
+
+<p>這樣就完成單機上的 fluentd-agent 與 Rails Application 的串接了。</p>
+
+<h2 id="介紹-forward-input-plugin">介紹 Forward Input Plugin</h2>
+
+<p>Fluentd 蒐集 Rails 的 Log 的時候，並不是使用讀取檔案的方式。
+而是使用 <code class="highlighter-rouge">forward input plugin</code> 來幫助蒐集。
+forward input plugin 是一個可以蒐集 tcp 或是 utp 協定的 fluentd plugin。</p>
+
+<p><a href="http://docs.fluentd.org/v0.12/articles/in_forward">forward Input Plugin - Fluentd</a></p>
+
+<h2 id="參考資料">參考資料</h2>
+
+<p><a href="http://docs.fluentd.org/v0.12/articles/quickstart">Quickstart Guide - Fluentd</a>
+<a href="http://docs.fluentd.org/v0.12/articles/install-by-gem">Installing Fluentd Using Ruby Gem - Fluentd</a>
+<a href="http://docs.fluentd.org/v0.12/articles/ruby">Centralize Logs from Ruby Applications - Fluentd</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#devops" class="page__taxonomy-item" rel="tag">Devops</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#efk" class="page__taxonomy-item" rel="tag">EFK</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#fluentd" class="page__taxonomy-item" rel="tag">Fluentd</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#osx" class="page__taxonomy-item" rel="tag">OSX</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-05-16T21:23:00+00:00">May 16, 2017</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/introduce-to-fluentd-efk/" class="pagination--pager" title="EFK(2) - 介紹 EFK (Elasticsaerch + Fluentd + Kibana)
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/fluentd-connect-to-elasticsearch-kibana/" class="pagination--pager" title="EFK(4) - 讓 Elasticsearch 與 Kibana 能夠接收 Rails 的 log
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

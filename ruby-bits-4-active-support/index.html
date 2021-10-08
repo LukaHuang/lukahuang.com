@@ -1,0 +1,524 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Ruby bits ( 4 )：ActiveSupport - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="install it and load itinstall itgem install activesupportgem install i18nload itrequire ‘active_support/all’core extensions: arrayarray.form()array.to()array.in_group_ofarray.splitecore extensions: Date.at_beginning_of_day.at_end_of_monthrcore extensions:hash有兩個hashoptions = {user: ‘codeschool’, lang: ‘fr’}new_options = {user: ‘codeschool’, lang: ‘fr’, password: ‘dunno’}options.diff(new_options)比較option與new_options的不同options.stringify_keysturn keys into stringsMerge hash會以前面的為主remove keysnew_options.except(:password)檢查是否有額外的keynew_options.assert_valid_keys(:user, :lang)，如果有額外的key的話就會出現警示訊息core extensions: integerodd or evenindex.odd?index.even?ordinallize”#{1.ordinalize} place!”“#{2.ordinalize} place!”“#{3.ordinalize} place!”pluralize and singularize轉換單字的單數與複數titleize and humznize延伸閱讀看完還是有點霧煞煞，接著來看ihower實戰聖經:active support">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Ruby bits ( 4 )：ActiveSupport">
+
+
+  <link rel="canonical" href="https://lukahuang.com/ruby-bits-4-active-support/">
+  <meta property="og:url" content="https://lukahuang.com/ruby-bits-4-active-support/">
+
+
+
+  <meta property="og:description" content="install it and load itinstall itgem install activesupportgem install i18nload itrequire ‘active_support/all’core extensions: arrayarray.form()array.to()array.in_group_ofarray.splitecore extensions: Date.at_beginning_of_day.at_end_of_monthrcore extensions:hash有兩個hashoptions = {user: ‘codeschool’, lang: ‘fr’}new_options = {user: ‘codeschool’, lang: ‘fr’, password: ‘dunno’}options.diff(new_options)比較option與new_options的不同options.stringify_keysturn keys into stringsMerge hash會以前面的為主remove keysnew_options.except(:password)檢查是否有額外的keynew_options.assert_valid_keys(:user, :lang)，如果有額外的key的話就會出現警示訊息core extensions: integerodd or evenindex.odd?index.even?ordinallize”#{1.ordinalize} place!”“#{2.ordinalize} place!”“#{3.ordinalize} place!”pluralize and singularize轉換單字的單數與複數titleize and humznize延伸閱讀看完還是有點霧煞煞，接著來看ihower實戰聖經:active support">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-05T08:12:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Ruby bits ( 4 )：ActiveSupport">
+    <meta itemprop="description" content="install it and load itinstall itgem install activesupportgem install i18nload itrequire ‘active_support/all’core extensions: arrayarray.form()array.to()array.in_group_ofarray.splitecore extensions: Date.at_beginning_of_day.at_end_of_monthrcore extensions:hash有兩個hashoptions = {user: ‘codeschool’, lang: ‘fr’}new_options = {user: ‘codeschool’, lang: ‘fr’, password: ‘dunno’}options.diff(new_options)比較option與new_options的不同options.stringify_keysturn keys into stringsMerge hash會以前面的為主remove keysnew_options.except(:password)檢查是否有額外的keynew_options.assert_valid_keys(:user, :lang)，如果有額外的key的話就會出現警示訊息core extensions: integerodd or evenindex.odd?index.even?ordinallize”#{1.ordinalize} place!”“#{2.ordinalize} place!”“#{3.ordinalize} place!”pluralize and singularize轉換單字的單數與複數titleize and humznize延伸閱讀看完還是有點霧煞煞，接著來看ihower實戰聖經:active support">
+    <meta itemprop="datePublished" content="September 05, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Ruby bits ( 4 )：ActiveSupport
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#install-it">install it</a></li>
+  <li><a href="#load-it">load it</a></li>
+  <li><a href="#core-extensions-array">core extensions: array</a></li>
+  <li><a href="#core-extensions-date">core extensions: Date</a></li>
+  <li><a href="#core-extensionshash">core extensions:hash</a>
+    <ul>
+      <li><a href="#optionsdiffnew_options">options.diff(new_options)</a></li>
+      <li><a href="#optionsstringify_keys">options.stringify_keys</a></li>
+      <li><a href="#merge-hash">Merge hash</a></li>
+      <li><a href="#remove-keys">remove keys</a></li>
+      <li><a href="#檢查是否有額外的key">檢查是否有額外的key</a></li>
+    </ul>
+  </li>
+  <li><a href="#odd-or-even">odd or even</a></li>
+  <li><a href="#ordinallize">ordinallize</a></li>
+  <li><a href="#pluralize-and-singularize">pluralize and singularize</a></li>
+  <li><a href="#titleize-and-humznize">titleize and humznize</a></li>
+  <li><a href="#延伸閱讀">延伸閱讀</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h1 id="install-it-and-load-it">install it and load it</h1>
+<h2 id="install-it">install it</h2>
+<p>gem install activesupport
+gem install i18n</p>
+
+<h2 id="load-it">load it</h2>
+<p>require ‘active_support/all’</p>
+
+<h2 id="core-extensions-array">core extensions: array</h2>
+<p>array.form()
+array.to()
+array.in_group_of
+array.splite</p>
+
+<p><img src="https://lh5.googleusercontent.com/OB4R69JvbILh1yuu6vN19DE4F4N0D2x2ctwontchPpg=w1755-h930-no" alt="" /></p>
+
+<h2 id="core-extensions-date">core extensions: Date</h2>
+<p>.at_beginning_of_day
+.at_end_of_monthr</p>
+
+<p><img src="https://lh4.googleusercontent.com/-gTpPXf3apRg/VAl8eIYhssI/AAAAAAAAC6I/gCGNlSzXD8E/w1755-h930-no/Screen%2BShot%2B2014-09-05%2Bat%2B17.03.04.png" alt="" />
+<img src="https://lh6.googleusercontent.com/-hrKJGiJ99Sk/VAl8eMcWUCI/AAAAAAAAC6E/cE1O4VGHvZ4/w1753-h913-no/Screen%2BShot%2B2014-09-05%2Bat%2B17.03.22.png" alt="" /></p>
+
+<h2 id="core-extensionshash">core extensions:hash</h2>
+<p>有兩個hash
+options = {user: ‘codeschool’, lang: ‘fr’}
+new_options = {user: ‘codeschool’, lang: ‘fr’, password: ‘dunno’}</p>
+
+<h3 id="optionsdiffnew_options"><strong>options.diff(new_options)</strong></h3>
+<p>比較option與new_options的不同</p>
+<h3 id="optionsstringify_keys"><strong>options.stringify_keys</strong></h3>
+<p>turn keys into strings
+<img src="https://lh6.googleusercontent.com/e2_pcizuLi1OlUovuZiSojCpYSu6RN7By3sOxdyXlP8=w1755-h925-no" alt="" /></p>
+
+<h3 id="merge-hash">Merge hash</h3>
+<p>會以前面的為主
+<img src="https://lh4.googleusercontent.com/bbHJCbvWR4bZkbWafn50FU-zEs_2mN961DVc7LCyRnE=w1518-h828-no" alt="" /></p>
+
+<h3 id="remove-keys">remove keys</h3>
+<p>new_options.except(:password)</p>
+
+<h3 id="檢查是否有額外的key">檢查是否有額外的key</h3>
+<p>new_options.assert_valid_keys(:user, :lang)，如果有額外的key的話就會出現警示訊息
+<img src="https://lh3.googleusercontent.com/-BuXD1yd6ELg/VAlzlXcFaOI/AAAAAAAAC4U/HwFcTSDaNLA/w1472-h424-no/Screen%2BShot%2B2014-09-05%2Bat%2B16.25.34.png" alt="" /></p>
+
+<h1 id="core-extensions-integer">core extensions: integer</h1>
+<h2 id="odd-or-even">odd or even</h2>
+<p>index.odd?
+index.even?
+<img src="https://lh3.googleusercontent.com/-wqEF5xlbw6I/VAl4Aad_csI/AAAAAAAAC5A/SIbmaS-L2Nw/w1753-h853-no/Screen%2BShot%2B2014-09-05%2Bat%2B16.44.04.png" alt="" /></p>
+
+<h2 id="ordinallize">ordinallize</h2>
+<p>”#{1.ordinalize} place!”
+“#{2.ordinalize} place!”
+“#{3.ordinalize} place!”
+<img src="https://lh6.googleusercontent.com/-UOYnfA1u4gs/VAl4AeYO7NI/AAAAAAAAC44/pLotT1TEP7A/w1755-h1050-no/Screen%2BShot%2B2014-09-05%2Bat%2B16.44.12.png" alt="" /></p>
+
+<h2 id="pluralize-and-singularize">pluralize and singularize</h2>
+<p>轉換單字的單數與複數
+<img src="https://lh5.googleusercontent.com/-eIRkulMno2c/VAl4AhVM0vI/AAAAAAAAC5E/xTXoDHRDGfk/w1755-h745-no/Screen%2BShot%2B2014-09-05%2Bat%2B16.44.24.png" alt="" /></p>
+
+<h2 id="titleize-and-humznize">titleize and humznize</h2>
+<p><img src="https://lh4.googleusercontent.com/-qlpsYKkMB4U/VAl4BvlyLRI/AAAAAAAAC5I/uMGS4bSgBrk/w1753-h658-no/Screen%2BShot%2B2014-09-05%2Bat%2B16.44.29.png" alt="" /></p>
+
+<h2 id="延伸閱讀">延伸閱讀</h2>
+<p>看完還是有點霧煞煞，接著來看<a href="http://ihower.tw/rails3/activesupport.html">ihower實戰聖經:active support</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby-bit" class="page__taxonomy-item" rel="tag">Ruby Bit</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby" class="page__taxonomy-item" rel="tag">Ruby</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-05T08:12:00+00:00">September 05, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/ruby-bits-3-class/" class="pagination--pager" title="Ruby bits ( 3 )：Class
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/ruby-bits-5-modules/" class="pagination--pager" title="Ruby bits ( 5 )：Modules
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

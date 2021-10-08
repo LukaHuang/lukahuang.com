@@ -1,0 +1,516 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>EDX Linux Foundation Ch15：Shell Script ( Ch14跳過 ) - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="這是參加開源社群Tossug Linux讀書會的心得筆記，部分內容經過大大的補充，讓學習上更完整:）Ch14講的是Printer，因為實際使用上較多Bug所以跳過這一章節，等有需要的時候再來學習。Shelllinux系統可分為三個重要的部份：1.kernel2.shell3.application因為kernel的部份太過低階，所以需要透過一個友善介面(interface)來讓使用者操作的時候更為方便，這個介面便是shell。涵蓋範圍包括但不限於：CLI (Command line interface)GUI (Graphical user interface)常見的CLI有以下幾種。sh是最古老的shell，大部分的linux系統使用上sh時，會直接使用其他shell的對應功能來取代，所以使用時需特別注意，就算語法是sh，其實實際上運作的是bash或者其他的shell如zsh…等等。csh 用c寫shell其他shell如zsh功能較bash強大，但是bash是一般linux系統最常見最基本的shell，所以撰寫 Shell Script 時，使用 Bash 是較好的選擇。GUI的話，略過不提，在linux下還是學習Command Line來的踏實。Bash的兩種工作模式  interactive mode  shell script modeinteracitive mode 就是在終端機中一一輸入指令，等待一個指令執行完接著輸入下一個指令。而shell script mode顧名思義就是寫成.sh檔並執行裡面的shell script code，而shell script code就是由一連串的命令所組成。第一支bash Scripts來試試看寫下第一個bash程式$ cat &gt; exscript.sh  #!/bin/bash  echo &quot;HELLO&quot;  echo &quot;WORLD&quot;輸入chmod +x exscript.sh讓檔案可以執行。重點整理1.Defensive BASH Programminghttp://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/好的coding style可以大幅降低錯誤發生的機率。2.double bracketshttp://mywiki.wooledge.org/BashFAQ/031在使用判斷式的時候 (例如：if) 使用[[]]代替[]，這樣可以減少很大出錯的原因。3.如何實現function回傳值？Shell Script 可視為是一種字串取代的過程。呼叫 echo 輸出參數可以就可以讓其他不同scope的函數使用該參數。4. shell script中的遞迴遞迴在shell scipt中並不會佔用太多的記憶體。這是由於shell script的語言特性是一連串的字串取代。你不知道的shell scriptShell Script 可以 import libary。可以把程式拆成許多函式庫。Shell Script 可以 include Module。可以把程式拆解成許多模組。Shell Script 有 Test Unit 叫做shunit。參考連結tossug linux 讀書會 第11週">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="EDX Linux Foundation Ch15：Shell Script ( Ch14跳過 )">
+
+
+  <link rel="canonical" href="https://lukahuang.com/edx-linux-foundation-ch15shell-script/">
+  <meta property="og:url" content="https://lukahuang.com/edx-linux-foundation-ch15shell-script/">
+
+
+
+  <meta property="og:description" content="這是參加開源社群Tossug Linux讀書會的心得筆記，部分內容經過大大的補充，讓學習上更完整:）Ch14講的是Printer，因為實際使用上較多Bug所以跳過這一章節，等有需要的時候再來學習。Shelllinux系統可分為三個重要的部份：1.kernel2.shell3.application因為kernel的部份太過低階，所以需要透過一個友善介面(interface)來讓使用者操作的時候更為方便，這個介面便是shell。涵蓋範圍包括但不限於：CLI (Command line interface)GUI (Graphical user interface)常見的CLI有以下幾種。sh是最古老的shell，大部分的linux系統使用上sh時，會直接使用其他shell的對應功能來取代，所以使用時需特別注意，就算語法是sh，其實實際上運作的是bash或者其他的shell如zsh…等等。csh 用c寫shell其他shell如zsh功能較bash強大，但是bash是一般linux系統最常見最基本的shell，所以撰寫 Shell Script 時，使用 Bash 是較好的選擇。GUI的話，略過不提，在linux下還是學習Command Line來的踏實。Bash的兩種工作模式  interactive mode  shell script modeinteracitive mode 就是在終端機中一一輸入指令，等待一個指令執行完接著輸入下一個指令。而shell script mode顧名思義就是寫成.sh檔並執行裡面的shell script code，而shell script code就是由一連串的命令所組成。第一支bash Scripts來試試看寫下第一個bash程式$ cat &gt; exscript.sh  #!/bin/bash  echo &quot;HELLO&quot;  echo &quot;WORLD&quot;輸入chmod +x exscript.sh讓檔案可以執行。重點整理1.Defensive BASH Programminghttp://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/好的coding style可以大幅降低錯誤發生的機率。2.double bracketshttp://mywiki.wooledge.org/BashFAQ/031在使用判斷式的時候 (例如：if) 使用[[]]代替[]，這樣可以減少很大出錯的原因。3.如何實現function回傳值？Shell Script 可視為是一種字串取代的過程。呼叫 echo 輸出參數可以就可以讓其他不同scope的函數使用該參數。4. shell script中的遞迴遞迴在shell scipt中並不會佔用太多的記憶體。這是由於shell script的語言特性是一連串的字串取代。你不知道的shell scriptShell Script 可以 import libary。可以把程式拆成許多函式庫。Shell Script 可以 include Module。可以把程式拆解成許多模組。Shell Script 有 Test Unit 叫做shunit。參考連結tossug linux 讀書會 第11週">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-10-13T14:30:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="EDX Linux Foundation Ch15：Shell Script ( Ch14跳過 )">
+    <meta itemprop="description" content="這是參加開源社群Tossug Linux讀書會的心得筆記，部分內容經過大大的補充，讓學習上更完整:）Ch14講的是Printer，因為實際使用上較多Bug所以跳過這一章節，等有需要的時候再來學習。Shelllinux系統可分為三個重要的部份：1.kernel2.shell3.application因為kernel的部份太過低階，所以需要透過一個友善介面(interface)來讓使用者操作的時候更為方便，這個介面便是shell。涵蓋範圍包括但不限於：CLI (Command line interface)GUI (Graphical user interface)常見的CLI有以下幾種。sh是最古老的shell，大部分的linux系統使用上sh時，會直接使用其他shell的對應功能來取代，所以使用時需特別注意，就算語法是sh，其實實際上運作的是bash或者其他的shell如zsh…等等。csh 用c寫shell其他shell如zsh功能較bash強大，但是bash是一般linux系統最常見最基本的shell，所以撰寫 Shell Script 時，使用 Bash 是較好的選擇。GUI的話，略過不提，在linux下還是學習Command Line來的踏實。Bash的兩種工作模式  interactive mode  shell script modeinteracitive mode 就是在終端機中一一輸入指令，等待一個指令執行完接著輸入下一個指令。而shell script mode顧名思義就是寫成.sh檔並執行裡面的shell script code，而shell script code就是由一連串的命令所組成。第一支bash Scripts來試試看寫下第一個bash程式$ cat &gt; exscript.sh  #!/bin/bash  echo &quot;HELLO&quot;  echo &quot;WORLD&quot;輸入chmod +x exscript.sh讓檔案可以執行。重點整理1.Defensive BASH Programminghttp://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/好的coding style可以大幅降低錯誤發生的機率。2.double bracketshttp://mywiki.wooledge.org/BashFAQ/031在使用判斷式的時候 (例如：if) 使用[[]]代替[]，這樣可以減少很大出錯的原因。3.如何實現function回傳值？Shell Script 可視為是一種字串取代的過程。呼叫 echo 輸出參數可以就可以讓其他不同scope的函數使用該參數。4. shell script中的遞迴遞迴在shell scipt中並不會佔用太多的記憶體。這是由於shell script的語言特性是一連串的字串取代。你不知道的shell scriptShell Script 可以 import libary。可以把程式拆成許多函式庫。Shell Script 可以 include Module。可以把程式拆解成許多模組。Shell Script 有 Test Unit 叫做shunit。參考連結tossug linux 讀書會 第11週">
+    <meta itemprop="datePublished" content="October 13, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">EDX Linux Foundation Ch15：Shell Script ( Ch14跳過 )
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#bash的兩種工作模式">Bash的兩種工作模式</a></li>
+  <li><a href="#第一支bash-scripts">第一支bash Scripts</a></li>
+  <li><a href="#重點整理">重點整理</a>
+    <ul>
+      <li><a href="#1defensive-bash-programming">1.Defensive BASH Programming</a></li>
+      <li><a href="#2double-brackets">2.double brackets</a></li>
+      <li><a href="#3如何實現function回傳值">3.如何實現function回傳值？</a></li>
+      <li><a href="#4-shell-script中的遞迴">4. shell script中的遞迴</a></li>
+    </ul>
+  </li>
+  <li><a href="#你不知道的shell-script">你不知道的shell script</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>這是參加開源社群Tossug Linux讀書會的心得筆記，部分內容經過大大的補充，讓學習上更完整:）
+Ch14講的是Printer，因為實際使用上較多Bug所以跳過這一章節，等有需要的時候再來學習。</p>
+
+<h1 id="shell">Shell</h1>
+<p>linux系統可分為三個重要的部份：
+1.kernel
+2.shell
+3.application</p>
+
+<p>因為kernel的部份太過低階，所以需要透過一個友善介面(interface)來讓使用者操作的時候更為方便，這個介面便是shell。涵蓋範圍包括但不限於：</p>
+
+<p>CLI (Command line interface)
+GUI (Graphical user interface)</p>
+
+<p>常見的CLI有以下幾種。
+<img src="https://lh4.googleusercontent.com/-Bxs23-huhzU/VDzh7zDaaII/AAAAAAAADII/sFNHHEnQwKk/w1618-h1185-no/Screen%2BShot%2B2014-10-14%2Bat%2B16.32.01.png" alt="" /></p>
+
+<p>sh是最古老的shell，大部分的linux系統使用上sh時，會直接使用其他shell的對應功能來取代，所以使用時需特別注意，就算語法是sh，其實實際上運作的是bash或者其他的shell如zsh…等等。</p>
+
+<p>csh 用c寫shell</p>
+
+<p>其他shell如zsh功能較bash強大，但是bash是一般linux系統最常見最基本的shell，所以撰寫 Shell Script 時，使用 Bash 是較好的選擇。</p>
+
+<p>GUI的話，略過不提，在linux下還是學習Command Line來的踏實。</p>
+
+<h2 id="bash的兩種工作模式">Bash的兩種工作模式</h2>
+<ol>
+  <li>interactive mode</li>
+  <li>shell script mode</li>
+</ol>
+
+<p>interacitive mode 就是在終端機中一一輸入指令，等待一個指令執行完接著輸入下一個指令。而shell script mode顧名思義就是寫成.sh檔並執行裡面的shell script code，而shell script code就是由一連串的命令所組成。</p>
+
+<h2 id="第一支bash-scripts">第一支bash Scripts</h2>
+<p>來試試看寫下第一個bash程式</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&gt;</span> exscript.sh
+  <span class="c">#!/bin/bash</span>
+  <span class="nb">echo</span> <span class="s2">"HELLO"</span>
+  <span class="nb">echo</span> <span class="s2">"WORLD"</span>
+</code></pre></div></div>
+<p>輸入<code class="highlighter-rouge">chmod +x exscript.sh</code>讓檔案可以執行。</p>
+
+<h2 id="重點整理">重點整理</h2>
+
+<h3 id="1defensive-bash-programming">1.Defensive BASH Programming</h3>
+<p>http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
+好的coding style可以大幅降低錯誤發生的機率。</p>
+
+<h3 id="2double-brackets">2.double brackets</h3>
+<p>http://mywiki.wooledge.org/BashFAQ/031
+在使用判斷式的時候 (例如：if) 使用<code class="highlighter-rouge">[[]]</code>代替<code class="highlighter-rouge">[]</code>，這樣可以減少很大出錯的原因。</p>
+
+<h3 id="3如何實現function回傳值">3.如何實現function回傳值？</h3>
+<p>Shell Script 可視為是一種字串取代的過程。呼叫 echo 輸出參數可以就可以讓其他不同scope的函數使用該參數。</p>
+
+<h3 id="4-shell-script中的遞迴">4. shell script中的遞迴</h3>
+<p>遞迴在shell scipt中並不會佔用太多的記憶體。這是由於shell script的語言特性是一連串的字串取代。</p>
+
+<h2 id="你不知道的shell-script">你不知道的shell script</h2>
+<p>Shell Script 可以 import libary。可以把程式拆成許多函式庫。
+Shell Script 可以 include Module。可以把程式拆解成許多模組。
+Shell Script 有 Test Unit 叫做shunit。</p>
+
+<h1 id="參考連結">參考連結</h1>
+<p><a href="https://tossug.hackpad.com/Linux-11-10142014-b6y4uC6HCCw">tossug linux 讀書會 第11週</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#edx-linux-foundation" class="page__taxonomy-item" rel="tag">EDX Linux Foundation</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#linux" class="page__taxonomy-item" rel="tag">Linux</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-10-13T14:30:00+00:00">October 13, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/jquery-return-flight-5-jquery-plugins/" class="pagination--pager" title="jQuery Return Flight Ch5 ( 1 )：Advanced Event
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/atom-prevent-snippet-package-updates/" class="pagination--pager" title="Atom 防止 Snippet Package 更新
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

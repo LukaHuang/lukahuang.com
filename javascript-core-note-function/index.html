@@ -1,0 +1,528 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Javascript核心筆記：function  - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="javascript的函數是一級物件(First-Class)function是由Function的實例，並且在javascript中可以指定給變數，函式與數值的地位相同，並不會像有些語言中，無法像數值一樣地被指定，不會淪為二等公民，因此，對於支持函式可如數值一樣指定給變數的語言，我們稱函式在這個語言中是一級函數。var number = 10;        // Number literalvar obj = {x : 10};     // Object literalvar array = [1, 2, 3];  // Array literalvar func = function() { // Function literal    // do something...};函式既然是物件，本身亦可擁有特性。例如函式有個 length 特性，代表其參數個數：var gcd = function g(num1, num2) {    return num2 != 0 ? g(num2, num1 % num2) : num1;};console.log(gcd.length); // 2函數的回傳值函式沒設定return時，預設回傳undefined。輸入的參數與引數不符合時如果函式傳入的參數不足時是可以執行的，不足的部份會自動補上undefined。function func(a, b) {    console.log(a);    console.log(b);}func(10, 20);         // 10 20func(10);             // 10 undefinedfunc();               // undefined undefinedfunc(10, 20, 30, 40); // 10 20傳入比參數個數還多的引數也是可行的，在函式內部會自動宣告 arguments 名稱參考至具陣列外觀的物件，上頭帶有所有傳入的引數。例如，你可以如下設計一個加總數值的函式：function sum() {    var sum = 0;    for(var i = 0; i &lt; arguments.length; i++) {        sum += arguments[i];    }    return sum;}console.log(sum(1, 2));;      // 3console.log(sum(1, 2, 3));    // 6console.log(sum(1, 2, 3, 4)); // 10arguments 不是 Array 實例，它只是具有數字作為特性，特性參考至傳入的引數，並具有 length 特性代表傳入引數的個數。你可以使用arguments.length來檢查引數個數。在 EMCAScript 5 前的版本，參數只是具名的引數，你改變參數的值，arguments 對應索引的參考值也會相應的改變。然而，若採用 EMCAScript 5 嚴格模式，參數的值 與 arguments 的元素值彼此互不影響。函式宣告式、函式表達式與匿名函數  表達式          具名表達式 var add = function add(a, b){return a+b;};      匿名表達式 var add = function (a, b){return a+b;};        宣告式          具名宣告 function add(a, b){return a+b;};      匿名宣告 function (a, b){return a+b;};      宣告式的特性有：  在javascript引擎解析javascript程式碼時，會受到Function declaration Hoisting，提升到作用域的最前面執行。  後面加括號不可以立刻調用函數表達式的特性有：  當javascript引擎執行到表達式的那行程式碼時，才會開始解析。  後面加括號立刻調用函數。立即函數要在函數體後面加括號就能立即調用，則這個函數必須是函數表達式，不能是函數宣告式。所以立即函數的本質是函數表達式。立即函數可以讓括號內的變數變成區域變數，這部份請參考Scope的筆記。後記除了本篇提到的性質以外，物件的建構式也是由function來構建，學習時一併理解以釐清不清楚的地方。參考資料js中(function(){…})()立即执行函数写法理解">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Javascript核心筆記：function">
+
+
+  <link rel="canonical" href="https://lukahuang.com/javascript-core-note-function/">
+  <meta property="og:url" content="https://lukahuang.com/javascript-core-note-function/">
+
+
+
+  <meta property="og:description" content="javascript的函數是一級物件(First-Class)function是由Function的實例，並且在javascript中可以指定給變數，函式與數值的地位相同，並不會像有些語言中，無法像數值一樣地被指定，不會淪為二等公民，因此，對於支持函式可如數值一樣指定給變數的語言，我們稱函式在這個語言中是一級函數。var number = 10;        // Number literalvar obj = {x : 10};     // Object literalvar array = [1, 2, 3];  // Array literalvar func = function() { // Function literal    // do something...};函式既然是物件，本身亦可擁有特性。例如函式有個 length 特性，代表其參數個數：var gcd = function g(num1, num2) {    return num2 != 0 ? g(num2, num1 % num2) : num1;};console.log(gcd.length); // 2函數的回傳值函式沒設定return時，預設回傳undefined。輸入的參數與引數不符合時如果函式傳入的參數不足時是可以執行的，不足的部份會自動補上undefined。function func(a, b) {    console.log(a);    console.log(b);}func(10, 20);         // 10 20func(10);             // 10 undefinedfunc();               // undefined undefinedfunc(10, 20, 30, 40); // 10 20傳入比參數個數還多的引數也是可行的，在函式內部會自動宣告 arguments 名稱參考至具陣列外觀的物件，上頭帶有所有傳入的引數。例如，你可以如下設計一個加總數值的函式：function sum() {    var sum = 0;    for(var i = 0; i &lt; arguments.length; i++) {        sum += arguments[i];    }    return sum;}console.log(sum(1, 2));;      // 3console.log(sum(1, 2, 3));    // 6console.log(sum(1, 2, 3, 4)); // 10arguments 不是 Array 實例，它只是具有數字作為特性，特性參考至傳入的引數，並具有 length 特性代表傳入引數的個數。你可以使用arguments.length來檢查引數個數。在 EMCAScript 5 前的版本，參數只是具名的引數，你改變參數的值，arguments 對應索引的參考值也會相應的改變。然而，若採用 EMCAScript 5 嚴格模式，參數的值 與 arguments 的元素值彼此互不影響。函式宣告式、函式表達式與匿名函數  表達式          具名表達式 var add = function add(a, b){return a+b;};      匿名表達式 var add = function (a, b){return a+b;};        宣告式          具名宣告 function add(a, b){return a+b;};      匿名宣告 function (a, b){return a+b;};      宣告式的特性有：  在javascript引擎解析javascript程式碼時，會受到Function declaration Hoisting，提升到作用域的最前面執行。  後面加括號不可以立刻調用函數表達式的特性有：  當javascript引擎執行到表達式的那行程式碼時，才會開始解析。  後面加括號立刻調用函數。立即函數要在函數體後面加括號就能立即調用，則這個函數必須是函數表達式，不能是函數宣告式。所以立即函數的本質是函數表達式。立即函數可以讓括號內的變數變成區域變數，這部份請參考Scope的筆記。後記除了本篇提到的性質以外，物件的建構式也是由function來構建，學習時一併理解以釐清不清楚的地方。參考資料js中(function(){…})()立即执行函数写法理解">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-02-27T09:55:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Javascript核心筆記：function">
+    <meta itemprop="description" content="javascript的函數是一級物件(First-Class)function是由Function的實例，並且在javascript中可以指定給變數，函式與數值的地位相同，並不會像有些語言中，無法像數值一樣地被指定，不會淪為二等公民，因此，對於支持函式可如數值一樣指定給變數的語言，我們稱函式在這個語言中是一級函數。var number = 10;        // Number literalvar obj = {x : 10};     // Object literalvar array = [1, 2, 3];  // Array literalvar func = function() { // Function literal    // do something...};函式既然是物件，本身亦可擁有特性。例如函式有個 length 特性，代表其參數個數：var gcd = function g(num1, num2) {    return num2 != 0 ? g(num2, num1 % num2) : num1;};console.log(gcd.length); // 2函數的回傳值函式沒設定return時，預設回傳undefined。輸入的參數與引數不符合時如果函式傳入的參數不足時是可以執行的，不足的部份會自動補上undefined。function func(a, b) {    console.log(a);    console.log(b);}func(10, 20);         // 10 20func(10);             // 10 undefinedfunc();               // undefined undefinedfunc(10, 20, 30, 40); // 10 20傳入比參數個數還多的引數也是可行的，在函式內部會自動宣告 arguments 名稱參考至具陣列外觀的物件，上頭帶有所有傳入的引數。例如，你可以如下設計一個加總數值的函式：function sum() {    var sum = 0;    for(var i = 0; i &lt; arguments.length; i++) {        sum += arguments[i];    }    return sum;}console.log(sum(1, 2));;      // 3console.log(sum(1, 2, 3));    // 6console.log(sum(1, 2, 3, 4)); // 10arguments 不是 Array 實例，它只是具有數字作為特性，特性參考至傳入的引數，並具有 length 特性代表傳入引數的個數。你可以使用arguments.length來檢查引數個數。在 EMCAScript 5 前的版本，參數只是具名的引數，你改變參數的值，arguments 對應索引的參考值也會相應的改變。然而，若採用 EMCAScript 5 嚴格模式，參數的值 與 arguments 的元素值彼此互不影響。函式宣告式、函式表達式與匿名函數  表達式          具名表達式 var add = function add(a, b){return a+b;};      匿名表達式 var add = function (a, b){return a+b;};        宣告式          具名宣告 function add(a, b){return a+b;};      匿名宣告 function (a, b){return a+b;};      宣告式的特性有：  在javascript引擎解析javascript程式碼時，會受到Function declaration Hoisting，提升到作用域的最前面執行。  後面加括號不可以立刻調用函數表達式的特性有：  當javascript引擎執行到表達式的那行程式碼時，才會開始解析。  後面加括號立刻調用函數。立即函數要在函數體後面加括號就能立即調用，則這個函數必須是函數表達式，不能是函數宣告式。所以立即函數的本質是函數表達式。立即函數可以讓括號內的變數變成區域變數，這部份請參考Scope的筆記。後記除了本篇提到的性質以外，物件的建構式也是由function來構建，學習時一併理解以釐清不清楚的地方。參考資料js中(function(){…})()立即执行函数写法理解">
+    <meta itemprop="datePublished" content="February 27, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Javascript核心筆記：function
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#javascript的函數是一級物件first-class">javascript的函數是一級物件(First-Class)</a></li>
+  <li><a href="#函數的回傳值">函數的回傳值</a></li>
+  <li><a href="#輸入的參數與引數不符合時">輸入的參數與引數不符合時</a></li>
+  <li><a href="#函式宣告式函式表達式與匿名函數">函式宣告式、函式表達式與匿名函數</a></li>
+  <li><a href="#立即函數">立即函數</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h3 id="javascript的函數是一級物件first-class">javascript的函數是一級物件(First-Class)</h3>
+<p>function是由Function的實例，並且在javascript中可以指定給變數，函式與數值的地位相同，並不會像有些語言中，無法像數值一樣地被指定，不會淪為二等公民，因此，對於支持函式可如數值一樣指定給變數的語言，我們稱函式在這個語言中是一級函數。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">number</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>        <span class="c1">// Number literal</span>
+<span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span> <span class="p">:</span> <span class="mi">10</span><span class="p">};</span>     <span class="c1">// Object literal</span>
+<span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>  <span class="c1">// Array literal</span>
+<span class="kd">var</span> <span class="nx">func</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// Function literal</span>
+    <span class="c1">// do something...</span>
+<span class="p">};</span>
+</code></pre></div></div>
+<p>函式既然是物件，本身亦可擁有特性。例如函式有個 length 特性，代表其參數個數：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">gcd</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">g</span><span class="p">(</span><span class="nx">num1</span><span class="p">,</span> <span class="nx">num2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">num2</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">?</span> <span class="nx">g</span><span class="p">(</span><span class="nx">num2</span><span class="p">,</span> <span class="nx">num1</span> <span class="o">%</span> <span class="nx">num2</span><span class="p">)</span> <span class="p">:</span> <span class="nx">num1</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">gcd</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span> <span class="c1">// 2</span>
+</code></pre></div></div>
+
+<h3 id="函數的回傳值">函數的回傳值</h3>
+
+<p>函式沒設定return時，預設回傳<code class="highlighter-rouge">undefined</code>。</p>
+
+<h3 id="輸入的參數與引數不符合時">輸入的參數與引數不符合時</h3>
+<p>如果函式傳入的參數不足時是可以執行的，不足的部份會自動補上<code class="highlighter-rouge">undefined</code>。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">func</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">func</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>         <span class="c1">// 10 20</span>
+<span class="nx">func</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>             <span class="c1">// 10 undefined</span>
+<span class="nx">func</span><span class="p">();</span>               <span class="c1">// undefined undefined</span>
+<span class="nx">func</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">);</span> <span class="c1">// 10 20</span>
+</code></pre></div></div>
+<p>傳入比參數個數還多的引數也是可行的，在函式內部會自動宣告 arguments 名稱參考至具陣列外觀的物件，上頭帶有所有傳入的引數。例如，你可以如下設計一個加總數值的函式：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">sum</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">sum</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">));;</span>      <span class="c1">// 3</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>    <span class="c1">// 6</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span> <span class="c1">// 10</span>
+</code></pre></div></div>
+<p>arguments 不是 Array 實例，它只是具有數字作為特性，特性參考至傳入的引數，並具有 length 特性代表傳入引數的個數。你可以使用arguments.length來檢查引數個數。</p>
+
+<p>在 <code class="highlighter-rouge">EMCAScript 5 前的版本</code>，參數只是具名的引數，你改變參數的值，arguments 對應索引的參考值也會相應的改變。然而，若採用 <code class="highlighter-rouge">EMCAScript 5 嚴格模式</code>，參數的值 與 arguments 的元素值彼此互不影響。</p>
+
+<h3 id="函式宣告式函式表達式與匿名函數">函式宣告式、函式表達式與匿名函數</h3>
+
+<ul>
+  <li>表達式
+    <ul>
+      <li>具名表達式 var add = function add(a, b){return a+b;};</li>
+      <li>匿名表達式 var add = function (a, b){return a+b;};</li>
+    </ul>
+  </li>
+  <li>宣告式
+    <ul>
+      <li>具名宣告 function add(a, b){return a+b;};</li>
+      <li>匿名宣告 function (a, b){return a+b;};</li>
+    </ul>
+  </li>
+</ul>
+
+<p>宣告式的特性有：</p>
+<ul>
+  <li>在javascript引擎解析javascript程式碼時，會受到Function declaration Hoisting，提升到作用域的最前面執行。</li>
+  <li>後面加括號<code class="highlighter-rouge">不可以</code>立刻調用函數</li>
+</ul>
+
+<p>表達式的特性有：</p>
+<ul>
+  <li>當javascript引擎執行到表達式的那行程式碼時，才會開始解析。</li>
+  <li>後面加括號<code class="highlighter-rouge">立刻</code>調用函數。</li>
+</ul>
+
+<h3 id="立即函數">立即函數</h3>
+<p>要在函數體後面加括號就能立即調用，則這個函數必須是函數表達式，不能是函數宣告式。所以立即函數的本質是函數表達式。立即函數可以讓括號內的變數變成區域變數，這部份請參考Scope的筆記。</p>
+
+<h2 id="後記">後記</h2>
+<p>除了本篇提到的性質以外，物件的建構式也是由function來構建，學習時一併理解以釐清不清楚的地方。</p>
+
+<h2 id="參考資料">參考資料</h2>
+<p><a href="http://dengo.org/archives/1004">js中(function(){…})()立即执行函数写法理解</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-02-27T09:55:00+00:00">February 27, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/javascript-core-note-callback/" class="pagination--pager" title="Javascript核心筆記：callback
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/javascript-core-note-scope/" class="pagination--pager" title="Javascript核心筆記：scope
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

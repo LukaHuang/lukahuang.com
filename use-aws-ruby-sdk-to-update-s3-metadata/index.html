@@ -1,0 +1,595 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>[譯] 使用 AWS Ruby SDK v2 更新 S3 物件 Metadata - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="  From: Updating S3 Object Metadata With the AWS Ruby SDK v2Author: Mattposted at: 2017/5/31">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="[譯] 使用 AWS Ruby SDK v2 更新 S3 物件 Metadata">
+
+
+  <link rel="canonical" href="https://lukahuang.com/use-aws-ruby-sdk-to-update-s3-metadata/">
+  <meta property="og:url" content="https://lukahuang.com/use-aws-ruby-sdk-to-update-s3-metadata/">
+
+
+
+  <meta property="og:description" content="  From: Updating S3 Object Metadata With the AWS Ruby SDK v2Author: Mattposted at: 2017/5/31">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2018-01-25T15:32:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[譯] 使用 AWS Ruby SDK v2 更新 S3 物件 Metadata">
+    <meta itemprop="description" content="  From: Updating S3 Object Metadata With the AWS Ruby SDK v2Author: Mattposted at: 2017/5/31">
+    <meta itemprop="datePublished" content="January 25, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">[譯] 使用 AWS Ruby SDK v2 更新 S3 物件 Metadata
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#s3-不是資料庫">S3 不是資料庫</a></li>
+  <li><a href="#更新--複製物件並且保留原有的資訊">更新 / 複製物件並且保留原有的資訊</a></li>
+  <li><a href="#最後">最後</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>From: <a href="https://mattboldt.com/updating-s3-object-metadata-in-ruby/">Updating S3 Object Metadata With the AWS Ruby SDK v2</a>
+Author: Matt
+posted at: 2017/5/31</p>
+</blockquote>
+
+<p>今天我在 S3 就如同在玩火一樣 - 弄壞了一個網站. 我做了研究，徹底的測試了我的程式碼，接著按下了 enter. 之後沒多久，我的心掉落的和我的網站掛掉的速度一樣快。我決定寫下一篇速記來防止同樣的錯誤發生在其他人身上。</p>
+
+<h2 id="s3-不是資料庫">S3 不是資料庫</h2>
+
+<p>不可能在 S3 中做到「更新」資料庫 - 在S3並沒有更新資料的方法。這在 Ruby SDK 與 AWS CLI 之中都是成立的。如果你項我一樣在找尋更新整個 Bucket 的物件來更新 metadata (舉例來說: 像是名為 <code class="highlighter-rouge">Cache-Control</code> 的 headers)，你將會需要使用 <code class="highlighter-rouge">copy_to</code> 方法。</p>
+
+<p>讓我們開始認證和攫取我們的 bucket。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'aws-sdk'</span>
+
+<span class="no">Aws</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+  <span class="ss">region: </span><span class="s1">'us-east-1'</span><span class="p">,</span>
+  <span class="ss">credentials: </span><span class="no">Aws</span><span class="o">::</span><span class="no">Credentials</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="o">&lt;</span><span class="no">AWS_ACCESS_KEY</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="no">AWS_SECRET_KEY</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Resource</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">bucket</span> <span class="o">=</span> <span class="n">s3</span><span class="p">.</span><span class="nf">bucket</span><span class="p">(</span><span class="s1">'mattboldt-bucket'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>現在我們可以透過每一個物件和複製它自己並且帶上一些新的 metadata. 注意我們使用 option <code class="highlighter-rouge">metadata_directive: 'REPLACE'</code> - 這個將會以新的 metadata <em>取代</em>物件原有的 metadata。如果缺少它，我們將無法複製任何新的，而且會得到錯誤訊息如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This copy request is illegal because it is trying to copy an object to itself without changing the object's metadata, storage class, website redirect location or encryption attributes
+</code></pre></div></div>
+
+<p>然而，取代 metadata 將會取代其它屬於這個物件的所有東西，例如: 權限(permission). 請勿執行以下的代碼。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># the WRONG way
+bucket.objects.each do |object_summary|
+  location = "#{bucket.name}/#{object_summary.key}"
+  options = {
+    cache_control: 'public, max-age=60',
+    metadata_directive: 'REPLACE' # options: 'COPY' or 'REPLACE'
+  }
+  object_summary.copy_to(location, options)
+end
+</code></pre></div></div>
+
+<p>這是我所搞砸的。我更新的所有的 S3 物件因為缺少了讀的權限(read permissions)，接著 CDN 不再可以存取這些資料。現在看起來是一個很蠢的錯誤，但當時我對出錯的狀況沒有任何頭緒。</p>
+
+<h2 id="更新--複製物件並且保留原有的資訊">更新 / 複製物件並且保留原有的資訊</h2>
+
+<p>讓我們再試一次；這次我們確保 request 包含(include)所有物件的欄位。這邊是一個可能的選項清單( list of possible options)，用途是傳送到 <code class="highlighter-rouge">copy_to</code> 方法。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">COPY_TO_OPTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:multipart_copy</span><span class="p">,</span> <span class="ss">:content_length</span><span class="p">,</span> <span class="ss">:copy_source_client</span><span class="p">,</span> <span class="ss">:copy_source_region</span><span class="p">,</span> <span class="ss">:acl</span><span class="p">,</span> <span class="ss">:cache_control</span><span class="p">,</span> <span class="ss">:content_disposition</span><span class="p">,</span> <span class="ss">:content_encoding</span><span class="p">,</span> <span class="ss">:content_language</span><span class="p">,</span> <span class="ss">:content_type</span><span class="p">,</span> <span class="ss">:copy_source_if_match</span><span class="p">,</span> <span class="ss">:copy_source_if_modified_since</span><span class="p">,</span> <span class="ss">:copy_source_if_none_match</span><span class="p">,</span> <span class="ss">:copy_source_if_unmodified_since</span><span class="p">,</span> <span class="ss">:expires</span><span class="p">,</span> <span class="ss">:grant_full_control</span><span class="p">,</span> <span class="ss">:grant_read</span><span class="p">,</span> <span class="ss">:grant_read_acp</span><span class="p">,</span> <span class="ss">:grant_write_acp</span><span class="p">,</span> <span class="ss">:metadata</span><span class="p">,</span> <span class="ss">:metadata_directive</span><span class="p">,</span> <span class="ss">:tagging_directive</span><span class="p">,</span> <span class="ss">:server_side_encryption</span><span class="p">,</span> <span class="ss">:storage_class</span><span class="p">,</span> <span class="ss">:website_redirect_location</span><span class="p">,</span> <span class="ss">:sse_customer_algorithm</span><span class="p">,</span> <span class="ss">:sse_customer_key</span><span class="p">,</span> <span class="ss">:sse_customer_key_md5</span><span class="p">,</span> <span class="ss">:ssekms_key_id</span><span class="p">,</span> <span class="ss">:copy_source_sse_customer_algorithm</span><span class="p">,</span> <span class="ss">:copy_source_sse_customer_key</span><span class="p">,</span> <span class="ss">:copy_source_sse_customer_key_md5</span><span class="p">,</span> <span class="ss">:request_payer</span><span class="p">,</span> <span class="ss">:tagging</span><span class="p">,</span> <span class="ss">:use_accelerate_endpoint</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>用這個 List 武裝之後，我們抓取所有存在的資料並且 merge 到新的 option hash。我只想要加上驗證 (valid) 選項而不是使用 <code class="highlighter-rouge">get</code> 取得所有資訊，所以我使用 <code class="highlighter-rouge">Array#slice</code> 來對之前的清單做處理。</p>
+
+<p>也需要注意的是，我使用在下面 <code class="highlighter-rouge">object_summary.get</code> - 這是因為物件的摘要並不包含 metadata, permission … 之類的東西。這會造成額外的開銷，但是此時我不確定還有其他任何方法可以達到同樣的目的。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bucket</span><span class="p">.</span><span class="nf">objects</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">object_summary</span><span class="o">|</span>
+  <span class="n">object</span> <span class="o">=</span> <span class="n">object_summary</span><span class="p">.</span><span class="nf">get</span>
+  <span class="n">location</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="n">bucket</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">object_summary</span><span class="p">.</span><span class="nf">key</span><span class="si">}</span><span class="s2">"</span>
+
+  <span class="c1"># Build a new options object</span>
+  <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+  <span class="c1"># Merge in the object's existing properties</span>
+  <span class="n">existing_options</span> <span class="o">=</span> <span class="n">object</span><span class="p">.</span><span class="nf">to_h</span><span class="p">.</span><span class="nf">slice</span><span class="p">(</span><span class="o">*</span><span class="no">COPY_TO_OPTIONS</span><span class="p">)</span>
+  <span class="n">options</span><span class="p">.</span><span class="nf">merge!</span><span class="p">(</span><span class="n">existing_options</span><span class="p">)</span>
+
+  <span class="c1"># Add our new updates</span>
+  <span class="c1"># The `acl` option here was very important in my case!</span>
+  <span class="n">options</span><span class="p">.</span><span class="nf">merge!</span><span class="p">({</span>
+    <span class="ss">acl: </span><span class="s1">'public-read'</span><span class="p">,</span> <span class="c1"># private, public-read, public-read-write, authenticated-read, aws-exec-read, bucket-owner-read, bucket-owner-full-control</span>
+    <span class="ss">cache_control: </span><span class="s1">'public, max-age=60'</span><span class="p">,</span>
+    <span class="ss">metadata_directive: </span><span class="s1">'REPLACE'</span>
+  <span class="p">})</span>
+
+  <span class="c1"># multipart_copy is necessary if the object is 5GB+</span>
+  <span class="k">if</span> <span class="n">object</span><span class="p">.</span><span class="nf">size</span> <span class="o">&gt;=</span> <span class="mi">5_000_000_000</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">merge!</span><span class="p">({</span><span class="ss">multipart_copy: </span><span class="kp">true</span><span class="p">})</span>
+  <span class="k">else</span>
+    <span class="c1"># Only used if multipart_copy is true</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:content_length</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Execute the copy!</span>
+  <span class="n">object_summary</span><span class="p">.</span><span class="nf">copy_to</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>如果你的 bucket 的大小很大，這會用到一些時間。然而，你得知道 <code class="highlighter-rouge">copy_to</code> 方法發出請求至 S3 和不會從你的本地端上傳任何的資料。所以即使你複製到新的位置，你也不會重新上傳檔案。</p>
+
+<p><a href="https://gist.githubusercontent.com/mattboldt/6052bac987c16b73563d4d6c56d7509b/raw/d317cde9653592d4553e7665e632937dffb327e8/s3-updater.rb">這邊</a>是完整的程式碼：</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'aws-sdk'</span>
+<span class="nb">require</span> <span class="s1">'active_support'</span>
+<span class="nb">require</span> <span class="s1">'active_support/core_ext'</span>
+
+<span class="c1"># http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_to-instance_method</span>
+<span class="no">COPY_TO_OPTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:multipart_copy</span><span class="p">,</span> <span class="ss">:content_length</span><span class="p">,</span> <span class="ss">:copy_source_client</span><span class="p">,</span> <span class="ss">:copy_source_region</span><span class="p">,</span> <span class="ss">:acl</span><span class="p">,</span> <span class="ss">:cache_control</span><span class="p">,</span> <span class="ss">:content_disposition</span><span class="p">,</span> <span class="ss">:content_encoding</span><span class="p">,</span> <span class="ss">:content_language</span><span class="p">,</span> <span class="ss">:content_type</span><span class="p">,</span> <span class="ss">:copy_source_if_match</span><span class="p">,</span> <span class="ss">:copy_source_if_modified_since</span><span class="p">,</span> <span class="ss">:copy_source_if_none_match</span><span class="p">,</span> <span class="ss">:copy_source_if_unmodified_since</span><span class="p">,</span> <span class="ss">:expires</span><span class="p">,</span> <span class="ss">:grant_full_control</span><span class="p">,</span> <span class="ss">:grant_read</span><span class="p">,</span> <span class="ss">:grant_read_acp</span><span class="p">,</span> <span class="ss">:grant_write_acp</span><span class="p">,</span> <span class="ss">:metadata</span><span class="p">,</span> <span class="ss">:metadata_directive</span><span class="p">,</span> <span class="ss">:tagging_directive</span><span class="p">,</span> <span class="ss">:server_side_encryption</span><span class="p">,</span> <span class="ss">:storage_class</span><span class="p">,</span> <span class="ss">:website_redirect_location</span><span class="p">,</span> <span class="ss">:sse_customer_algorithm</span><span class="p">,</span> <span class="ss">:sse_customer_key</span><span class="p">,</span> <span class="ss">:sse_customer_key_md5</span><span class="p">,</span> <span class="ss">:ssekms_key_id</span><span class="p">,</span> <span class="ss">:copy_source_sse_customer_algorithm</span><span class="p">,</span> <span class="ss">:copy_source_sse_customer_key</span><span class="p">,</span> <span class="ss">:copy_source_sse_customer_key_md5</span><span class="p">,</span> <span class="ss">:request_payer</span><span class="p">,</span> <span class="ss">:tagging</span><span class="p">,</span> <span class="ss">:use_accelerate_endpoint</span><span class="p">]</span>
+
+<span class="no">Aws</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+  <span class="ss">region: </span><span class="s1">'us-east-1'</span><span class="p">,</span>
+  <span class="ss">credentials: </span><span class="no">Aws</span><span class="o">::</span><span class="no">Credentials</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">AWS_ACCESS_KEY</span><span class="p">,</span> <span class="no">AWS_SECRET_KEY</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Resource</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">bucket</span> <span class="o">=</span> <span class="n">s3</span><span class="p">.</span><span class="nf">bucket</span><span class="p">(</span><span class="s1">'mattboldt-bucket'</span><span class="p">)</span>
+<span class="n">objects_count</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">objects</span><span class="p">.</span><span class="nf">count</span>
+<span class="n">current_object</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">bucket</span><span class="p">.</span><span class="nf">objects</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">object_summary</span><span class="o">|</span>
+
+  <span class="c1"># Get the object and all its metadata, permissions, etc</span>
+  <span class="n">object</span> <span class="o">=</span> <span class="n">object_summary</span><span class="p">.</span><span class="nf">get</span>
+  <span class="c1"># Copy to the same location</span>
+  <span class="n">location</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="n">bucket</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">object_summary</span><span class="p">.</span><span class="nf">key</span><span class="si">}</span><span class="s2">"</span>
+
+  <span class="c1"># Build a new options object</span>
+  <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+  <span class="c1"># Merge in the object's existing properties, but only keeping valid attributes for the copy_to method</span>
+  <span class="n">existing_options</span> <span class="o">=</span> <span class="n">object</span><span class="p">.</span><span class="nf">to_h</span><span class="p">.</span><span class="nf">slice</span><span class="p">(</span><span class="o">*</span><span class="no">COPY_TO_OPTIONS</span><span class="p">)</span>
+  <span class="n">options</span><span class="p">.</span><span class="nf">merge!</span><span class="p">(</span><span class="n">existing_options</span><span class="p">)</span>
+
+  <span class="c1"># Add our new updates</span>
+  <span class="n">options</span><span class="p">.</span><span class="nf">merge!</span><span class="p">({</span>
+    <span class="ss">acl: </span><span class="s1">'public-read'</span><span class="p">,</span> <span class="c1"># private, public-read, public-read-write, authenticated-read, aws-exec-read, bucket-owner-read, bucket-owner-full-control</span>
+    <span class="ss">cache_control: </span><span class="s1">'public, max-age=60'</span><span class="p">,</span>
+    <span class="ss">metadata_directive: </span><span class="s1">'REPLACE'</span>
+  <span class="p">})</span>
+
+  <span class="c1"># multipart_copy is necessary if the object is 5GB+</span>
+  <span class="k">if</span> <span class="n">object</span><span class="p">.</span><span class="nf">size</span> <span class="o">&gt;=</span> <span class="mi">5_000_000_000</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">merge!</span><span class="p">({</span><span class="ss">multipart_copy: </span><span class="kp">true</span><span class="p">})</span>
+  <span class="k">else</span>
+    <span class="c1"># Only used if multipart_copy is true</span>
+    <span class="n">options</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:content_length</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">begin</span>
+    <span class="n">object_summary</span><span class="p">.</span><span class="nf">copy_to</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+    <span class="n">current_object</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="nb">puts</span> <span class="s2">"Copied </span><span class="si">#{</span><span class="n">current_object</span><span class="si">}</span><span class="s2"> of </span><span class="si">#{</span><span class="n">objects_count</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
+    <span class="nb">puts</span> <span class="s2">"Excption Raised: </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="最後">最後</h2>
+
+<p>如果你覺得這對你有幫助, 請 <a href="https://twitter.com/atmattb">tweet @atMattb</a>。謝謝閱讀。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#aws" class="page__taxonomy-item" rel="tag">AWS</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#s3" class="page__taxonomy-item" rel="tag">S3</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-01-25T15:32:00+00:00">January 25, 2018</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/aws-s3-delimiter-and-prefix/" class="pagination--pager" title="[譯] Amazon S3 Delimiter and Prefix
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/modify-and-restore-mysql-partition/" class="pagination--pager" title="Mysql - 如何修改 partition 並還原資料
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

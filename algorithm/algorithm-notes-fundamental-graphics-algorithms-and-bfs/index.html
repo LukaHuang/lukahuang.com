@@ -1,0 +1,528 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Algorithm - BFS(Breadth-first Search)(ch22.1 22.2) - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Graph algorithm 符號說明Graph用G=(V,E)來表示，V是Vertex的縮寫，也就是頂點。E是Edge的縮寫，也就是邊。理解V和E分別是頂點和邊之後，就不難理解Graph是由點和邊構成，所以表示成G=(V,E)。從頂點u到頂點v的一個邊則用(u,v)來表示。表示Graph G=(V,E)有兩種方式，分別是adjacent matrix與adajecent list。比較常用adjacent list來表示graph，因為它花費的cose比較小。表示一個儲存Graph中鄰近u的所有頂點的adjacent list，用Adj[u]來表示。Breadth-first Search(寬度優先搜尋)Minimum spanning tree中的Prim演算法和單一來源最短路徑問題中的dijkatra演算法都使用類似BFS的演算法的方法。BFS有系統的搜尋Graph G=(V,E)的邊來發現可以從Source(起始點，之後縮寫成S)到達的每個頂點。BFS-Tree的建構BFS-Tree : 產生一棵以S為根的BFS-Tree來包含所有可到達的頂點。  最初只包含他的根，即來源頂點S。  每當掃瞄一個已經被發現的頂點u的adjacent list時，發現有白色的頂點V，麼頂點V和邊(u,v)就會被加入樹中。因為經由u才找到v，所以稱u是v的predecessor(先輩)或稱為parent。頂點上的資料結構每個頂點儲存了一些屬性(attribute)來幫助實現BFS-Tree。u.color - 表示頂點u的顏色u.π - predecessor vertex，用來紀錄頂點的先輩。u.d - 儲存起點s到u點的距離除了頂點的資料結構之外，還需要一個queue來管理灰色的頂點，代號Q。BFS將頂點塗成白色、灰色與黑色來區分他們的狀態。白色代表未造訪過。黑色代表所有鄰近的頂點都被發現了。灰色則是介於兩者之間。一個頂點在第一次造訪的時候，從白色變成灰色或黑色，稱為discover(被發現)。BFS演算法BFS(G,s)1.  for each vertex u ∈ G.V - {s}2.     u.color == WHITE3.     u.d = INF4.     u.pi = NIL5.  s.color = GRAY6.  s.d = 07.  s.pi = NIL8.  Q = ∅9.  ENQUEUE(Q,s)10. while Q ≠ ∅11.    u = DEQUEUE(Q)12.    for each v ∈ G.Adj[u]13.       if v.color == WHITE14.          v.color = GRAY15.          v.d = u.d + 116.          v.pi = u17.          ENQUEUE(Q,v)18.    u.color = BLACK程式說明: 1-9行是程式初始化。1-4行，將在Graph中頂點塗成白色，意思是未探索過。因為所有的點還未走訪過，所以把d設為INF代表的意思是無限大。還沒有predecessor所以先設為nill，代表空的意思。5-7行設定來源頂點s為灰色，d的定義是離s的距離有多遠，s離s的距離是0，所以設為0。來源點s沒有先輩，所以設為null。8-9行把Q這個queue初始化，裡面只存放來源頂點s。第10-18行被一個while迴圈包住，當沒有灰色頂點的時候才會跳出，也就是當Q中沒有存放任何灰色頂點，Q=null時才會結束。第11-12行，從Q中取出一個灰色頂點u。把u的相鄰邊，也就是這個頂點u的adjacent list中儲存的相鄰頂點v(可能有很多個)，用for迴圈一一讀出來。13-17行，如果取出的頂點是白色，那就把它塗成灰色，標記他為造訪過的頂點。距離+1。pi先輩設為u。把v加入到Q中。最後頂點u的所有鄰近的頂點都被發現了，所以設為黑色。時間複雜度參考資料ycp cs 360Introduce to algorithm">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Algorithm - BFS(Breadth-first Search)(ch22.1 22.2)">
+
+
+  <link rel="canonical" href="https://lukahuang.com/algorithm/algorithm-notes-fundamental-graphics-algorithms-and-bfs/">
+  <meta property="og:url" content="https://lukahuang.com/algorithm/algorithm-notes-fundamental-graphics-algorithms-and-bfs/">
+
+
+
+  <meta property="og:description" content="Graph algorithm 符號說明Graph用G=(V,E)來表示，V是Vertex的縮寫，也就是頂點。E是Edge的縮寫，也就是邊。理解V和E分別是頂點和邊之後，就不難理解Graph是由點和邊構成，所以表示成G=(V,E)。從頂點u到頂點v的一個邊則用(u,v)來表示。表示Graph G=(V,E)有兩種方式，分別是adjacent matrix與adajecent list。比較常用adjacent list來表示graph，因為它花費的cose比較小。表示一個儲存Graph中鄰近u的所有頂點的adjacent list，用Adj[u]來表示。Breadth-first Search(寬度優先搜尋)Minimum spanning tree中的Prim演算法和單一來源最短路徑問題中的dijkatra演算法都使用類似BFS的演算法的方法。BFS有系統的搜尋Graph G=(V,E)的邊來發現可以從Source(起始點，之後縮寫成S)到達的每個頂點。BFS-Tree的建構BFS-Tree : 產生一棵以S為根的BFS-Tree來包含所有可到達的頂點。  最初只包含他的根，即來源頂點S。  每當掃瞄一個已經被發現的頂點u的adjacent list時，發現有白色的頂點V，麼頂點V和邊(u,v)就會被加入樹中。因為經由u才找到v，所以稱u是v的predecessor(先輩)或稱為parent。頂點上的資料結構每個頂點儲存了一些屬性(attribute)來幫助實現BFS-Tree。u.color - 表示頂點u的顏色u.π - predecessor vertex，用來紀錄頂點的先輩。u.d - 儲存起點s到u點的距離除了頂點的資料結構之外，還需要一個queue來管理灰色的頂點，代號Q。BFS將頂點塗成白色、灰色與黑色來區分他們的狀態。白色代表未造訪過。黑色代表所有鄰近的頂點都被發現了。灰色則是介於兩者之間。一個頂點在第一次造訪的時候，從白色變成灰色或黑色，稱為discover(被發現)。BFS演算法BFS(G,s)1.  for each vertex u ∈ G.V - {s}2.     u.color == WHITE3.     u.d = INF4.     u.pi = NIL5.  s.color = GRAY6.  s.d = 07.  s.pi = NIL8.  Q = ∅9.  ENQUEUE(Q,s)10. while Q ≠ ∅11.    u = DEQUEUE(Q)12.    for each v ∈ G.Adj[u]13.       if v.color == WHITE14.          v.color = GRAY15.          v.d = u.d + 116.          v.pi = u17.          ENQUEUE(Q,v)18.    u.color = BLACK程式說明: 1-9行是程式初始化。1-4行，將在Graph中頂點塗成白色，意思是未探索過。因為所有的點還未走訪過，所以把d設為INF代表的意思是無限大。還沒有predecessor所以先設為nill，代表空的意思。5-7行設定來源頂點s為灰色，d的定義是離s的距離有多遠，s離s的距離是0，所以設為0。來源點s沒有先輩，所以設為null。8-9行把Q這個queue初始化，裡面只存放來源頂點s。第10-18行被一個while迴圈包住，當沒有灰色頂點的時候才會跳出，也就是當Q中沒有存放任何灰色頂點，Q=null時才會結束。第11-12行，從Q中取出一個灰色頂點u。把u的相鄰邊，也就是這個頂點u的adjacent list中儲存的相鄰頂點v(可能有很多個)，用for迴圈一一讀出來。13-17行，如果取出的頂點是白色，那就把它塗成灰色，標記他為造訪過的頂點。距離+1。pi先輩設為u。把v加入到Q中。最後頂點u的所有鄰近的頂點都被發現了，所以設為黑色。時間複雜度參考資料ycp cs 360Introduce to algorithm">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-06-10T20:09:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Algorithm - BFS(Breadth-first Search)(ch22.1 22.2)">
+    <meta itemprop="description" content="Graph algorithm 符號說明Graph用G=(V,E)來表示，V是Vertex的縮寫，也就是頂點。E是Edge的縮寫，也就是邊。理解V和E分別是頂點和邊之後，就不難理解Graph是由點和邊構成，所以表示成G=(V,E)。從頂點u到頂點v的一個邊則用(u,v)來表示。表示Graph G=(V,E)有兩種方式，分別是adjacent matrix與adajecent list。比較常用adjacent list來表示graph，因為它花費的cose比較小。表示一個儲存Graph中鄰近u的所有頂點的adjacent list，用Adj[u]來表示。Breadth-first Search(寬度優先搜尋)Minimum spanning tree中的Prim演算法和單一來源最短路徑問題中的dijkatra演算法都使用類似BFS的演算法的方法。BFS有系統的搜尋Graph G=(V,E)的邊來發現可以從Source(起始點，之後縮寫成S)到達的每個頂點。BFS-Tree的建構BFS-Tree : 產生一棵以S為根的BFS-Tree來包含所有可到達的頂點。  最初只包含他的根，即來源頂點S。  每當掃瞄一個已經被發現的頂點u的adjacent list時，發現有白色的頂點V，麼頂點V和邊(u,v)就會被加入樹中。因為經由u才找到v，所以稱u是v的predecessor(先輩)或稱為parent。頂點上的資料結構每個頂點儲存了一些屬性(attribute)來幫助實現BFS-Tree。u.color - 表示頂點u的顏色u.π - predecessor vertex，用來紀錄頂點的先輩。u.d - 儲存起點s到u點的距離除了頂點的資料結構之外，還需要一個queue來管理灰色的頂點，代號Q。BFS將頂點塗成白色、灰色與黑色來區分他們的狀態。白色代表未造訪過。黑色代表所有鄰近的頂點都被發現了。灰色則是介於兩者之間。一個頂點在第一次造訪的時候，從白色變成灰色或黑色，稱為discover(被發現)。BFS演算法BFS(G,s)1.  for each vertex u ∈ G.V - {s}2.     u.color == WHITE3.     u.d = INF4.     u.pi = NIL5.  s.color = GRAY6.  s.d = 07.  s.pi = NIL8.  Q = ∅9.  ENQUEUE(Q,s)10. while Q ≠ ∅11.    u = DEQUEUE(Q)12.    for each v ∈ G.Adj[u]13.       if v.color == WHITE14.          v.color = GRAY15.          v.d = u.d + 116.          v.pi = u17.          ENQUEUE(Q,v)18.    u.color = BLACK程式說明: 1-9行是程式初始化。1-4行，將在Graph中頂點塗成白色，意思是未探索過。因為所有的點還未走訪過，所以把d設為INF代表的意思是無限大。還沒有predecessor所以先設為nill，代表空的意思。5-7行設定來源頂點s為灰色，d的定義是離s的距離有多遠，s離s的距離是0，所以設為0。來源點s沒有先輩，所以設為null。8-9行把Q這個queue初始化，裡面只存放來源頂點s。第10-18行被一個while迴圈包住，當沒有灰色頂點的時候才會跳出，也就是當Q中沒有存放任何灰色頂點，Q=null時才會結束。第11-12行，從Q中取出一個灰色頂點u。把u的相鄰邊，也就是這個頂點u的adjacent list中儲存的相鄰頂點v(可能有很多個)，用for迴圈一一讀出來。13-17行，如果取出的頂點是白色，那就把它塗成灰色，標記他為造訪過的頂點。距離+1。pi先輩設為u。把v加入到Q中。最後頂點u的所有鄰近的頂點都被發現了，所以設為黑色。時間複雜度參考資料ycp cs 360Introduce to algorithm">
+    <meta itemprop="datePublished" content="June 10, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Algorithm - BFS(Breadth-first Search)(ch22.1 22.2)
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#graph-algorithm-符號說明">Graph algorithm 符號說明</a>
+    <ul>
+      <li><a href="#頂點上的資料結構">頂點上的資料結構</a></li>
+      <li><a href="#bfs演算法">BFS演算法</a></li>
+      <li><a href="#時間複雜度">時間複雜度</a></li>
+    </ul>
+  </li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="graph-algorithm-符號說明">Graph algorithm 符號說明</h2>
+
+<p>Graph用<code class="highlighter-rouge">G=(V,E)</code>來表示，V是Vertex的縮寫，也就是頂點。E是Edge的縮寫，也就是邊。理解V和E分別是頂點和邊之後，就不難理解Graph是由點和邊構成，所以表示成<code class="highlighter-rouge">G=(V,E)</code>。從頂點u到頂點v的一個邊則用<code class="highlighter-rouge">(u,v)</code>來表示。</p>
+
+<p>表示Graph <code class="highlighter-rouge">G=(V,E)</code>有兩種方式，分別是adjacent matrix與adajecent list。比較常用adjacent list來表示graph，因為它花費的cose比較小。表示一個儲存Graph中鄰近u的所有頂點的adjacent list，用<code class="highlighter-rouge">Adj[u]</code>來表示。</p>
+
+<h1 id="breadth-first-search寬度優先搜尋">Breadth-first Search(寬度優先搜尋)</h1>
+
+<p>Minimum spanning tree中的Prim演算法和單一來源最短路徑問題中的dijkatra演算法都使用類似BFS的演算法的方法。BFS有系統的搜尋Graph <code class="highlighter-rouge">G=(V,E)</code>的邊來發現可以從<code class="highlighter-rouge">Source(起始點，之後縮寫成S)</code>到達的每個頂點。</p>
+
+<h1 id="bfs-tree的建構">BFS-Tree的建構</h1>
+
+<p>BFS-Tree : 產生一棵以<code class="highlighter-rouge">S</code>為根的BFS-Tree來包含所有可到達的頂點。</p>
+
+<ol>
+  <li>最初只包含他的根，即來源頂點S。</li>
+  <li>每當掃瞄一個已經被發現的頂點u的adjacent list時，發現有白色的頂點V，麼頂點V和邊(u,v)就會被加入樹中。因為經由u才找到v，所以稱u是v的<code class="highlighter-rouge">predecessor</code>(先輩)或稱為parent。</li>
+</ol>
+
+<h3 id="頂點上的資料結構">頂點上的資料結構</h3>
+<p>每個頂點儲存了一些屬性(attribute)來幫助實現BFS-Tree。
+u.color - 表示頂點u的顏色
+u.π - predecessor vertex，用來紀錄頂點的先輩。
+u.d - 儲存起點s到u點的距離</p>
+
+<p>除了頂點的資料結構之外，還需要一個queue來管理灰色的頂點，代號<code class="highlighter-rouge">Q</code>。</p>
+
+<p>BFS將頂點塗成白色、灰色與黑色來區分他們的狀態。
+<strong>白色</strong>代表未造訪過。
+<strong>黑色</strong>代表所有鄰近的頂點都被發現了。
+<strong>灰色</strong>則是介於兩者之間。
+一個頂點在第一次造訪的時候，從白色變成灰色或黑色，稱為discover(被發現)。</p>
+
+<h3 id="bfs演算法">BFS演算法</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BFS(G,s)
+1.  for each vertex u ∈ G.V - {s}
+2.     u.color == WHITE
+3.     u.d = INF
+4.     u.pi = NIL
+5.  s.color = GRAY
+6.  s.d = 0
+7.  s.pi = NIL
+8.  Q = ∅
+9.  ENQUEUE(Q,s)
+10. while Q ≠ ∅
+11.    u = DEQUEUE(Q)
+12.    for each v ∈ G.Adj[u]
+13.       if v.color == WHITE
+14.          v.color = GRAY
+15.          v.d = u.d + 1
+16.          v.pi = u
+17.          ENQUEUE(Q,v)
+18.    u.color = BLACK
+</code></pre></div></div>
+<p>程式說明: 1-9行是程式初始化。1-4行，將在Graph中頂點塗成白色，意思是未探索過。因為所有的點還未走訪過，所以把d設為INF代表的意思是無限大。還沒有predecessor所以先設為nill，代表空的意思。5-7行設定來源頂點s為灰色，d的定義是離s的距離有多遠，s離s的距離是0，所以設為0。來源點s沒有先輩，所以設為null。8-9行把Q這個queue初始化，裡面只存放來源頂點s。</p>
+
+<p>第10-18行被一個while迴圈包住，當沒有灰色頂點的時候才會跳出，也就是當Q中沒有存放任何灰色頂點，Q=null時才會結束。
+第11-12行，從Q中取出一個灰色頂點u。把u的相鄰邊，也就是這個頂點u的adjacent list中儲存的相鄰頂點v(可能有很多個)，用for迴圈一一讀出來。13-17行，如果取出的頂點是白色，那就把它塗成灰色，標記他為造訪過的頂點。距離+1。pi先輩設為u。把v加入到Q中。最後頂點u的所有鄰近的頂點都被發現了，所以設為黑色。</p>
+
+<h3 id="時間複雜度">時間複雜度</h3>
+
+<p><img src="http://user-image.logdown.io/user/6141/blog/6148/post/205643/fYcrGvLnQYaCdOXKppAG_2014-06-11_115545.jpg" alt="2014-06-11_115545.jpg" /></p>
+
+<h4 id="參考資料">參考資料</h4>
+<p><a href="http://faculty.ycp.edu/~dbabcock/cs360/lectures/lecture16.html">ycp cs 360</a>
+Introduce to algorithm</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#algorithm" class="page__taxonomy-item" rel="tag">Algorithm</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/categories/#algorithm" class="page__taxonomy-item" rel="tag">Algorithm</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-06-10T20:09:00+00:00">June 10, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/algorithm-notes-dijkstras-algorithm/" class="pagination--pager" title="Algorithm - Dijkstra’s Algorithm
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/algorithm-notes-dfs-depth-first-searchch/" class="pagination--pager" title="Algorithm - DFS(Depth-First Search)(ch22.3)
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

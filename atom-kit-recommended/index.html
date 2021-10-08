@@ -1,0 +1,548 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Atom 套件整理 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="atom-color-highlight  在編輯器中即時顯示色碼對應的顏色。  atom-development-server  一個很強大的東西，自己玩玩看吧。  atom-html-preview  老實說我不太會用這個套件，但是很多人下載，我就跟著下載了＠＠  autocomplete-plus  可以即時提示可用snippet或是路徑的套件。  autocomplete-snippets  搭配autocomplete-plus可以提示套件內的內容。懶人可以多多使用，爽度很高。  bootstrap3-snippets  我所使用的bootstrap3-snippet  color-picker  顏色選擇器  docblockr  很好用的加強comment的套件，在block comment中按下enter就會自動多加個星號。很方便。建立block comment的快捷鍵是/**加上tab。  emmet  這就不用多做介紹了，網頁工程師必裝套件，如果不太清楚的話請google一下有很多介紹的好文。值得注意的是我會將預設的tab鍵改成慣用的按鍵，以免與snipppet相衝。  fancy-new-file  快速建立檔案的套件，可以提示目前有的資料夾路徑。  gist-it  用來將目前檔案或是選取的範圍製作成gist的工具。  gistom  可以從自己github呼叫想要使用的gist的工具。  git-history  配合tree-view使用可以顯示沒有commit過的檔案。  highlight-column  highlight-line  以上兩者可以幫助寫程式對齊的問題，有時候會看到眼花很好用的XD。  highlight-selected  選取的地方highlight顯示。  javascript-snippets  language-haml  linter  可以當做debugger的好用工具，配合以下幾個套件使用，可以選擇性安裝你所撰寫的語言。  linter-csslint  linter-erb  linter-htmlhint  linter-jshint  livereload  可以即時更新網頁的套件。  minimap  右方出現小圖示讓我們知道目前畫面在檔案的哪一區段。  minimap-color-highlight  可以顯示目前畫面在minimap的哪一區段。  open-in-browser  可以在預設瀏覽器打開目前檔案的套件。  package-sync  創造目前package的清單，值得注意的是如果之前已經建立過了，他將不會覆蓋，要手動刪除.atom/package.cson檔案，在進行新增。  rails-navigation  配合vim-mode使用，可以快速切換model view controller。  rails-snippets  我慣用的rails snippet。  save-session  可以記錄目前檔案修改到哪邊的套件，跟另一套remember-session比起來的好處是啟動速度快非常多，所以我使用這套。  script  可以在atom中直接執行程式碼的工具。  seti-syntax  seti-ui  我所使用的佈景主題。  tabs-to-spaces  可以將tab轉為空格。  vim-mode  可以在atom中使用vim的指令。  zentabs  限制開啟的分頁最多不超過5個。最後附上我的package清單，	##packages.cson  &#39;packages&#39;: [  &#39;atom-color-highlight&#39;  &#39;atom-development-server&#39;  &#39;atom-html-preview&#39;  &#39;autocomplete-plus&#39;  &#39;autocomplete-snippets&#39;  &#39;bootstrap3-snippets&#39;  &#39;color-picker&#39;  &#39;docblockr&#39;  &#39;emmet&#39;  &#39;fancy-new-file&#39;  &#39;gist-it&#39;  &#39;gistom&#39;  &#39;git-history&#39;  &#39;highlight-column&#39;  &#39;highlight-line&#39;  &#39;highlight-selected&#39;  &#39;javascript-snippets&#39;  &#39;language-haml&#39;  &#39;linter&#39;  &#39;linter-csslint&#39;  &#39;linter-erb&#39;  &#39;linter-htmlhint&#39;  &#39;linter-jshint&#39;  &#39;livereload&#39;  &#39;minimap&#39;  &#39;minimap-color-highlight&#39;  &#39;open-in-browser&#39;  &#39;package-sync&#39;  &#39;rails-navigation&#39;  &#39;rails-snippets&#39;  &#39;save-session&#39;  &#39;script&#39;  &#39;seti-syntax&#39;  &#39;seti-ui&#39;  &#39;tabs-to-spaces&#39;  &#39;vim-mode&#39;  &#39;zentabs&#39;]">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Atom 套件整理">
+
+
+  <link rel="canonical" href="https://lukahuang.com/atom-kit-recommended/">
+  <meta property="og:url" content="https://lukahuang.com/atom-kit-recommended/">
+
+
+
+  <meta property="og:description" content="atom-color-highlight  在編輯器中即時顯示色碼對應的顏色。  atom-development-server  一個很強大的東西，自己玩玩看吧。  atom-html-preview  老實說我不太會用這個套件，但是很多人下載，我就跟著下載了＠＠  autocomplete-plus  可以即時提示可用snippet或是路徑的套件。  autocomplete-snippets  搭配autocomplete-plus可以提示套件內的內容。懶人可以多多使用，爽度很高。  bootstrap3-snippets  我所使用的bootstrap3-snippet  color-picker  顏色選擇器  docblockr  很好用的加強comment的套件，在block comment中按下enter就會自動多加個星號。很方便。建立block comment的快捷鍵是/**加上tab。  emmet  這就不用多做介紹了，網頁工程師必裝套件，如果不太清楚的話請google一下有很多介紹的好文。值得注意的是我會將預設的tab鍵改成慣用的按鍵，以免與snipppet相衝。  fancy-new-file  快速建立檔案的套件，可以提示目前有的資料夾路徑。  gist-it  用來將目前檔案或是選取的範圍製作成gist的工具。  gistom  可以從自己github呼叫想要使用的gist的工具。  git-history  配合tree-view使用可以顯示沒有commit過的檔案。  highlight-column  highlight-line  以上兩者可以幫助寫程式對齊的問題，有時候會看到眼花很好用的XD。  highlight-selected  選取的地方highlight顯示。  javascript-snippets  language-haml  linter  可以當做debugger的好用工具，配合以下幾個套件使用，可以選擇性安裝你所撰寫的語言。  linter-csslint  linter-erb  linter-htmlhint  linter-jshint  livereload  可以即時更新網頁的套件。  minimap  右方出現小圖示讓我們知道目前畫面在檔案的哪一區段。  minimap-color-highlight  可以顯示目前畫面在minimap的哪一區段。  open-in-browser  可以在預設瀏覽器打開目前檔案的套件。  package-sync  創造目前package的清單，值得注意的是如果之前已經建立過了，他將不會覆蓋，要手動刪除.atom/package.cson檔案，在進行新增。  rails-navigation  配合vim-mode使用，可以快速切換model view controller。  rails-snippets  我慣用的rails snippet。  save-session  可以記錄目前檔案修改到哪邊的套件，跟另一套remember-session比起來的好處是啟動速度快非常多，所以我使用這套。  script  可以在atom中直接執行程式碼的工具。  seti-syntax  seti-ui  我所使用的佈景主題。  tabs-to-spaces  可以將tab轉為空格。  vim-mode  可以在atom中使用vim的指令。  zentabs  限制開啟的分頁最多不超過5個。最後附上我的package清單，	##packages.cson  &#39;packages&#39;: [  &#39;atom-color-highlight&#39;  &#39;atom-development-server&#39;  &#39;atom-html-preview&#39;  &#39;autocomplete-plus&#39;  &#39;autocomplete-snippets&#39;  &#39;bootstrap3-snippets&#39;  &#39;color-picker&#39;  &#39;docblockr&#39;  &#39;emmet&#39;  &#39;fancy-new-file&#39;  &#39;gist-it&#39;  &#39;gistom&#39;  &#39;git-history&#39;  &#39;highlight-column&#39;  &#39;highlight-line&#39;  &#39;highlight-selected&#39;  &#39;javascript-snippets&#39;  &#39;language-haml&#39;  &#39;linter&#39;  &#39;linter-csslint&#39;  &#39;linter-erb&#39;  &#39;linter-htmlhint&#39;  &#39;linter-jshint&#39;  &#39;livereload&#39;  &#39;minimap&#39;  &#39;minimap-color-highlight&#39;  &#39;open-in-browser&#39;  &#39;package-sync&#39;  &#39;rails-navigation&#39;  &#39;rails-snippets&#39;  &#39;save-session&#39;  &#39;script&#39;  &#39;seti-syntax&#39;  &#39;seti-ui&#39;  &#39;tabs-to-spaces&#39;  &#39;vim-mode&#39;  &#39;zentabs&#39;]">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-02-02T14:35:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Atom 套件整理">
+    <meta itemprop="description" content="atom-color-highlight  在編輯器中即時顯示色碼對應的顏色。  atom-development-server  一個很強大的東西，自己玩玩看吧。  atom-html-preview  老實說我不太會用這個套件，但是很多人下載，我就跟著下載了＠＠  autocomplete-plus  可以即時提示可用snippet或是路徑的套件。  autocomplete-snippets  搭配autocomplete-plus可以提示套件內的內容。懶人可以多多使用，爽度很高。  bootstrap3-snippets  我所使用的bootstrap3-snippet  color-picker  顏色選擇器  docblockr  很好用的加強comment的套件，在block comment中按下enter就會自動多加個星號。很方便。建立block comment的快捷鍵是/**加上tab。  emmet  這就不用多做介紹了，網頁工程師必裝套件，如果不太清楚的話請google一下有很多介紹的好文。值得注意的是我會將預設的tab鍵改成慣用的按鍵，以免與snipppet相衝。  fancy-new-file  快速建立檔案的套件，可以提示目前有的資料夾路徑。  gist-it  用來將目前檔案或是選取的範圍製作成gist的工具。  gistom  可以從自己github呼叫想要使用的gist的工具。  git-history  配合tree-view使用可以顯示沒有commit過的檔案。  highlight-column  highlight-line  以上兩者可以幫助寫程式對齊的問題，有時候會看到眼花很好用的XD。  highlight-selected  選取的地方highlight顯示。  javascript-snippets  language-haml  linter  可以當做debugger的好用工具，配合以下幾個套件使用，可以選擇性安裝你所撰寫的語言。  linter-csslint  linter-erb  linter-htmlhint  linter-jshint  livereload  可以即時更新網頁的套件。  minimap  右方出現小圖示讓我們知道目前畫面在檔案的哪一區段。  minimap-color-highlight  可以顯示目前畫面在minimap的哪一區段。  open-in-browser  可以在預設瀏覽器打開目前檔案的套件。  package-sync  創造目前package的清單，值得注意的是如果之前已經建立過了，他將不會覆蓋，要手動刪除.atom/package.cson檔案，在進行新增。  rails-navigation  配合vim-mode使用，可以快速切換model view controller。  rails-snippets  我慣用的rails snippet。  save-session  可以記錄目前檔案修改到哪邊的套件，跟另一套remember-session比起來的好處是啟動速度快非常多，所以我使用這套。  script  可以在atom中直接執行程式碼的工具。  seti-syntax  seti-ui  我所使用的佈景主題。  tabs-to-spaces  可以將tab轉為空格。  vim-mode  可以在atom中使用vim的指令。  zentabs  限制開啟的分頁最多不超過5個。最後附上我的package清單，	##packages.cson  &#39;packages&#39;: [  &#39;atom-color-highlight&#39;  &#39;atom-development-server&#39;  &#39;atom-html-preview&#39;  &#39;autocomplete-plus&#39;  &#39;autocomplete-snippets&#39;  &#39;bootstrap3-snippets&#39;  &#39;color-picker&#39;  &#39;docblockr&#39;  &#39;emmet&#39;  &#39;fancy-new-file&#39;  &#39;gist-it&#39;  &#39;gistom&#39;  &#39;git-history&#39;  &#39;highlight-column&#39;  &#39;highlight-line&#39;  &#39;highlight-selected&#39;  &#39;javascript-snippets&#39;  &#39;language-haml&#39;  &#39;linter&#39;  &#39;linter-csslint&#39;  &#39;linter-erb&#39;  &#39;linter-htmlhint&#39;  &#39;linter-jshint&#39;  &#39;livereload&#39;  &#39;minimap&#39;  &#39;minimap-color-highlight&#39;  &#39;open-in-browser&#39;  &#39;package-sync&#39;  &#39;rails-navigation&#39;  &#39;rails-snippets&#39;  &#39;save-session&#39;  &#39;script&#39;  &#39;seti-syntax&#39;  &#39;seti-ui&#39;  &#39;tabs-to-spaces&#39;  &#39;vim-mode&#39;  &#39;zentabs&#39;]">
+    <meta itemprop="datePublished" content="February 02, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Atom 套件整理
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              
+            </nav>
+          </aside>
+        
+        <p><code class="highlighter-rouge">atom-color-highlight</code>
+  在編輯器中即時顯示色碼對應的顏色。
+  <code class="highlighter-rouge">atom-development-server</code>
+  一個很強大的東西，自己玩玩看吧。
+  <code class="highlighter-rouge">atom-html-preview</code>
+  老實說我不太會用這個套件，但是很多人下載，我就跟著下載了＠＠
+  <code class="highlighter-rouge">autocomplete-plus</code>
+  可以即時提示可用snippet或是路徑的套件。
+  <code class="highlighter-rouge">autocomplete-snippets</code>
+  搭配autocomplete-plus可以提示套件內的內容。懶人可以多多使用，爽度很高。
+  <code class="highlighter-rouge">bootstrap3-snippets</code>
+  我所使用的bootstrap3-snippet
+  <code class="highlighter-rouge">color-picker</code>
+  顏色選擇器
+  <code class="highlighter-rouge">docblockr</code>
+  很好用的加強comment的套件，在block comment中按下enter就會自動多加個星號。很方便。建立block comment的快捷鍵是<code class="highlighter-rouge">/**</code>加上<code class="highlighter-rouge">tab</code>。
+  <code class="highlighter-rouge">emmet</code>
+  這就不用多做介紹了，網頁工程師必裝套件，如果不太清楚的話請google一下有很多介紹的好文。值得注意的是我會將預設的tab鍵改成慣用的按鍵，以免與snipppet相衝。
+  <code class="highlighter-rouge">fancy-new-file</code>
+  快速建立檔案的套件，可以提示目前有的資料夾路徑。
+  <code class="highlighter-rouge">gist-it</code>
+  用來將目前檔案或是選取的範圍製作成gist的工具。
+  <code class="highlighter-rouge">gistom</code>
+  可以從自己github呼叫想要使用的gist的工具。
+  <code class="highlighter-rouge">git-history</code>
+  配合tree-view使用可以顯示沒有commit過的檔案。
+  <code class="highlighter-rouge">highlight-column</code>
+  <code class="highlighter-rouge">highlight-line</code>
+  以上兩者可以幫助寫程式對齊的問題，有時候會看到眼花很好用的XD。
+  <code class="highlighter-rouge">highlight-selected</code>
+  選取的地方highlight顯示。
+  <code class="highlighter-rouge">javascript-snippets</code>
+  <code class="highlighter-rouge">language-haml</code>
+  <code class="highlighter-rouge">linter</code>
+  可以當做debugger的好用工具，配合以下幾個套件使用，可以選擇性安裝你所撰寫的語言。
+  <code class="highlighter-rouge">linter-csslint</code>
+  <code class="highlighter-rouge">linter-erb</code>
+  <code class="highlighter-rouge">linter-htmlhint</code>
+  <code class="highlighter-rouge">linter-jshint</code>
+  <code class="highlighter-rouge">livereload</code>
+  可以即時更新網頁的套件。
+  <code class="highlighter-rouge">minimap</code>
+  右方出現小圖示讓我們知道目前畫面在檔案的哪一區段。
+  <code class="highlighter-rouge">minimap-color-highlight</code>
+  可以顯示目前畫面在minimap的哪一區段。
+  <code class="highlighter-rouge">open-in-browser</code>
+  可以在預設瀏覽器打開目前檔案的套件。
+  <code class="highlighter-rouge">package-sync</code>
+  創造目前package的清單，值得注意的是如果之前已經建立過了，他將不會覆蓋，要手動刪除<code class="highlighter-rouge">.atom/package.cson</code>檔案，在進行新增。
+  <code class="highlighter-rouge">rails-navigation</code>
+  配合vim-mode使用，可以快速切換model view controller。
+  <code class="highlighter-rouge">rails-snippets</code>
+  我慣用的rails snippet。
+  <code class="highlighter-rouge">save-session</code>
+  可以記錄目前檔案修改到哪邊的套件，跟另一套remember-session比起來的好處是啟動速度快非常多，所以我使用這套。
+  <code class="highlighter-rouge">script</code>
+  可以在atom中直接執行程式碼的工具。
+  <code class="highlighter-rouge">seti-syntax</code>
+  <code class="highlighter-rouge">seti-ui</code>
+  我所使用的佈景主題。
+  <code class="highlighter-rouge">tabs-to-spaces</code>
+  可以將tab轉為空格。
+  <code class="highlighter-rouge">vim-mode</code>
+  可以在atom中使用vim的指令。
+  <code class="highlighter-rouge">zentabs</code>
+  限制開啟的分頁最多不超過5個。</p>
+
+<p>最後附上我的package清單，</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	##packages.cson
+  'packages': [
+  'atom-color-highlight'
+  'atom-development-server'
+  'atom-html-preview'
+  'autocomplete-plus'
+  'autocomplete-snippets'
+  'bootstrap3-snippets'
+  'color-picker'
+  'docblockr'
+  'emmet'
+  'fancy-new-file'
+  'gist-it'
+  'gistom'
+  'git-history'
+  'highlight-column'
+  'highlight-line'
+  'highlight-selected'
+  'javascript-snippets'
+  'language-haml'
+  'linter'
+  'linter-csslint'
+  'linter-erb'
+  'linter-htmlhint'
+  'linter-jshint'
+  'livereload'
+  'minimap'
+  'minimap-color-highlight'
+  'open-in-browser'
+  'package-sync'
+  'rails-navigation'
+  'rails-snippets'
+  'save-session'
+  'script'
+  'seti-syntax'
+  'seti-ui'
+  'tabs-to-spaces'
+  'vim-mode'
+  'zentabs'
+]
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#atom" class="page__taxonomy-item" rel="tag">Atom</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#text-editor" class="page__taxonomy-item" rel="tag">Text Editor</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-02-02T14:35:00+00:00">February 02, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/rails-form-helper/" class="pagination--pager" title="Rails - 拆解 Form Helper 以 Checkbox 為例
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/psd-to-html-porfolio/" class="pagination--pager" title="排版練習1：PSD to HTML Porfolio
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

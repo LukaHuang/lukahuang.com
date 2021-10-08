@@ -1,0 +1,598 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Kubernetes 教學 01 - 概念與架構 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="為什麼該學 K8S ？ Pod、Node 是什麼？搞的我好亂呀！">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Kubernetes 教學 01 - 概念與架構">
+
+
+  <link rel="canonical" href="https://lukahuang.com/kubernetes-tutorial-01/">
+  <meta property="og:url" content="https://lukahuang.com/kubernetes-tutorial-01/">
+
+
+
+  <meta property="og:description" content="為什麼該學 K8S ？ Pod、Node 是什麼？搞的我好亂呀！">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-02-11T10:32:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes 教學 01 - 概念與架構">
+    <meta itemprop="description" content="為什麼該學 K8S ？ Pod、Node 是什麼？搞的我好亂呀！">
+    <meta itemprop="datePublished" content="February 11, 2020">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Kubernetes 教學 01 - 概念與架構
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#為什麼該學-k8s--podnode-是什麼搞的我好亂呀">為什麼該學 K8S ？ Pod、Node 是什麼？搞的我好亂呀！</a></li>
+  <li><a href="#為什麼該用-kubernetes">為什麼該用 Kubernetes?</a>
+    <ul>
+      <li><a href="#1-可以更好的運用雲端或是實體資源">1. 可以更好的運用雲端或是實體資源</a></li>
+      <li><a href="#2-讓一切的基礎設施都寫成程式碼">2. 讓一切的基礎設施都寫成程式碼</a></li>
+      <li><a href="#3-可以幫助開發者聚焦開發">3. 可以幫助開發者聚焦開發</a></li>
+    </ul>
+  </li>
+  <li><a href="#一切從-container-開始">一切從 Container 開始</a></li>
+  <li><a href="#理解-nodepodcontainer-之間的關係">理解 Node、Pod、Container 之間的關係</a></li>
+  <li><a href="#理解-kubernetes-cluster">理解 Kubernetes Cluster</a>
+    <ul>
+      <li><a href="#1-kube-api-server">1. Kube API Server</a></li>
+      <li><a href="#2-kube-schedular">2. Kube Schedular</a></li>
+      <li><a href="#3-kube-controller-manager">3. Kube Controller Manager</a></li>
+      <li><a href="#4-cloud-controller-manager">4. Cloud Controller Manager</a></li>
+    </ul>
+  </li>
+  <li><a href="#讀-kubernetes-api-初探-k8s-的資源物件">讀 Kubernetes API 初探 K8S 的資源物件</a></li>
+  <li><a href="#kubectl--跟-k8s-cluster-溝通的工具">kubectl — 跟 K8S Cluster 溝通的工具</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="為什麼該學-k8s--podnode-是什麼搞的我好亂呀">為什麼該學 K8S ？ Pod、Node 是什麼？搞的我好亂呀！</h2>
+
+<p><img src="https://cdn-images-1.medium.com/max/3840/0*CmyuLdGdOQJLKS5t.png" alt="" /></p>
+
+<p>適合讀者：</p>
+
+<ul>
+  <li>
+    <p>已經會使用 Docker，但是不知道 Kubernetes 是什麼。</p>
+  </li>
+  <li>
+    <p>想看看 Kubernetes 到底在幹嘛的人。</p>
+  </li>
+</ul>
+
+<h2 id="為什麼該用-kubernetes">為什麼該用 Kubernetes?</h2>
+
+<p>Kubernetes 中間共有八個字母有點長，所以大家就將他簡稱為 K8S。但使用 K8S 有什麼好處？</p>
+
+<h3 id="1-可以更好的運用雲端或是實體資源">1. 可以更好的運用雲端或是實體資源</h3>
+
+<p>所有的資源集中成了一個大平台，所以調度上更靈活，以往我們以實體機為單位的方式很沒有效率，要調度資源的時候需要開一台實體機器，或是虛擬機器，都很耗費 CPU、記憶體等等的資源。</p>
+
+<p>而 K8S 內所有的東西都是容器，可以很快啟動，很快的刪除，並且靈活部屬在 Kubernetes 所擁有的資源上。</p>
+
+<h3 id="2-讓一切的基礎設施都寫成程式碼">2. 讓一切的基礎設施都寫成程式碼</h3>
+
+<p>應用程式容器化之後，所有需要安裝的套件都會寫成 Dockerfile。這樣在新增或修改的時候，不再像是以前的伺服器是個黑盒子，需要花大量的時間除錯。</p>
+
+<p>部屬的資源則用 Kubernetes 的描述方式撰寫，要前端服務要開幾台，後端服務要開幾台，要自動擴展？ 沒問題，這些 K8S 都可以輕鬆幫你做到。所以你如果要了解整個基礎設施架構時，可以很快的藉由程式碼來認識。</p>
+
+<h3 id="3-可以幫助開發者聚焦開發">3. 可以幫助開發者聚焦開發</h3>
+
+<p>減少開發者在基礎設施上花的時間，將硬體統一看做一個大平台，開發者只需要寫應用的描述，其他的 K8S 幫你搞定。例如：有節點當機，會自動生成一個新的節點，以維持服務的穩定。</p>
+
+<h2 id="一切從-container-開始">一切從 Container 開始</h2>
+
+<p>使用 Kubernetes 之前，你需要把你的服務先容器化，或者用人家包好的 Image 建立。例如：你有一個 Node.js 的應用程式、一個 MySQL 的資料庫，都可以架設在 K8S 上面。</p>
+
+<p>K8S 提供了豐富的、可以應用於產品環境的一切資源給你。例如：自動擴展、負載均衡、定時工作 … 等等一切你想得到的東西。</p>
+
+<p>但是在開始使用 K8S 之前，你需要把你的服務先容器化。雖然一開始很痛苦，需要花很多時間做原本不必要做的事情，但是你容器化你的服務之後會發現，以前需要在不知道被做過什麼事情的機器上摸索的體力活，通通都自動化、或是很易於找到解法，因為在程式碼裡面都有跡可尋。</p>
+
+<h2 id="理解-nodepodcontainer-之間的關係">理解 Node、Pod、Container 之間的關係</h2>
+
+<p>Node 是 K8S 中的一台實體機器、或是雲端上的一台機器，又稱作是工作者。他有個別名叫做奴隸 (minion) ，挺有趣的。</p>
+
+<p>Pod 是 K8S 中基本的單位，負責裝一個或多個多個 Container (容器)。</p>
+
+<p>Container 中就是我們容器化好的應用程式，例如：Node.js 應用程式、MySQL 服務 … 等等</p>
+
+<p>需要 Pod 來作為基本單位的原因是，如果每個 Container 都作為 K8S 的最小單位，那麼管理網路會變得非常的困難。以 Pod 來區隔，同一個 Pod 裡面的 Container 能夠在本地端互相的連線，只有需要提供給外部呼叫的 API 才需要暴露出來。</p>
+
+<p>示意圖如下：</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*vJp5o7ABILiIapesES8j6g.png" alt="" /></p>
+
+<h2 id="理解-kubernetes-cluster">理解 Kubernetes Cluster</h2>
+
+<p>Kubernetes 集群由控制面板 Control Panel 與節點 Node 所組成。控制面板又稱為是 Kubernetes Master。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*J4GBXcAOasRI0aPgd4-IYw.png" alt="" />
+<a href="https://kubernetes.io/docs/concepts/overview/components/">https://kubernetes.io/docs/concepts/overview/components/</a></p>
+
+<p>控制面板由幾個元件 (Component) 所組成：</p>
+
+<h3 id="1-kube-api-server">1. Kube API Server</h3>
+
+<p>控制面板中用來暴露 Kubernetes API 的元件，讓其他服務可以讀寫 K8S 的資源物件 (Resouce Object)。</p>
+
+<h3 id="2-kube-schedular">2. Kube Schedular</h3>
+
+<p>調度器，需要調度軟體、硬體資源的時候就要靠調度器囉。例如：如果新建立的 pod 沒有 node 可以放的時候，調度器就會開啟一個新的 node，來放置剛剛需要建立的 pod。</p>
+
+<h3 id="3-kube-controller-manager"><strong>3. Kube Controller Manager</strong></h3>
+
+<p>是一個在背景持續執行的程序 (daemon)，用來調節系統狀態，透過 api-server 可以監視 Cluster 共享的狀態。</p>
+
+<p>需要變更目前狀態的時候 Kube Controller 就會將目前的狀態變更到想要變更的狀態，例如：本來 2 個副本 (Replica) 擴展到 4 個副本。</p>
+
+<p>包含了副本控制器 (Replication Controller)，端點控制器 (Endpoint Controller)、命名空間控制器(Namepsace Controller)與服務帳號控制器</p>
+
+<h3 id="4-cloud-controller-manager"><strong>4. Cloud Controller Manager</strong></h3>
+
+<p>基於 Kube Controller Manager，各個雲平台提供者（Provider）的實作。而每個 Node 則包含：</p>
+
+<ul>
+  <li>
+    <p>kubelet — 用來跟 Master 溝通的元件。</p>
+  </li>
+  <li>
+    <p>kube-proxy — 網路代理，用來反應 K8S 各個 Node 上的網路服務</p>
+  </li>
+</ul>
+
+<h2 id="讀-kubernetes-api-初探-k8s-的資源物件">讀 Kubernetes API 初探 K8S 的資源物件</h2>
+
+<p>我們可以透過 Kubernetes API 讀寫 K8S 的資源物件 (Resource Object)，剛剛說的 Kubernetes Cluster 就分為 Kubernetes API 總共分為五大類，分別是：</p>
+
+<ul>
+  <li>
+    <p>Workload 物件 — 用來「管理或是運行 Container」 在 Cluster 上。</p>
+  </li>
+  <li>
+    <p>服務發現與負載均衡物件 — 讓 Workload 可以「縫住」形成可被外部存取到的服務，或是有負載均衡能力的服務。</p>
+  </li>
+  <li>
+    <p>Config 與 Storage 物件 — Config 用來將配置注入你的應用程式中。Storage 讓 Container 的資料可以永久保存在 Container 之外。</p>
+  </li>
+  <li>
+    <p>Cluster 物件 — 用來定義集群本身的物件。</p>
+  </li>
+  <li>
+    <p>Meta 物件 — 用來配置資源之間的行為的物件。</p>
+  </li>
+</ul>
+
+<p>這種分類法較接近開發者，可以藉此看看開發者在想些什麼。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2880/1*bbG-QtOtZ17CflsIlS7mwA.png" alt="" />
+<a href="https://kubernetes.io/docs/reference/#api-reference">https://kubernetes.io/docs/reference/#api-reference</a></p>
+
+<p>還有精美的 kubectl 範例可以使用，很方便。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*_F_r0Wh9822ZWBc3w3jeLQ.png" alt="" /></p>
+
+<h2 id="kubectl--跟-k8s-cluster-溝通的工具">kubectl — 跟 K8S Cluster 溝通的工具</h2>
+
+<p>我們絕大多數對 K8S 的操作都需要透過 kubectl，kubectl 的是什麼呢？DevOps 開發者用 kubectl 命令列工具，可以透過 Kubernetes Master 上的 api-server 對各個 Node 下達指令。而這些 API 即是上一小節說的 Kubernetes API。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/0*OhlD7-6XRajuS4QZ.png" alt="" />
+<a href="https://www.redhat.com/zh/topics/containers/what-is-kubernetes">https://www.redhat.com/zh/topics/containers/what-is-kubernetes</a></p>
+
+<p>to be continued …</p>
+
+<p>下一部分會比較偏重實作， Minikube 的基本操作、Kubectl 的基本操作與重要的 資源物件的介紹。</p>
+
+<p>如果喜歡我寫的文章，歡迎追蹤 本人的帳號 <a href="https://medium.com/@LukaTw">@LukaTW</a> 與 <a href="https://medium.com/starbugs">StarBugs Weekly 星巴哥技術週刊</a> 🙂🙂🙂</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#kubernetes" class="page__taxonomy-item" rel="tag">Kubernetes</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#minikube" class="page__taxonomy-item" rel="tag">Minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2020-02-11T10:32:00+00:00">February 11, 2020</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/drone/" class="pagination--pager" title="從零開始學 DevOps — 那就選擇最簡單的 Drone CI 開始吧！
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/running-flask-on-minikube/" class="pagination--pager" title="Kubernetes 教學 02 — 在 Minikube 上部屬 Python Flask 應用程式
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

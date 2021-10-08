@@ -1,0 +1,630 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Discover meteor Ch4：Collection - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Collection新增一個collectioncollections/posts.jsPosts = new Meteor.Collection(&#39;posts&#39;);除了client與server以外的資料夾會在兩者都執行。所以Posts collection在client和server都可以使用。這裡的Posts前面不加var，這樣整個app都可以存取到Posts。git commit -m &quot;Added a posts collection&quot;Collection的性質On the server, the collection has the job of talking to the Mongo database, and reading and writing any changes. In this sense, it can be compared to a standard database library. On the client however, the collection is a secure copy of a subset of the real, canonical collection. The client-side collection is constantly and (mostly) transparently kept up to date with that subset in real-time.Server-Side CollectionOn the server, the collection acts as an API into your Mongo database.##Client-Side Collectionclient side Mongo稱為MiniMongo，如字面所述，它不支援所有的Mongo的特徵。###三個理解重點  we talk about a client-side collections being a “cache”, we mean it in the sense that it contains a subset of your data, and offers very quick access to this data.  In general, a client side collection consists of a subset of all the documents stored in the Mongo collection  Secondly, those documents are stored in browser memory, which means that accessing them is basically instantaneous.  Mongo on Meteor.com當你的app deploy上meteor之後，輸入meteor mongo myApp就可以存取網路上的mongodb。#正式開始  輸入meteor reset重置資料庫。確保資料庫是乾淨的。  建立fixture.js    server/fixtures.js        if (Posts.find().count() === 0) {   Posts.insert({     title: &#39;Introducing Telescope&#39;,     author: &#39;Sacha Greif&#39;,     url: &#39;http://sachagreif.com/introducing-telescope/&#39;   });   Posts.insert({     title: &#39;Meteor&#39;,     author: &#39;Tom Coleman&#39;, url: &#39;http://meteor.com&#39;   });   Posts.insert({     title: &#39;The Meteor Book&#39;, author: &#39;Tom Coleman&#39;,     url: &#39;http://themeteorbook.com&#39;   });}            Commit 4-2Added data to the posts collection.    修改posts_list.js    client/views/posts/posts_list.js        Template.postsList.helpers({ posts: function() {     return Posts.find();   }});        Commit 4-3    git commit -m &quot;Wired collection into postsList template.&quot;              Inspecting DOM Changes這邊看不太懂        刪除autopulish這個package    $ meteor remove autopublish        新增publication.js    server/publications.js        Meteor.publish(&#39;posts&#39;, function() {  		return Posts.find();});        在main.js中subscribe posts    client/main.js        Meteor.subscribe(&#39;posts&#39;);        commit 4-4Removed autopublich and set up a basic publication.還是不懂在幹嘛？ 接著要解釋的就是publication與subscription4.5 Publications and SubscriptionsRails App的做法  當user造訪你的網頁，client送出一個request給server。  你的app的第一個工作是找到user所需要的資料。  當找到以後，server會把資料轉換成人類可讀的html。  最後server會將html送給瀏覽器，也就是client。  這樣一個動作就完成了，你的app繼續等待下一個request。Meteor的做法根據剛剛的介紹可以了解到Rails app只能在server處理資訊。而Meteor在Client也就是你的瀏覽器中就可以處理資訊。這就像書店的店員不只是針對你的需求把書給你，而且他還跟著你回家把書的內容讀給妳聽。This has two big implications:first, instead of sending HTML code to the client, a Meteor app will send the actual, raw data and let the client deal with it (data on the wire).Second, you’ll be able to access that data instantaneously without having to wait for a round-trip to the server (latency compensation).PublishingWe’ll need a way to tell Meteor which subset of data can be sent to the client, and we’ll accomplish this through a publication.Whats is DDP?這種利用publication/subscription系統的protocol，就稱為Distributed Data Protocol。Subscribinghow you make a meteor app scalable in client-side  修改publication(server)Meteor.publish(&#39;posts&#39;, function(author) {  		return Posts.find({flagged: false, author: author});});  在client subscribe// on the clientMeteor.subscribe(&#39;posts&#39;, &#39;bob-smith&#39;);AutopulishAutomatically mirroring all data from the server on the client實際運作如果你去看Publish and subscribe的說明，你會發現實際使用的方法並不是那麼的簡潔，那是因為meteor提供了一個方變的method叫做_publishCursor()。當你在return一個cursor的時候，就會使用到它（例如：  return Posts.find({flagged: false, author: author});）。_publishCursor() 做了哪些事？  It checks the name of the server-side collection.  It pulls all matching documents from the cursor and sends it into a client-side collection of the same name. (It uses .added() to do this).  Whenever a document is added, removed or changed, it sends those changes down to the client-side collection. (It uses .observe() on the cursor and .added(), .changed() and removed() to do this).">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Discover meteor Ch4：Collection">
+
+
+  <link rel="canonical" href="https://lukahuang.com/discover-meteor-ch4-collection/">
+  <meta property="og:url" content="https://lukahuang.com/discover-meteor-ch4-collection/">
+
+
+
+  <meta property="og:description" content="Collection新增一個collectioncollections/posts.jsPosts = new Meteor.Collection(&#39;posts&#39;);除了client與server以外的資料夾會在兩者都執行。所以Posts collection在client和server都可以使用。這裡的Posts前面不加var，這樣整個app都可以存取到Posts。git commit -m &quot;Added a posts collection&quot;Collection的性質On the server, the collection has the job of talking to the Mongo database, and reading and writing any changes. In this sense, it can be compared to a standard database library. On the client however, the collection is a secure copy of a subset of the real, canonical collection. The client-side collection is constantly and (mostly) transparently kept up to date with that subset in real-time.Server-Side CollectionOn the server, the collection acts as an API into your Mongo database.##Client-Side Collectionclient side Mongo稱為MiniMongo，如字面所述，它不支援所有的Mongo的特徵。###三個理解重點  we talk about a client-side collections being a “cache”, we mean it in the sense that it contains a subset of your data, and offers very quick access to this data.  In general, a client side collection consists of a subset of all the documents stored in the Mongo collection  Secondly, those documents are stored in browser memory, which means that accessing them is basically instantaneous.  Mongo on Meteor.com當你的app deploy上meteor之後，輸入meteor mongo myApp就可以存取網路上的mongodb。#正式開始  輸入meteor reset重置資料庫。確保資料庫是乾淨的。  建立fixture.js    server/fixtures.js        if (Posts.find().count() === 0) {   Posts.insert({     title: &#39;Introducing Telescope&#39;,     author: &#39;Sacha Greif&#39;,     url: &#39;http://sachagreif.com/introducing-telescope/&#39;   });   Posts.insert({     title: &#39;Meteor&#39;,     author: &#39;Tom Coleman&#39;, url: &#39;http://meteor.com&#39;   });   Posts.insert({     title: &#39;The Meteor Book&#39;, author: &#39;Tom Coleman&#39;,     url: &#39;http://themeteorbook.com&#39;   });}            Commit 4-2Added data to the posts collection.    修改posts_list.js    client/views/posts/posts_list.js        Template.postsList.helpers({ posts: function() {     return Posts.find();   }});        Commit 4-3    git commit -m &quot;Wired collection into postsList template.&quot;              Inspecting DOM Changes這邊看不太懂        刪除autopulish這個package    $ meteor remove autopublish        新增publication.js    server/publications.js        Meteor.publish(&#39;posts&#39;, function() {  		return Posts.find();});        在main.js中subscribe posts    client/main.js        Meteor.subscribe(&#39;posts&#39;);        commit 4-4Removed autopublich and set up a basic publication.還是不懂在幹嘛？ 接著要解釋的就是publication與subscription4.5 Publications and SubscriptionsRails App的做法  當user造訪你的網頁，client送出一個request給server。  你的app的第一個工作是找到user所需要的資料。  當找到以後，server會把資料轉換成人類可讀的html。  最後server會將html送給瀏覽器，也就是client。  這樣一個動作就完成了，你的app繼續等待下一個request。Meteor的做法根據剛剛的介紹可以了解到Rails app只能在server處理資訊。而Meteor在Client也就是你的瀏覽器中就可以處理資訊。這就像書店的店員不只是針對你的需求把書給你，而且他還跟著你回家把書的內容讀給妳聽。This has two big implications:first, instead of sending HTML code to the client, a Meteor app will send the actual, raw data and let the client deal with it (data on the wire).Second, you’ll be able to access that data instantaneously without having to wait for a round-trip to the server (latency compensation).PublishingWe’ll need a way to tell Meteor which subset of data can be sent to the client, and we’ll accomplish this through a publication.Whats is DDP?這種利用publication/subscription系統的protocol，就稱為Distributed Data Protocol。Subscribinghow you make a meteor app scalable in client-side  修改publication(server)Meteor.publish(&#39;posts&#39;, function(author) {  		return Posts.find({flagged: false, author: author});});  在client subscribe// on the clientMeteor.subscribe(&#39;posts&#39;, &#39;bob-smith&#39;);AutopulishAutomatically mirroring all data from the server on the client實際運作如果你去看Publish and subscribe的說明，你會發現實際使用的方法並不是那麼的簡潔，那是因為meteor提供了一個方變的method叫做_publishCursor()。當你在return一個cursor的時候，就會使用到它（例如：  return Posts.find({flagged: false, author: author});）。_publishCursor() 做了哪些事？  It checks the name of the server-side collection.  It pulls all matching documents from the cursor and sends it into a client-side collection of the same name. (It uses .added() to do this).  Whenever a document is added, removed or changed, it sends those changes down to the client-side collection. (It uses .observe() on the cursor and .added(), .changed() and removed() to do this).">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-08-05T03:04:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Discover meteor Ch4：Collection">
+    <meta itemprop="description" content="Collection新增一個collectioncollections/posts.jsPosts = new Meteor.Collection(&#39;posts&#39;);除了client與server以外的資料夾會在兩者都執行。所以Posts collection在client和server都可以使用。這裡的Posts前面不加var，這樣整個app都可以存取到Posts。git commit -m &quot;Added a posts collection&quot;Collection的性質On the server, the collection has the job of talking to the Mongo database, and reading and writing any changes. In this sense, it can be compared to a standard database library. On the client however, the collection is a secure copy of a subset of the real, canonical collection. The client-side collection is constantly and (mostly) transparently kept up to date with that subset in real-time.Server-Side CollectionOn the server, the collection acts as an API into your Mongo database.##Client-Side Collectionclient side Mongo稱為MiniMongo，如字面所述，它不支援所有的Mongo的特徵。###三個理解重點  we talk about a client-side collections being a “cache”, we mean it in the sense that it contains a subset of your data, and offers very quick access to this data.  In general, a client side collection consists of a subset of all the documents stored in the Mongo collection  Secondly, those documents are stored in browser memory, which means that accessing them is basically instantaneous.  Mongo on Meteor.com當你的app deploy上meteor之後，輸入meteor mongo myApp就可以存取網路上的mongodb。#正式開始  輸入meteor reset重置資料庫。確保資料庫是乾淨的。  建立fixture.js    server/fixtures.js        if (Posts.find().count() === 0) {   Posts.insert({     title: &#39;Introducing Telescope&#39;,     author: &#39;Sacha Greif&#39;,     url: &#39;http://sachagreif.com/introducing-telescope/&#39;   });   Posts.insert({     title: &#39;Meteor&#39;,     author: &#39;Tom Coleman&#39;, url: &#39;http://meteor.com&#39;   });   Posts.insert({     title: &#39;The Meteor Book&#39;, author: &#39;Tom Coleman&#39;,     url: &#39;http://themeteorbook.com&#39;   });}            Commit 4-2Added data to the posts collection.    修改posts_list.js    client/views/posts/posts_list.js        Template.postsList.helpers({ posts: function() {     return Posts.find();   }});        Commit 4-3    git commit -m &quot;Wired collection into postsList template.&quot;              Inspecting DOM Changes這邊看不太懂        刪除autopulish這個package    $ meteor remove autopublish        新增publication.js    server/publications.js        Meteor.publish(&#39;posts&#39;, function() {  		return Posts.find();});        在main.js中subscribe posts    client/main.js        Meteor.subscribe(&#39;posts&#39;);        commit 4-4Removed autopublich and set up a basic publication.還是不懂在幹嘛？ 接著要解釋的就是publication與subscription4.5 Publications and SubscriptionsRails App的做法  當user造訪你的網頁，client送出一個request給server。  你的app的第一個工作是找到user所需要的資料。  當找到以後，server會把資料轉換成人類可讀的html。  最後server會將html送給瀏覽器，也就是client。  這樣一個動作就完成了，你的app繼續等待下一個request。Meteor的做法根據剛剛的介紹可以了解到Rails app只能在server處理資訊。而Meteor在Client也就是你的瀏覽器中就可以處理資訊。這就像書店的店員不只是針對你的需求把書給你，而且他還跟著你回家把書的內容讀給妳聽。This has two big implications:first, instead of sending HTML code to the client, a Meteor app will send the actual, raw data and let the client deal with it (data on the wire).Second, you’ll be able to access that data instantaneously without having to wait for a round-trip to the server (latency compensation).PublishingWe’ll need a way to tell Meteor which subset of data can be sent to the client, and we’ll accomplish this through a publication.Whats is DDP?這種利用publication/subscription系統的protocol，就稱為Distributed Data Protocol。Subscribinghow you make a meteor app scalable in client-side  修改publication(server)Meteor.publish(&#39;posts&#39;, function(author) {  		return Posts.find({flagged: false, author: author});});  在client subscribe// on the clientMeteor.subscribe(&#39;posts&#39;, &#39;bob-smith&#39;);AutopulishAutomatically mirroring all data from the server on the client實際運作如果你去看Publish and subscribe的說明，你會發現實際使用的方法並不是那麼的簡潔，那是因為meteor提供了一個方變的method叫做_publishCursor()。當你在return一個cursor的時候，就會使用到它（例如：  return Posts.find({flagged: false, author: author});）。_publishCursor() 做了哪些事？  It checks the name of the server-side collection.  It pulls all matching documents from the cursor and sends it into a client-side collection of the same name. (It uses .added() to do this).  Whenever a document is added, removed or changed, it sends those changes down to the client-side collection. (It uses .observe() on the cursor and .added(), .changed() and removed() to do this).">
+    <meta itemprop="datePublished" content="August 05, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Discover meteor Ch4：Collection
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#collection">Collection</a>
+    <ul>
+      <li><a href="#collection的性質">Collection的性質</a></li>
+    </ul>
+  </li>
+  <li><a href="#server-side-collection">Server-Side Collection</a></li>
+  <li><a href="#rails-app的做法">Rails App的做法</a></li>
+  <li><a href="#meteor的做法">Meteor的做法</a>
+    <ul>
+      <li><a href="#this-has-two-big-implications">This has two big implications:</a></li>
+    </ul>
+  </li>
+  <li><a href="#publishing">Publishing</a></li>
+  <li><a href="#whats-is-ddp">Whats is DDP?</a></li>
+  <li><a href="#subscribing">Subscribing</a>
+    <ul>
+      <li><a href="#how-you-make-a-meteor-app-scalable-in-client-side">how you make a meteor app scalable in client-side</a></li>
+    </ul>
+  </li>
+  <li><a href="#autopulish">Autopulish</a>
+    <ul>
+      <li><a href="#實際運作">實際運作</a></li>
+      <li><a href="#_publishcursor-做了哪些事">_publishCursor() 做了哪些事？</a></li>
+    </ul>
+  </li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="collection">Collection</h2>
+
+<p>新增一個collection</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>collections/posts.js
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Posts</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Meteor</span><span class="p">.</span><span class="nx">Collection</span><span class="p">(</span><span class="dl">'</span><span class="s1">posts</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>除了client與server以外的資料夾會在兩者都執行。
+所以Posts collection在client和server都可以使用。
+這裡的Posts前面不加var，這樣整個app都可以存取到Posts。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git commit -m "Added a posts collection"
+</code></pre></div></div>
+
+<h3 id="collection的性質">Collection的性質</h3>
+<p>On the server, the collection has the job of talking to the Mongo database, and reading and writing any changes. In this sense, it can be compared to a standard database library. On the client however, the collection is a secure copy of a subset of the real, canonical collection. The client-side collection is constantly and (mostly) transparently kept up to date with that subset in real-time.</p>
+
+<h2 id="server-side-collection">Server-Side Collection</h2>
+<p>On the server, the collection acts as an API into your Mongo database.</p>
+
+<p>##Client-Side Collection
+client side Mongo稱為MiniMongo，如字面所述，它不支援所有的Mongo的特徵。
+###三個理解重點</p>
+<ol>
+  <li>we talk about a client-side collections being a “cache”, we mean it in the sense that it contains a subset of your data, and offers very quick access to this data.</li>
+  <li>In general, a client side collection consists of a subset of all the documents stored in the Mongo collection</li>
+  <li>Secondly, those documents are stored in browser memory, which means that accessing them is basically instantaneous.</li>
+</ol>
+
+<blockquote>
+  <p>Mongo on Meteor.com
+當你的app deploy上meteor之後，輸入<code class="highlighter-rouge">meteor mongo myApp</code>就可以存取網路上的mongodb。</p>
+</blockquote>
+
+<p>#正式開始</p>
+<ol>
+  <li>輸入meteor reset重置資料庫。確保資料庫是乾淨的。</li>
+  <li>建立fixture.js
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server/fixtures.js
+</code></pre></div>    </div>
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">Posts</span><span class="p">.</span><span class="nx">find</span><span class="p">().</span><span class="nx">count</span><span class="p">()</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">Posts</span><span class="p">.</span><span class="nx">insert</span><span class="p">({</span>
+     <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Introducing Telescope</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">author</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Sacha Greif</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">http://sachagreif.com/introducing-telescope/</span><span class="dl">'</span>
+   <span class="p">});</span>
+   <span class="nx">Posts</span><span class="p">.</span><span class="nx">insert</span><span class="p">({</span>
+     <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Meteor</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">author</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Tom Coleman</span><span class="dl">'</span><span class="p">,</span> <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">http://meteor.com</span><span class="dl">'</span>
+   <span class="p">});</span>
+   <span class="nx">Posts</span><span class="p">.</span><span class="nx">insert</span><span class="p">({</span>
+     <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">The Meteor Book</span><span class="dl">'</span><span class="p">,</span> <span class="na">author</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Tom Coleman</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">http://themeteorbook.com</span><span class="dl">'</span>
+   <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Commit 4-2
+Added data to the posts collection.</p>
+  </li>
+  <li>修改posts_list.js
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>client/views/posts/posts_list.js
+</code></pre></div>    </div>
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Template</span><span class="p">.</span><span class="nx">postsList</span><span class="p">.</span><span class="nx">helpers</span><span class="p">({</span> <span class="na">posts</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="nx">Posts</span><span class="p">.</span><span class="nx">find</span><span class="p">();</span>
+
+   <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Commit 4-3
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git commit -m "Wired collection into postsList template."
+</code></pre></div>    </div>
+    <blockquote>
+      <p>Inspecting DOM Changes這邊看不太懂</p>
+    </blockquote>
+  </li>
+  <li>刪除autopulish這個package
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ meteor remove autopublish
+</code></pre></div>    </div>
+  </li>
+  <li>新增publication.js
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server/publications.js
+</code></pre></div>    </div>
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Meteor</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="dl">'</span><span class="s1">posts</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  		<span class="k">return</span> <span class="nx">Posts</span><span class="p">.</span><span class="nx">find</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+  <li>在main.js中subscribe posts
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>client/main.js
+</code></pre></div>    </div>
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Meteor</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="dl">'</span><span class="s1">posts</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li>commit 4-4
+Removed autopublich and set up a basic publication.</li>
+</ol>
+
+<p>還是不懂在幹嘛？ 接著要解釋的就是publication與subscription</p>
+
+<h1 id="45-publications-and-subscriptions">4.5 Publications and Subscriptions</h1>
+
+<h2 id="rails-app的做法">Rails App的做法</h2>
+<ol>
+  <li>當user造訪你的網頁，client送出一個request給server。</li>
+  <li>你的app的第一個工作是找到user所需要的資料。</li>
+  <li>當找到以後，server會把資料轉換成人類可讀的html。</li>
+  <li>最後server會將html送給瀏覽器，也就是client。</li>
+  <li>這樣一個動作就完成了，你的app繼續等待下一個request。</li>
+</ol>
+
+<h2 id="meteor的做法">Meteor的做法</h2>
+<p>根據剛剛的介紹可以了解到Rails app只能在server處理資訊。而Meteor在Client也就是你的瀏覽器中就可以處理資訊。
+這就像書店的店員不只是針對你的需求把書給你，而且他還跟著你回家把書的內容讀給妳聽。</p>
+
+<h3 id="this-has-two-big-implications">This has two big implications:</h3>
+<p>first, instead of sending HTML code to the client, a Meteor app will send the actual, raw data and let the client deal with it (data on the wire).
+Second, you’ll be able to access that data instantaneously without having to wait for a round-trip to the server (latency compensation).</p>
+
+<h2 id="publishing">Publishing</h2>
+<p>We’ll need a way to tell Meteor which subset of data can be sent to the client, and we’ll accomplish this through a publication.</p>
+
+<h2 id="whats-is-ddp">Whats is DDP?</h2>
+<p>這種利用publication/subscription系統的protocol，就稱為Distributed Data Protocol。</p>
+
+<h2 id="subscribing">Subscribing</h2>
+
+<h3 id="how-you-make-a-meteor-app-scalable-in-client-side">how you make a meteor app scalable in client-side</h3>
+
+<ol>
+  <li>修改publication(server)</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Meteor</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="dl">'</span><span class="s1">posts</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">author</span><span class="p">)</span> <span class="p">{</span>
+  		<span class="k">return</span> <span class="nx">Posts</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="na">flagged</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="na">author</span><span class="p">:</span> <span class="nx">author</span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ol>
+  <li>在client subscribe</li>
+</ol>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// on the client</span>
+<span class="nx">Meteor</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="dl">'</span><span class="s1">posts</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">bob-smith</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="autopulish">Autopulish</h2>
+<p>Automatically mirroring all data from the server on the client</p>
+
+<h3 id="實際運作">實際運作</h3>
+
+<p>如果你去看<a href="http://docs.meteor.com/#publishandsubscribe">Publish and subscribe</a>的說明，你會發現實際使用的方法並不是那麼的簡潔，那是因為meteor提供了一個方變的method叫做_publishCursor()。當你在return一個cursor的時候，就會使用到它（例如：  return Posts.find({flagged: false, author: author});）。</p>
+
+<h3 id="_publishcursor-做了哪些事">_publishCursor() 做了哪些事？</h3>
+
+<ul>
+  <li>It checks the name of the server-side collection.</li>
+  <li>It pulls all matching documents from the cursor and sends it into a client-side collection of the same name. (It uses .added() to do this).</li>
+  <li>Whenever a document is added, removed or changed, it sends those changes down to the client-side collection. (It uses .observe() on the cursor and .added(), .changed() and removed() to do this).</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#meteor" class="page__taxonomy-item" rel="tag">Meteor</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-08-05T03:04:00+00:00">August 05, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/front-end/css-dinner/" class="pagination--pager" title="CSS Dinner - 好玩又有效的 CSS 教學
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/discover-meteor-ch5-routing/" class="pagination--pager" title="Discover Meteor Ch5：Routing
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

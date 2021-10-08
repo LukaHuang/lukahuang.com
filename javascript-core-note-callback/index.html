@@ -1,0 +1,540 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Javascript核心筆記：callback - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="callback是一種設計模式來看看callback的定義：  Callback (computer programming) - WikipediaIn computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.  jQuery Document: How jQuery Works#Callback_and_Functio…A callback is a function that is passed as an argument to another function and is executed after its parent function has completed. The special thing about a callback is that functions that appear after the “parent” can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.所以本質上callback是一種設計模式。當一段程式碼可以當做參數丟給其他程式碼執行就叫做callback。jQuery和許多其他的框架的設計原則都遵循這個模式。callback不限於非同步使用同步時使用callback通常是希望程式能夠按照順序執行。通常callback在同步的情況下是最後執行的。var func1=function(callback){    //do something.    //如果callback存在就執行它    callback &amp;&amp; callback();}func1(func2);    var func2=function(){}非同步的例子：$(document).ready(callback);$.ajax({  url: &quot;test.html&quot;,  context: document.body}).done(function() {  $(this).addClass(&quot;done&quot;);}).fail(function() {  alert(&quot;error&quot;);}).always(function() {  alert(&quot;complete&quot;);});callback function的撰寫方式1.沒有其他引數時function basic( callback ){  console.log( &#39;作些事情&#39; );  var result = &#39;我是等會要被傳送給 `do something` 的 callback 的函式結果&#39;;  // 如果 callback 存在的話就執行他  callback &amp;&amp; callback( result );}basic( function( result ){  console.log( &#39;這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果&#39; );  console.log( result );});結果作些事情這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果我是等會要被傳送給 `do something` 的 callback 的函式結果2.有其他引數時可以用call或apply來實作。用call來實作看看。function callbacks_with_call( arg1, arg2, callback ){  console.log( &#39;作些事情&#39; );  var result1 = arg1.replace( &#39;argument&#39;, &#39;result&#39; ),      result2 = arg2.replace( &#39;argument&#39;, &#39;result&#39; );  this.data = &#39;這等會可以讓 callback 函式用 `this` 來調用&#39;;  // 如果 callback 存在的話就執行他  callback &amp;amp;&amp;amp; callback.call( this, result1, result2 );}( function(){  var arg1 = &#39;我是 argument1&#39;,      arg2 = &#39;我是 argument2&#39;;  callbacks_with_call( arg1, arg2, function( result1, result2 ){    console.log( &#39;這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果&#39; );    console.log( &#39;result1: &#39; + result1 );    console.log( &#39;result2: &#39; + result2 );    console.log( &#39;data from `callbacks_with_call`: &#39; + this.data );  });})();執行結果作些事情這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果result1: i am result1result2: i am result2data from `callbacks_with_call`: 這等會可以讓 callback 函式用 `this` 來調用參考資料Javascript callbacks | DreamersLabJavaScript 回调函数怎么理解">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Javascript核心筆記：callback">
+
+
+  <link rel="canonical" href="https://lukahuang.com/javascript-core-note-callback/">
+  <meta property="og:url" content="https://lukahuang.com/javascript-core-note-callback/">
+
+
+
+  <meta property="og:description" content="callback是一種設計模式來看看callback的定義：  Callback (computer programming) - WikipediaIn computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.  jQuery Document: How jQuery Works#Callback_and_Functio…A callback is a function that is passed as an argument to another function and is executed after its parent function has completed. The special thing about a callback is that functions that appear after the “parent” can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.所以本質上callback是一種設計模式。當一段程式碼可以當做參數丟給其他程式碼執行就叫做callback。jQuery和許多其他的框架的設計原則都遵循這個模式。callback不限於非同步使用同步時使用callback通常是希望程式能夠按照順序執行。通常callback在同步的情況下是最後執行的。var func1=function(callback){    //do something.    //如果callback存在就執行它    callback &amp;&amp; callback();}func1(func2);    var func2=function(){}非同步的例子：$(document).ready(callback);$.ajax({  url: &quot;test.html&quot;,  context: document.body}).done(function() {  $(this).addClass(&quot;done&quot;);}).fail(function() {  alert(&quot;error&quot;);}).always(function() {  alert(&quot;complete&quot;);});callback function的撰寫方式1.沒有其他引數時function basic( callback ){  console.log( &#39;作些事情&#39; );  var result = &#39;我是等會要被傳送給 `do something` 的 callback 的函式結果&#39;;  // 如果 callback 存在的話就執行他  callback &amp;&amp; callback( result );}basic( function( result ){  console.log( &#39;這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果&#39; );  console.log( result );});結果作些事情這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果我是等會要被傳送給 `do something` 的 callback 的函式結果2.有其他引數時可以用call或apply來實作。用call來實作看看。function callbacks_with_call( arg1, arg2, callback ){  console.log( &#39;作些事情&#39; );  var result1 = arg1.replace( &#39;argument&#39;, &#39;result&#39; ),      result2 = arg2.replace( &#39;argument&#39;, &#39;result&#39; );  this.data = &#39;這等會可以讓 callback 函式用 `this` 來調用&#39;;  // 如果 callback 存在的話就執行他  callback &amp;amp;&amp;amp; callback.call( this, result1, result2 );}( function(){  var arg1 = &#39;我是 argument1&#39;,      arg2 = &#39;我是 argument2&#39;;  callbacks_with_call( arg1, arg2, function( result1, result2 ){    console.log( &#39;這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果&#39; );    console.log( &#39;result1: &#39; + result1 );    console.log( &#39;result2: &#39; + result2 );    console.log( &#39;data from `callbacks_with_call`: &#39; + this.data );  });})();執行結果作些事情這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果result1: i am result1result2: i am result2data from `callbacks_with_call`: 這等會可以讓 callback 函式用 `this` 來調用參考資料Javascript callbacks | DreamersLabJavaScript 回调函数怎么理解">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-02-27T04:25:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Javascript核心筆記：callback">
+    <meta itemprop="description" content="callback是一種設計模式來看看callback的定義：  Callback (computer programming) - WikipediaIn computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.  jQuery Document: How jQuery Works#Callback_and_Functio…A callback is a function that is passed as an argument to another function and is executed after its parent function has completed. The special thing about a callback is that functions that appear after the “parent” can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.所以本質上callback是一種設計模式。當一段程式碼可以當做參數丟給其他程式碼執行就叫做callback。jQuery和許多其他的框架的設計原則都遵循這個模式。callback不限於非同步使用同步時使用callback通常是希望程式能夠按照順序執行。通常callback在同步的情況下是最後執行的。var func1=function(callback){    //do something.    //如果callback存在就執行它    callback &amp;&amp; callback();}func1(func2);    var func2=function(){}非同步的例子：$(document).ready(callback);$.ajax({  url: &quot;test.html&quot;,  context: document.body}).done(function() {  $(this).addClass(&quot;done&quot;);}).fail(function() {  alert(&quot;error&quot;);}).always(function() {  alert(&quot;complete&quot;);});callback function的撰寫方式1.沒有其他引數時function basic( callback ){  console.log( &#39;作些事情&#39; );  var result = &#39;我是等會要被傳送給 `do something` 的 callback 的函式結果&#39;;  // 如果 callback 存在的話就執行他  callback &amp;&amp; callback( result );}basic( function( result ){  console.log( &#39;這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果&#39; );  console.log( result );});結果作些事情這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果我是等會要被傳送給 `do something` 的 callback 的函式結果2.有其他引數時可以用call或apply來實作。用call來實作看看。function callbacks_with_call( arg1, arg2, callback ){  console.log( &#39;作些事情&#39; );  var result1 = arg1.replace( &#39;argument&#39;, &#39;result&#39; ),      result2 = arg2.replace( &#39;argument&#39;, &#39;result&#39; );  this.data = &#39;這等會可以讓 callback 函式用 `this` 來調用&#39;;  // 如果 callback 存在的話就執行他  callback &amp;amp;&amp;amp; callback.call( this, result1, result2 );}( function(){  var arg1 = &#39;我是 argument1&#39;,      arg2 = &#39;我是 argument2&#39;;  callbacks_with_call( arg1, arg2, function( result1, result2 ){    console.log( &#39;這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果&#39; );    console.log( &#39;result1: &#39; + result1 );    console.log( &#39;result2: &#39; + result2 );    console.log( &#39;data from `callbacks_with_call`: &#39; + this.data );  });})();執行結果作些事情這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果result1: i am result1result2: i am result2data from `callbacks_with_call`: 這等會可以讓 callback 函式用 `this` 來調用參考資料Javascript callbacks | DreamersLabJavaScript 回调函数怎么理解">
+    <meta itemprop="datePublished" content="February 27, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Javascript核心筆記：callback
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#callback是一種設計模式">callback是一種設計模式</a></li>
+  <li><a href="#callback不限於非同步使用">callback不限於非同步使用</a></li>
+  <li><a href="#callback-function的撰寫方式">callback function的撰寫方式</a></li>
+  <li><a href="#參考資料">參考資料</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="callback是一種設計模式">callback是一種設計模式</h2>
+
+<p>來看看callback的定義：</p>
+
+<blockquote>
+  <p><a href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">Callback (computer programming) - Wikipedia</a>
+In computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.</p>
+</blockquote>
+
+<blockquote>
+  <p><a href="http://docs.jquery.com/How_jQuery_Works#Callback_and_Functions">jQuery Document: How jQuery Works#Callback_and_Functio…</a>
+A callback is a function that is passed as an argument to another function and is executed after its parent function has completed. The special thing about a callback is that functions that appear after the “parent” can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.</p>
+</blockquote>
+
+<p>所以本質上callback是一種設計模式。當一段程式碼可以當做參數丟給其他程式碼執行就叫做callback。jQuery和許多其他的框架的設計原則都遵循這個模式。</p>
+
+<h2 id="callback不限於非同步使用">callback不限於非同步使用</h2>
+<p>同步時使用callback通常是希望程式能夠按照順序執行。通常callback在同步的情況下是最後執行的。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">func1</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
+    <span class="c1">//do something.</span>
+
+    <span class="c1">//如果callback存在就執行它</span>
+    <span class="nx">callback</span> <span class="o">&amp;&amp;</span> <span class="nx">callback</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">func1</span><span class="p">(</span><span class="nx">func2</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">func2</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>非同步的例子：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="nx">callback</span><span class="p">);</span>
+<span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">test.html</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">context</span><span class="p">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span>
+<span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="dl">"</span><span class="s2">done</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">error</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">always</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">complete</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="callback-function的撰寫方式">callback function的撰寫方式</h2>
+<h4 id="1沒有其他引數時">1.沒有其他引數時</h4>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">basic</span><span class="p">(</span> <span class="nx">callback</span> <span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="dl">'</span><span class="s1">作些事情</span><span class="dl">'</span> <span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">我是等會要被傳送給 `do something` 的 callback 的函式結果</span><span class="dl">'</span><span class="p">;</span>
+  <span class="c1">// 如果 callback 存在的話就執行他</span>
+  <span class="nx">callback</span> <span class="o">&amp;&amp;</span> <span class="nx">callback</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">basic</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">result</span> <span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="dl">'</span><span class="s1">這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果</span><span class="dl">'</span> <span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
+<span class="p">});</span>
+
+</code></pre></div></div>
+<p>結果</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>作些事情
+這個 callback 函式會在 terminal 上列出 `basic` 函式執行的結果
+我是等會要被傳送給 `do something` 的 callback 的函式結果
+</code></pre></div></div>
+
+<h4 id="2有其他引數時可以用call或apply來實作用call來實作看看">2.有其他引數時可以用call或apply來實作。用call來實作看看。</h4>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">callbacks_with_call</span><span class="p">(</span> <span class="nx">arg1</span><span class="p">,</span> <span class="nx">arg2</span><span class="p">,</span> <span class="nx">callback</span> <span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="dl">'</span><span class="s1">作些事情</span><span class="dl">'</span> <span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">result1</span> <span class="o">=</span> <span class="nx">arg1</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="dl">'</span><span class="s1">argument</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">result</span><span class="dl">'</span> <span class="p">),</span>
+      <span class="nx">result2</span> <span class="o">=</span> <span class="nx">arg2</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="dl">'</span><span class="s1">argument</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">result</span><span class="dl">'</span> <span class="p">);</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">這等會可以讓 callback 函式用 `this` 來調用</span><span class="dl">'</span><span class="p">;</span>
+
+  <span class="c1">// 如果 callback 存在的話就執行他</span>
+  <span class="nx">callback</span> <span class="o">&amp;</span><span class="nx">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="nx">amp</span><span class="p">;</span> <span class="nx">callback</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">result1</span><span class="p">,</span> <span class="nx">result2</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">(</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="kd">var</span> <span class="nx">arg1</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">我是 argument1</span><span class="dl">'</span><span class="p">,</span>
+      <span class="nx">arg2</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">我是 argument2</span><span class="dl">'</span><span class="p">;</span>
+
+  <span class="nx">callbacks_with_call</span><span class="p">(</span> <span class="nx">arg1</span><span class="p">,</span> <span class="nx">arg2</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">result1</span><span class="p">,</span> <span class="nx">result2</span> <span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="dl">'</span><span class="s1">這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果</span><span class="dl">'</span> <span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="dl">'</span><span class="s1">result1: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">result1</span> <span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="dl">'</span><span class="s1">result2: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">result2</span> <span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="dl">'</span><span class="s1">data from `callbacks_with_call`: </span><span class="dl">'</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">data</span> <span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">})();</span>
+</code></pre></div></div>
+<p>執行結果</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>作些事情
+這一個 callback 函式將會列出 `callbacks_with_call` 的執行結果
+result1: i am result1
+result2: i am result2
+data from `callbacks_with_call`: 這等會可以讓 callback 函式用 `this` 來調用
+</code></pre></div></div>
+
+<h2 id="參考資料">參考資料</h2>
+<p><a href="http://dreamerslab.com/blog/tw/javascript-callbacks/">Javascript callbacks | DreamersLab</a>
+<a href="http://segmentfault.com/q/1010000000140970">JavaScript 回调函数怎么理解</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-02-27T04:25:00+00:00">February 27, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/javascript-this/" class="pagination--pager" title="Javascript核心筆記：this
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/javascript-core-note-function/" class="pagination--pager" title="Javascript核心筆記：function
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,472 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Typescript是新手的好朋友 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="為什麼 Typescript 是新手的好朋友typescript百分之百跟javascript相容，所有javascript的語法都可以在.tstypescript檔案中執行。因此就算是要javascrtip新手，也可以享受typescript帶來好處。typescript能夠讓      目前暫時不需要去研究typescript的其他功能，只需要他可以宣告型態，靜態語言即時偵錯，與關連定義檔就可以檢查method，光是這幾項就很值得使用了        需要注意的是因為typescript的許多特性，例如: class, module, interface 皆與原生javascript有所不同，如果對javascript還不了解，直接學習可能會更加的混淆。        在javascript演進這麼快速的現在，要選擇任何一種framework或是語言都是一種巨大的投資，  選擇 Typescript 還有什麼好處？  因為javascript的是個動態型別的語言，所以只能在執行時期偵錯，要真的執行到那一行，才會跳出錯誤訊息，這使的偵錯上非常的不容易。  typescript所能解決的問題：因為typescript提供了靜態型別檢查，在編譯的時候就可以檢查到！尤其是打錯字的問題和型別不一致的問題。  typescript新增了一些型別，讓我們可以宣告靜態型別。也保留了原本動態型別的特性，只要你設為any！。  function 也可以使用冒號設定回傳值。  module 類似namespace的存在，裡面可以包其他module、interface、class、function…  garbage collection(回收)是執行時期做的，只要參考的技術器是0的話，javascript就會自動回收他其他Excelsior: [Java] 淺談 call by value 和 call by reference">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Typescript是新手的好朋友">
+
+
+  <link rel="canonical" href="https://lukahuang.com/typescript-is-newbies-good-friend/">
+  <meta property="og:url" content="https://lukahuang.com/typescript-is-newbies-good-friend/">
+
+
+
+  <meta property="og:description" content="為什麼 Typescript 是新手的好朋友typescript百分之百跟javascript相容，所有javascript的語法都可以在.tstypescript檔案中執行。因此就算是要javascrtip新手，也可以享受typescript帶來好處。typescript能夠讓      目前暫時不需要去研究typescript的其他功能，只需要他可以宣告型態，靜態語言即時偵錯，與關連定義檔就可以檢查method，光是這幾項就很值得使用了        需要注意的是因為typescript的許多特性，例如: class, module, interface 皆與原生javascript有所不同，如果對javascript還不了解，直接學習可能會更加的混淆。        在javascript演進這麼快速的現在，要選擇任何一種framework或是語言都是一種巨大的投資，  選擇 Typescript 還有什麼好處？  因為javascript的是個動態型別的語言，所以只能在執行時期偵錯，要真的執行到那一行，才會跳出錯誤訊息，這使的偵錯上非常的不容易。  typescript所能解決的問題：因為typescript提供了靜態型別檢查，在編譯的時候就可以檢查到！尤其是打錯字的問題和型別不一致的問題。  typescript新增了一些型別，讓我們可以宣告靜態型別。也保留了原本動態型別的特性，只要你設為any！。  function 也可以使用冒號設定回傳值。  module 類似namespace的存在，裡面可以包其他module、interface、class、function…  garbage collection(回收)是執行時期做的，只要參考的技術器是0的話，javascript就會自動回收他其他Excelsior: [Java] 淺談 call by value 和 call by reference">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-03-08T14:17:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Typescript是新手的好朋友">
+    <meta itemprop="description" content="為什麼 Typescript 是新手的好朋友typescript百分之百跟javascript相容，所有javascript的語法都可以在.tstypescript檔案中執行。因此就算是要javascrtip新手，也可以享受typescript帶來好處。typescript能夠讓      目前暫時不需要去研究typescript的其他功能，只需要他可以宣告型態，靜態語言即時偵錯，與關連定義檔就可以檢查method，光是這幾項就很值得使用了        需要注意的是因為typescript的許多特性，例如: class, module, interface 皆與原生javascript有所不同，如果對javascript還不了解，直接學習可能會更加的混淆。        在javascript演進這麼快速的現在，要選擇任何一種framework或是語言都是一種巨大的投資，  選擇 Typescript 還有什麼好處？  因為javascript的是個動態型別的語言，所以只能在執行時期偵錯，要真的執行到那一行，才會跳出錯誤訊息，這使的偵錯上非常的不容易。  typescript所能解決的問題：因為typescript提供了靜態型別檢查，在編譯的時候就可以檢查到！尤其是打錯字的問題和型別不一致的問題。  typescript新增了一些型別，讓我們可以宣告靜態型別。也保留了原本動態型別的特性，只要你設為any！。  function 也可以使用冒號設定回傳值。  module 類似namespace的存在，裡面可以包其他module、interface、class、function…  garbage collection(回收)是執行時期做的，只要參考的技術器是0的話，javascript就會自動回收他其他Excelsior: [Java] 淺談 call by value 和 call by reference">
+    <meta itemprop="datePublished" content="March 08, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Typescript是新手的好朋友
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#為什麼-typescript-是新手的好朋友">為什麼 Typescript 是新手的好朋友</a></li>
+  <li><a href="#選擇-typescript-還有什麼好處">選擇 Typescript 還有什麼好處？</a></li>
+  <li><a href="#其他">其他</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="為什麼-typescript-是新手的好朋友">為什麼 Typescript 是新手的好朋友</h2>
+
+<p>typescript百分之百跟javascript相容，所有javascript的語法都可以在<code class="highlighter-rouge">.ts</code>typescript檔案中執行。因此就算是要javascrtip新手，也可以享受typescript帶來好處。typescript能夠讓</p>
+
+<ol>
+  <li>
+    <p>目前暫時不需要去研究typescript的其他功能，只需要他可以宣告型態，靜態語言即時偵錯，與關連定義檔就可以檢查method，光是這幾項就很值得使用了</p>
+  </li>
+  <li>
+    <p>需要注意的是因為typescript的許多特性，例如: class, module, interface 皆與原生javascript有所不同，如果對javascript還不了解，直接學習可能會更加的混淆。</p>
+  </li>
+  <li>
+    <p>在javascript演進這麼快速的現在，要選擇任何一種framework或是語言都是一種巨大的投資，</p>
+  </li>
+</ol>
+
+<h2 id="選擇-typescript-還有什麼好處">選擇 Typescript 還有什麼好處？</h2>
+
+<ol>
+  <li>因為javascript的是個動態型別的語言，所以只能在執行時期偵錯，要真的執行到那一行，才會跳出錯誤訊息，這使的偵錯上非常的不容易。</li>
+  <li>typescript所能解決的問題：因為typescript提供了靜態型別檢查，在編譯的時候就可以檢查到！尤其是打錯字的問題和型別不一致的問題。</li>
+  <li>typescript新增了一些型別，讓我們可以宣告靜態型別。也保留了原本動態型別的特性，只要你設為any！。</li>
+  <li>function 也可以使用冒號設定回傳值。</li>
+  <li>module 類似namespace的存在，裡面可以包其他module、interface、class、function…</li>
+  <li>garbage collection(回收)是執行時期做的，只要參考的技術器是0的話，javascript就會自動回收他</li>
+</ol>
+
+<h2 id="其他">其他</h2>
+<p><a href="http://brownydev.blogspot.tw/2011/06/java-call-by-value-call-by-reference.html">Excelsior: [Java] 淺談 call by value 和 call by reference</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#typescript" class="page__taxonomy-item" rel="tag">Typescript</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-03-08T14:17:00+00:00">March 08, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/javascript-core-note-namespace/" class="pagination--pager" title="Javascript核心筆記：namespace
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/bootstrap-note-preface-cheetsheet/" class="pagination--pager" title="細讀 Bootstrap 3 文件
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

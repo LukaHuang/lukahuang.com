@@ -1,0 +1,563 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Ruby bits 2 ( 1 )：BLOCKS, PROCS &amp; LAMBDAS - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="雖然跟Ruby bit名字很像，但是內容的確比較進階點。two ways for storing blocks1.Procmy_proc = Proc.new do  puts &quot;tweet&quot;endmy_proc.call # =&gt; tweet等同於my_proc = Proc.new { puts &quot;tweet&quot; }my_proc.call # =&gt; tweet2.lambda使用lambda來儲存又稱為static lambda。my_proc = lambda { puts &quot;tweet&quot; }my_proc.call  # =&gt; tweetRuby1.9以前的版本是這樣寫my_proc = -&gt; { puts &quot;tweet&quot; }my_proc.call  # =&gt; tweetblock to lambdaclass Tweet  def post    if authenticate?(@user, @password)      # submit the tweet      yield    else      raise &#39;Auth Error&#39;    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)tweet.post { puts &quot;Sent!&quot; }等同於class Tweet  def post(success)    if authenticate?(@user, @password)      # submit the tweet      success.call    else      raise &#39;Auth Error&#39;    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)success = -&gt; { puts &quot;Sent!&quot; }tweet.post(success)multiple lambdasclass Tweet  def post(success, error)    if authenticate?(@uerser, @password)      # submit the tweet      success.call    else      error.call    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)success = -&gt; { puts &quot;Sent!&quot; }error = -&gt; { raise &#39;Auth Error&#39; }tweet.post(success, error)Using the ampersand有兩種情況會用到ampersand也就是＆符號1.Calling a method with &amp; in front of a parametertweets.each(&amp;printer)turn a proc into block2.Defining a method with &amp; in front of a parameterdef each(&amp;block)turns a block into a proc so it can be assigned to parameter這兩種用法很常同時使用example 1:printer = lambda { |tweet| puts tweet }tweets.each (printer) (這樣會出現錯誤，因為each expects a block, not a proc.改成這樣就沒問題了。printer = lambda { |tweet| puts tweet }tweets.each(&amp;printer)&amp;turns proc into blockexample 2:class Timeline  attr_accessor :tweets  def each(&amp;block)       #block into proc    tweets.each(&amp;block)  #proc back into a block  endendtimeline = Timeline.new(tweets)timeline.each do |tweet|  puts tweetendsymbol to Proc未完待續…">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Ruby bits 2 ( 1 )：BLOCKS, PROCS &amp; LAMBDAS">
+
+
+  <link rel="canonical" href="https://lukahuang.com/ruby-bits_2-1-blocks-procs/">
+  <meta property="og:url" content="https://lukahuang.com/ruby-bits_2-1-blocks-procs/">
+
+
+
+  <meta property="og:description" content="雖然跟Ruby bit名字很像，但是內容的確比較進階點。two ways for storing blocks1.Procmy_proc = Proc.new do  puts &quot;tweet&quot;endmy_proc.call # =&gt; tweet等同於my_proc = Proc.new { puts &quot;tweet&quot; }my_proc.call # =&gt; tweet2.lambda使用lambda來儲存又稱為static lambda。my_proc = lambda { puts &quot;tweet&quot; }my_proc.call  # =&gt; tweetRuby1.9以前的版本是這樣寫my_proc = -&gt; { puts &quot;tweet&quot; }my_proc.call  # =&gt; tweetblock to lambdaclass Tweet  def post    if authenticate?(@user, @password)      # submit the tweet      yield    else      raise &#39;Auth Error&#39;    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)tweet.post { puts &quot;Sent!&quot; }等同於class Tweet  def post(success)    if authenticate?(@user, @password)      # submit the tweet      success.call    else      raise &#39;Auth Error&#39;    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)success = -&gt; { puts &quot;Sent!&quot; }tweet.post(success)multiple lambdasclass Tweet  def post(success, error)    if authenticate?(@uerser, @password)      # submit the tweet      success.call    else      error.call    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)success = -&gt; { puts &quot;Sent!&quot; }error = -&gt; { raise &#39;Auth Error&#39; }tweet.post(success, error)Using the ampersand有兩種情況會用到ampersand也就是＆符號1.Calling a method with &amp; in front of a parametertweets.each(&amp;printer)turn a proc into block2.Defining a method with &amp; in front of a parameterdef each(&amp;block)turns a block into a proc so it can be assigned to parameter這兩種用法很常同時使用example 1:printer = lambda { |tweet| puts tweet }tweets.each (printer) (這樣會出現錯誤，因為each expects a block, not a proc.改成這樣就沒問題了。printer = lambda { |tweet| puts tweet }tweets.each(&amp;printer)&amp;turns proc into blockexample 2:class Timeline  attr_accessor :tweets  def each(&amp;block)       #block into proc    tweets.each(&amp;block)  #proc back into a block  endendtimeline = Timeline.new(tweets)timeline.each do |tweet|  puts tweetendsymbol to Proc未完待續…">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-06T07:42:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Ruby bits 2 ( 1 )：BLOCKS, PROCS &amp; LAMBDAS">
+    <meta itemprop="description" content="雖然跟Ruby bit名字很像，但是內容的確比較進階點。two ways for storing blocks1.Procmy_proc = Proc.new do  puts &quot;tweet&quot;endmy_proc.call # =&gt; tweet等同於my_proc = Proc.new { puts &quot;tweet&quot; }my_proc.call # =&gt; tweet2.lambda使用lambda來儲存又稱為static lambda。my_proc = lambda { puts &quot;tweet&quot; }my_proc.call  # =&gt; tweetRuby1.9以前的版本是這樣寫my_proc = -&gt; { puts &quot;tweet&quot; }my_proc.call  # =&gt; tweetblock to lambdaclass Tweet  def post    if authenticate?(@user, @password)      # submit the tweet      yield    else      raise &#39;Auth Error&#39;    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)tweet.post { puts &quot;Sent!&quot; }等同於class Tweet  def post(success)    if authenticate?(@user, @password)      # submit the tweet      success.call    else      raise &#39;Auth Error&#39;    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)success = -&gt; { puts &quot;Sent!&quot; }tweet.post(success)multiple lambdasclass Tweet  def post(success, error)    if authenticate?(@uerser, @password)      # submit the tweet      success.call    else      error.call    end  endendtweet = Tweet.new(&#39;Ruby Bits!&#39;)success = -&gt; { puts &quot;Sent!&quot; }error = -&gt; { raise &#39;Auth Error&#39; }tweet.post(success, error)Using the ampersand有兩種情況會用到ampersand也就是＆符號1.Calling a method with &amp; in front of a parametertweets.each(&amp;printer)turn a proc into block2.Defining a method with &amp; in front of a parameterdef each(&amp;block)turns a block into a proc so it can be assigned to parameter這兩種用法很常同時使用example 1:printer = lambda { |tweet| puts tweet }tweets.each (printer) (這樣會出現錯誤，因為each expects a block, not a proc.改成這樣就沒問題了。printer = lambda { |tweet| puts tweet }tweets.each(&amp;printer)&amp;turns proc into blockexample 2:class Timeline  attr_accessor :tweets  def each(&amp;block)       #block into proc    tweets.each(&amp;block)  #proc back into a block  endendtimeline = Timeline.new(tweets)timeline.each do |tweet|  puts tweetendsymbol to Proc未完待續…">
+    <meta itemprop="datePublished" content="September 06, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Ruby bits 2 ( 1 )：BLOCKS, PROCS &amp; LAMBDAS
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1proc">1.Proc</a></li>
+  <li><a href="#2lambda">2.lambda</a></li>
+  <li><a href="#1calling-a-method-with--in-front-of-a-parameter">1.Calling a method with &amp; in front of a parameter</a></li>
+  <li><a href="#2defining-a-method-with--in-front-of-a-parameter">2.Defining a method with &amp; in front of a parameter</a></li>
+  <li><a href="#example-1">example 1:</a></li>
+  <li><a href="#example-2">example 2:</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>雖然跟Ruby bit名字很像，但是內容的確比較進階點。</p>
+
+<h1 id="two-ways-for-storing-blocks">two ways for storing blocks</h1>
+<h2 id="1proc">1.Proc</h2>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_proc</span> <span class="o">=</span> <span class="no">Proc</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"tweet"</span>
+<span class="k">end</span>
+<span class="n">my_proc</span><span class="p">.</span><span class="nf">call</span> <span class="c1"># =&gt; tweet</span>
+</code></pre></div></div>
+<p>等同於</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_proc</span> <span class="o">=</span> <span class="no">Proc</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"tweet"</span> <span class="p">}</span>
+<span class="n">my_proc</span><span class="p">.</span><span class="nf">call</span> <span class="c1"># =&gt; tweet</span>
+</code></pre></div></div>
+
+<h2 id="2lambda">2.lambda</h2>
+<p>使用lambda來儲存又稱為static lambda。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_proc</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"tweet"</span> <span class="p">}</span>
+<span class="n">my_proc</span><span class="p">.</span><span class="nf">call</span>  <span class="c1"># =&gt; tweet</span>
+</code></pre></div></div>
+<p>Ruby1.9以前的版本是這樣寫</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_proc</span> <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"tweet"</span> <span class="p">}</span>
+<span class="n">my_proc</span><span class="p">.</span><span class="nf">call</span>  <span class="c1"># =&gt; tweet</span>
+</code></pre></div></div>
+
+<h1 id="block-to-lambda">block to lambda</h1>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Tweet</span>
+  <span class="k">def</span> <span class="nf">post</span>
+    <span class="k">if</span> <span class="n">authenticate?</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="vi">@password</span><span class="p">)</span>
+      <span class="c1"># submit the tweet</span>
+      <span class="k">yield</span>
+    <span class="k">else</span>
+      <span class="k">raise</span> <span class="s1">'Auth Error'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tweet</span> <span class="o">=</span> <span class="no">Tweet</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Ruby Bits!'</span><span class="p">)</span>
+<span class="n">tweet</span><span class="p">.</span><span class="nf">post</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"Sent!"</span> <span class="p">}</span>
+</code></pre></div></div>
+<p>等同於</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Tweet</span>
+  <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">success</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">authenticate?</span><span class="p">(</span><span class="vi">@user</span><span class="p">,</span> <span class="vi">@password</span><span class="p">)</span>
+      <span class="c1"># submit the tweet</span>
+      <span class="n">success</span><span class="p">.</span><span class="nf">call</span>
+    <span class="k">else</span>
+      <span class="k">raise</span> <span class="s1">'Auth Error'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tweet</span> <span class="o">=</span> <span class="no">Tweet</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Ruby Bits!'</span><span class="p">)</span>
+<span class="n">success</span> <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"Sent!"</span> <span class="p">}</span>
+<span class="n">tweet</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="n">success</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h1 id="multiple-lambdas">multiple lambdas</h1>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Tweet</span>
+  <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">success</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">authenticate?</span><span class="p">(</span><span class="vi">@uerser</span><span class="p">,</span> <span class="vi">@password</span><span class="p">)</span>
+      <span class="c1"># submit the tweet</span>
+      <span class="n">success</span><span class="p">.</span><span class="nf">call</span>
+    <span class="k">else</span>
+      <span class="n">error</span><span class="p">.</span><span class="nf">call</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tweet</span> <span class="o">=</span> <span class="no">Tweet</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Ruby Bits!'</span><span class="p">)</span>
+<span class="n">success</span> <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"Sent!"</span> <span class="p">}</span>
+<span class="n">error</span> <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="k">raise</span> <span class="s1">'Auth Error'</span> <span class="p">}</span>
+<span class="n">tweet</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="n">success</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+</code></pre></div></div>
+<h1 id="using-the-ampersand">Using the ampersand</h1>
+<p>有兩種情況會用到ampersand也就是<code class="highlighter-rouge">＆</code>符號</p>
+
+<h2 id="1calling-a-method-with--in-front-of-a-parameter">1.Calling a method with &amp; in front of a parameter</h2>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tweets</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">printer</span><span class="p">)</span>
+</code></pre></div></div>
+<p>turn a proc into block</p>
+
+<h2 id="2defining-a-method-with--in-front-of-a-parameter">2.Defining a method with &amp; in front of a parameter</h2>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</code></pre></div></div>
+<p>turns a block into a proc so it can be assigned to parameter</p>
+
+<p>這兩種用法很常同時使用</p>
+
+<h2 id="example-1">example 1:</h2>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">printer</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">tweet</span> <span class="p">}</span>
+<span class="n">tweets</span><span class="p">.</span><span class="nf">each</span> <span class="p">(</span><span class="n">printer</span><span class="p">)</span> <span class="p">(</span>
+</code></pre></div></div>
+<p>這樣會出現錯誤，因為each expects a block, not a proc.
+改成這樣就沒問題了。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">printer</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">tweet</span> <span class="p">}</span>
+<span class="n">tweets</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">printer</span><span class="p">)</span>
+</code></pre></div></div>
+<p><code class="highlighter-rouge">&amp;</code>turns proc into block</p>
+
+<h2 id="example-2">example 2:</h2>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Timeline</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:tweets</span>
+  <span class="k">def</span> <span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>       <span class="c1">#block into proc</span>
+    <span class="n">tweets</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>  <span class="c1">#proc back into a block</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timeline</span> <span class="o">=</span> <span class="no">Timeline</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">tweets</span><span class="p">)</span>
+<span class="n">timeline</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">tweet</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">tweet</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h1 id="symbol-to-proc">symbol to Proc</h1>
+
+<p>未完待續…</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby-bit" class="page__taxonomy-item" rel="tag">Ruby Bit</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby" class="page__taxonomy-item" rel="tag">Ruby</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-06T07:42:00+00:00">September 06, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/ruby-bits-6-blocks/" class="pagination--pager" title="Ruby bits ( 6 )：Blocks 學習筆記
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/edx-linux-foundation-ch-8-filesystem/" class="pagination--pager" title="EDX Linux Foundation Ch 8：Filesystem
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,540 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Design Pattern - 資源總整理 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="要學Design Pattern之前, 一定要先搞懂的物件導向基礎:強烈建議先閱讀91Design Pattern學習的心得之後，再開始學習Design Pattern。文中提到學Design Pattern時必須具備下列的物件導向知識。強調Design Pattern只是幫助物件導向程式達到「高內聚、低耦合」的目的。並且需遵照設計原則來使用。  三大特性：封裝、繼承、多型  兩種抽象：interfact、abstract  目的：高內聚、低耦合  SOLID 原則：單一職責原則、開放封閉原則、里氏替換原則、最小知識原則、介面隔離原則、依賴反轉原則  設計原則：DRY、KISS、YAGNI  設計方式：interface-driven、intention-driven、生成物件與使用物件分開  延伸閱讀：Kent Beck 的四個簡單程式設計原則一些軟件設計的原則文中提到，濫用Design Pattern的傷害很可能比不用Design Pattern還要大。使用時須根據需求來運用Design Pattern，而非無節制的使用Patterns。Pin 點部落Design Pattern目錄這是一個我很推薦的學習資源，內容以深入淺出設計模式的學習筆記為主要骨幹。深入淺出設計模式寫得很好，但稍嫌囉嗦，故事敘述往往花了很長的篇幅，因此我選擇精簡整理過的筆記，也就是這個網站的資源來學習。Teddy搞笑談軟工Teddy提到坊間的書籍，如大話設計模式、設計模式之禪……等等的書籍，以範例來說明Design Patern，以實際程式來解說Desgin Pattern。諸如此類以「操作型定義」來學習，對於入門來說是個好方法。然而由GOF所著作的Design Pattern書中提到的抽象型定義，卻沒有書籍著重在這方面。因此Teddy使用6大元素，將抽象型定義囊括其中，藉以探究Design Pattern。      Teddy流 - 物件導向核心概念亂談軟體設計（1）：Cohesion and Coupling亂談軟體設計（2）：Open-Closed Principle亂談軟體設計（3）：Single-Responsibility Principle亂談軟體設計（4）：Liskov Substitution Principle亂談軟體設計（5）：Dependency-Inversion Principle亂談軟體設計（6）：Single Choice Principle        Teddy流 - 設計與設計模式設計的定義盤點 Design Patterns 設計模式的逆襲：種子篇Force是什麼        Teddy流 - 從Force出發了解Force讓你做出好設計（1）：自然界與設計界的Force了解Force讓你做出好設計（2）：一個軟體設計範例尋找Force實驗1：Observer篇尋找Force實驗2：State Pattern篇尋找Force實驗3：Adapter Pattern篇尋找Force實驗4：Facade篇尋找Force實驗5：Proxy篇尋找Force實驗6：Singleton篇        Teddy流-重新整理系列重新整理Adapter Pattern重新整理Singleton Pattern重新整理Factory Method Pattern重新整理Abstract Factory Pattern重新整理Template Method Pattern重新整理Composite Pattern重新整理Observer Pattern重新整理Facade Pattern重新整理Strategy Pattern重新整理State Pattern        Teddy流-要解決什麼問題系列Creational Patterns要解決什麼問題(上)?Creational Patterns要解決什麼問題(中)?Creational Patterns要解決什麼問題(下)?Structural Patterns要解決什麼問題(上)?Behavioral Patterns要解決什麼問題(一)?  91的站很棒的站，對於物件導向觀念一直延伸至Design Pattern，一整套的學習教材。進階版有實際範例將程式重構為Design Pattern的型式。iT邦 ASP.NET由淺入深 不負責講座系列 重構之路系列參考書籍      深入淺出設計模式最多人推薦的教材，我也不例外，從最直覺但有缺陷的方式開始思考，慢慢推導致Design Pattern的產生。並不時檢視著SOLID五大原則。非常適合打基礎。缺點是故事篇幅啥在太長，常常看到恍神。書中只講解到其中幾種的Design Pattern並非全部。        大話設計模式引導讀者進入情境，讓讀者思考該用甚麼方法解決問題，類似深入淺出設計模式。優點是故事較短，很容易閱讀。缺點是有些例子對Pattern的了解有限，程式碼有些是中文，較難閱讀。        設計樣式的解析與活用Teddy在網站中推薦的教材，少數有提到抽象型定義的書籍。  ">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Design Pattern - 資源總整理">
+
+
+  <link rel="canonical" href="https://lukahuang.com/design-pattern-resources/">
+  <meta property="og:url" content="https://lukahuang.com/design-pattern-resources/">
+
+
+
+  <meta property="og:description" content="要學Design Pattern之前, 一定要先搞懂的物件導向基礎:強烈建議先閱讀91Design Pattern學習的心得之後，再開始學習Design Pattern。文中提到學Design Pattern時必須具備下列的物件導向知識。強調Design Pattern只是幫助物件導向程式達到「高內聚、低耦合」的目的。並且需遵照設計原則來使用。  三大特性：封裝、繼承、多型  兩種抽象：interfact、abstract  目的：高內聚、低耦合  SOLID 原則：單一職責原則、開放封閉原則、里氏替換原則、最小知識原則、介面隔離原則、依賴反轉原則  設計原則：DRY、KISS、YAGNI  設計方式：interface-driven、intention-driven、生成物件與使用物件分開  延伸閱讀：Kent Beck 的四個簡單程式設計原則一些軟件設計的原則文中提到，濫用Design Pattern的傷害很可能比不用Design Pattern還要大。使用時須根據需求來運用Design Pattern，而非無節制的使用Patterns。Pin 點部落Design Pattern目錄這是一個我很推薦的學習資源，內容以深入淺出設計模式的學習筆記為主要骨幹。深入淺出設計模式寫得很好，但稍嫌囉嗦，故事敘述往往花了很長的篇幅，因此我選擇精簡整理過的筆記，也就是這個網站的資源來學習。Teddy搞笑談軟工Teddy提到坊間的書籍，如大話設計模式、設計模式之禪……等等的書籍，以範例來說明Design Patern，以實際程式來解說Desgin Pattern。諸如此類以「操作型定義」來學習，對於入門來說是個好方法。然而由GOF所著作的Design Pattern書中提到的抽象型定義，卻沒有書籍著重在這方面。因此Teddy使用6大元素，將抽象型定義囊括其中，藉以探究Design Pattern。      Teddy流 - 物件導向核心概念亂談軟體設計（1）：Cohesion and Coupling亂談軟體設計（2）：Open-Closed Principle亂談軟體設計（3）：Single-Responsibility Principle亂談軟體設計（4）：Liskov Substitution Principle亂談軟體設計（5）：Dependency-Inversion Principle亂談軟體設計（6）：Single Choice Principle        Teddy流 - 設計與設計模式設計的定義盤點 Design Patterns 設計模式的逆襲：種子篇Force是什麼        Teddy流 - 從Force出發了解Force讓你做出好設計（1）：自然界與設計界的Force了解Force讓你做出好設計（2）：一個軟體設計範例尋找Force實驗1：Observer篇尋找Force實驗2：State Pattern篇尋找Force實驗3：Adapter Pattern篇尋找Force實驗4：Facade篇尋找Force實驗5：Proxy篇尋找Force實驗6：Singleton篇        Teddy流-重新整理系列重新整理Adapter Pattern重新整理Singleton Pattern重新整理Factory Method Pattern重新整理Abstract Factory Pattern重新整理Template Method Pattern重新整理Composite Pattern重新整理Observer Pattern重新整理Facade Pattern重新整理Strategy Pattern重新整理State Pattern        Teddy流-要解決什麼問題系列Creational Patterns要解決什麼問題(上)?Creational Patterns要解決什麼問題(中)?Creational Patterns要解決什麼問題(下)?Structural Patterns要解決什麼問題(上)?Behavioral Patterns要解決什麼問題(一)?  91的站很棒的站，對於物件導向觀念一直延伸至Design Pattern，一整套的學習教材。進階版有實際範例將程式重構為Design Pattern的型式。iT邦 ASP.NET由淺入深 不負責講座系列 重構之路系列參考書籍      深入淺出設計模式最多人推薦的教材，我也不例外，從最直覺但有缺陷的方式開始思考，慢慢推導致Design Pattern的產生。並不時檢視著SOLID五大原則。非常適合打基礎。缺點是故事篇幅啥在太長，常常看到恍神。書中只講解到其中幾種的Design Pattern並非全部。        大話設計模式引導讀者進入情境，讓讀者思考該用甚麼方法解決問題，類似深入淺出設計模式。優點是故事較短，很容易閱讀。缺點是有些例子對Pattern的了解有限，程式碼有些是中文，較難閱讀。        設計樣式的解析與活用Teddy在網站中推薦的教材，少數有提到抽象型定義的書籍。  ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-01-01T20:10:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Design Pattern - 資源總整理">
+    <meta itemprop="description" content="要學Design Pattern之前, 一定要先搞懂的物件導向基礎:強烈建議先閱讀91Design Pattern學習的心得之後，再開始學習Design Pattern。文中提到學Design Pattern時必須具備下列的物件導向知識。強調Design Pattern只是幫助物件導向程式達到「高內聚、低耦合」的目的。並且需遵照設計原則來使用。  三大特性：封裝、繼承、多型  兩種抽象：interfact、abstract  目的：高內聚、低耦合  SOLID 原則：單一職責原則、開放封閉原則、里氏替換原則、最小知識原則、介面隔離原則、依賴反轉原則  設計原則：DRY、KISS、YAGNI  設計方式：interface-driven、intention-driven、生成物件與使用物件分開  延伸閱讀：Kent Beck 的四個簡單程式設計原則一些軟件設計的原則文中提到，濫用Design Pattern的傷害很可能比不用Design Pattern還要大。使用時須根據需求來運用Design Pattern，而非無節制的使用Patterns。Pin 點部落Design Pattern目錄這是一個我很推薦的學習資源，內容以深入淺出設計模式的學習筆記為主要骨幹。深入淺出設計模式寫得很好，但稍嫌囉嗦，故事敘述往往花了很長的篇幅，因此我選擇精簡整理過的筆記，也就是這個網站的資源來學習。Teddy搞笑談軟工Teddy提到坊間的書籍，如大話設計模式、設計模式之禪……等等的書籍，以範例來說明Design Patern，以實際程式來解說Desgin Pattern。諸如此類以「操作型定義」來學習，對於入門來說是個好方法。然而由GOF所著作的Design Pattern書中提到的抽象型定義，卻沒有書籍著重在這方面。因此Teddy使用6大元素，將抽象型定義囊括其中，藉以探究Design Pattern。      Teddy流 - 物件導向核心概念亂談軟體設計（1）：Cohesion and Coupling亂談軟體設計（2）：Open-Closed Principle亂談軟體設計（3）：Single-Responsibility Principle亂談軟體設計（4）：Liskov Substitution Principle亂談軟體設計（5）：Dependency-Inversion Principle亂談軟體設計（6）：Single Choice Principle        Teddy流 - 設計與設計模式設計的定義盤點 Design Patterns 設計模式的逆襲：種子篇Force是什麼        Teddy流 - 從Force出發了解Force讓你做出好設計（1）：自然界與設計界的Force了解Force讓你做出好設計（2）：一個軟體設計範例尋找Force實驗1：Observer篇尋找Force實驗2：State Pattern篇尋找Force實驗3：Adapter Pattern篇尋找Force實驗4：Facade篇尋找Force實驗5：Proxy篇尋找Force實驗6：Singleton篇        Teddy流-重新整理系列重新整理Adapter Pattern重新整理Singleton Pattern重新整理Factory Method Pattern重新整理Abstract Factory Pattern重新整理Template Method Pattern重新整理Composite Pattern重新整理Observer Pattern重新整理Facade Pattern重新整理Strategy Pattern重新整理State Pattern        Teddy流-要解決什麼問題系列Creational Patterns要解決什麼問題(上)?Creational Patterns要解決什麼問題(中)?Creational Patterns要解決什麼問題(下)?Structural Patterns要解決什麼問題(上)?Behavioral Patterns要解決什麼問題(一)?  91的站很棒的站，對於物件導向觀念一直延伸至Design Pattern，一整套的學習教材。進階版有實際範例將程式重構為Design Pattern的型式。iT邦 ASP.NET由淺入深 不負責講座系列 重構之路系列參考書籍      深入淺出設計模式最多人推薦的教材，我也不例外，從最直覺但有缺陷的方式開始思考，慢慢推導致Design Pattern的產生。並不時檢視著SOLID五大原則。非常適合打基礎。缺點是故事篇幅啥在太長，常常看到恍神。書中只講解到其中幾種的Design Pattern並非全部。        大話設計模式引導讀者進入情境，讓讀者思考該用甚麼方法解決問題，類似深入淺出設計模式。優點是故事較短，很容易閱讀。缺點是有些例子對Pattern的了解有限，程式碼有些是中文，較難閱讀。        設計樣式的解析與活用Teddy在網站中推薦的教材，少數有提到抽象型定義的書籍。  ">
+    <meta itemprop="datePublished" content="January 01, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Design Pattern - 資源總整理
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#要學design-pattern之前-一定要先搞懂的物件導向基礎">要學Design Pattern之前, 一定要先搞懂的物件導向基礎:</a></li>
+  <li><a href="#pin-點部落">Pin 點部落</a></li>
+  <li><a href="#teddy搞笑談軟工">Teddy搞笑談軟工</a></li>
+  <li><a href="#91的站">91的站</a></li>
+  <li><a href="#參考書籍">參考書籍</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h3 id="要學design-pattern之前-一定要先搞懂的物件導向基礎">要學Design Pattern之前, 一定要先搞懂的物件導向基礎:</h3>
+
+<p>強烈建議先閱讀<a href="http://www.dotblogs.com.tw/hatelove/archive/2012/07/31/object-oriented-training-lsp-lkp-isp-dip-introduction.aspx">91Design Pattern學習的心得</a>之後，再開始學習Design Pattern。文中提到學Design Pattern時必須具備下列的物件導向知識。強調Design Pattern只是幫助物件導向程式達到「高內聚、低耦合」的目的。並且需遵照設計原則來使用。</p>
+
+<ul>
+  <li>三大特性：<a href="http://ithelp.ithome.com.tw/question/10053333">封裝、繼承、多型</a></li>
+  <li>兩種抽象：<a href="http://www.dotblogs.com.tw/hatelove/archive/2010/10/15/abstract-interface-introduction-and-compare.aspx">interfact、abstract</a></li>
+  <li>目的：<a href="http://ithelp.ithome.com.tw/question/10053842">高內聚、低耦合</a></li>
+  <li>SOLID 原則：<a href="http://ithelp.ithome.com.tw/question/10054102">單一職責原則</a>、<a href="http://ithelp.ithome.com.tw/question/10054337">開放封閉原則</a>、<a href="http://ithelp.ithome.com.tw/question/10055044">里氏替換原則</a>、<a href="http://ithelp.ithome.com.tw/question/10054636">最小知識原則</a>、<a href="http://ithelp.ithome.com.tw/question/10054846">介面隔離原則</a>、<a href="http://ithelp.ithome.com.tw/question/10055368">依賴反轉原則</a></li>
+  <li>設計原則：DRY、KISS、YAGNI</li>
+  <li>設計方式：interface-driven、intention-driven、生成物件與使用物件分開</li>
+  <li>延伸閱讀：
+<a href="http://ihower.tw/blog/archives/7181">Kent Beck 的四個簡單程式設計原則</a>
+<a href="http://blog.game2.tw/%E4%B8%80%E4%BA%9B%E8%BB%9F%E4%BB%B6%E8%A8%AD%E8%A8%88%E7%9A%84%E5%8E%9F%E5%89%87-2#.UsUW6pAW3Zg">一些軟件設計的原則</a></li>
+</ul>
+
+<p>文中提到，濫用Design Pattern的傷害很可能比不用Design Pattern還要大。使用時須根據需求來運用Design Pattern，而非無節制的使用Patterns。</p>
+
+<h3 id="pin-點部落">Pin 點部落</h3>
+<p><a href="http://www.dotblogs.com.tw/pin0513/category/3265.aspx">Design Pattern目錄</a>
+這是一個我很推薦的學習資源，內容以深入淺出設計模式的學習筆記為主要骨幹。深入淺出設計模式寫得很好，但稍嫌囉嗦，故事敘述往往花了很長的篇幅，因此我選擇精簡整理過的筆記，也就是這個網站的資源來學習。</p>
+
+<h3 id="teddy搞笑談軟工">Teddy搞笑談軟工</h3>
+<p>Teddy提到坊間的書籍，如大話設計模式、設計模式之禪……等等的書籍，以範例來說明Design Patern，以實際
+程式來解說Desgin Pattern。諸如此類以「操作型定義」來學習，對於入門來說是個好方法。然而由GOF所著作的Design Pattern書中提到的抽象型定義，卻沒有書籍著重在這方面。因此Teddy使用6大元素，將抽象型定義囊括其中，藉以探究Design Pattern。</p>
+
+<ul>
+  <li>
+    <p>Teddy流 - 物件導向核心概念
+<a href="http://teddy-chen-tw.blogspot.tw/2011/12/1.html">亂談軟體設計（1）：Cohesion and Coupling</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2011/12/2.html">亂談軟體設計（2）：Open-Closed Principle</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2011/12/3.html">亂談軟體設計（3）：Single-Responsibility Principle</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/01/4.html">亂談軟體設計（4）：Liskov Substitution Principle</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/01/5dependency-inversion-principle.html">亂談軟體設計（5）：Dependency-Inversion Principle</a>
+<a href="https://www.google.com.tw/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=2&amp;cad=rja&amp;ved=0CDoQFjAB&amp;url=http%3A%2F%2Fteddy-chen-tw.blogspot.com%2F2012%2F01%2F6single-choice-principle.html&amp;ei=8A_mUoGxF4jNkwW_2oCQDg&amp;usg=AFQjCNHlleGb1DuNYItfrOtDbszN0pHiuQ&amp;sig2=c9fw9g48hCient0437ihzQ">亂談軟體設計（6）：Single Choice Principle</a></p>
+  </li>
+  <li>
+    <p>Teddy流 - 設計與設計模式
+<a href="http://teddy-chen-tw.blogspot.tw/2013/06/blog-post_25.html">設計的定義</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/01/design-patterns.html">盤點 Design Patterns </a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/10/blog-post_2.html">設計模式的逆襲：種子篇</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/09/force.html">Force是什麼</a></p>
+  </li>
+  <li>
+    <p>Teddy流 - 從Force出發
+<a href="http://teddy-chen-tw.blogspot.tw/2013/07/force1force.html">了解Force讓你做出好設計（1）：自然界與設計界的Force</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/07/force2.html">了解Force讓你做出好設計（2）：一個軟體設計範例</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/09/forceobserver.html">尋找Force實驗1：Observer篇</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/09/force2state-pattern.html">尋找Force實驗2：State Pattern篇</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/10/force3adapter-pattern.htm">尋找Force實驗3：Adapter Pattern篇</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/10/force4facade.html">尋找Force實驗4：Facade篇</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/10/force5proxy.html">尋找Force實驗5：Proxy篇</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/10/force6singleton.html">尋找Force實驗6：Singleton篇</a></p>
+  </li>
+  <li>
+    <p>Teddy流-重新整理系列
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/adapter-pattern.html">重新整理Adapter Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/singleton-pattern.html">重新整理Singleton Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/factory-method-pattern.html">重新整理Factory Method Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/abstract-factory-pattern.html">重新整理Abstract Factory Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/template-method-pattern.html">重新整理Template Method Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/composite-pattern.html">重新整理Composite Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/observer-pattern.html">重新整理Observer Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/facade-pattern.html">重新整理Facade Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/strategy-pattern.html">重新整理Strategy Pattern</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/07/state-pattern.html">重新整理State Pattern</a></p>
+  </li>
+  <li>
+    <p>Teddy流-要解決什麼問題系列
+<a href="http://teddy-chen-tw.blogspot.tw/2012/10/creational-patterns.html">Creational Patterns要解決什麼問題(上)?</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/11/creational-patterns.html">Creational Patterns要解決什麼問題(中)?</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/11/creational-patterns_26.html">Creational Patterns要解決什麼問題(下)?</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2012/11/structural-patterns.html">Structural Patterns要解決什麼問題(上)?</a>
+<a href="http://teddy-chen-tw.blogspot.tw/2013/03/behavioral-patterns.html">Behavioral Patterns要解決什麼問題(一)?</a></p>
+  </li>
+</ul>
+
+<h3 id="91的站">91的站</h3>
+<p>很棒的站，對於物件導向觀念一直延伸至Design Pattern，一整套的學習教材。進階版有實際範例將程式重構為Design Pattern的型式。</p>
+
+<p><a href="http://ithelp.ithome.com.tw/search/search_result?p=++91%E4%B9%8BASP.NET%E7%94%B1%E6%B7%BA%E5%85%A5%E6%B7%B1+%E4%B8%8D%E8%B2%A0%E8%B2%AC%E8%AC%9B%E5%BA%A7+&amp;field=date&amp;page=2">iT邦</a>
+ <a href="http://www.dotblogs.com.tw/hatelove/category/4218.aspx">ASP.NET由淺入深 不負責講座系列</a>
+ <a href="http://www.dotblogs.com.tw/hatelove/category/5036.aspx">重構之路系列</a></p>
+
+<h3 id="參考書籍">參考書籍</h3>
+
+<ul>
+  <li>
+    <p>深入淺出設計模式
+最多人推薦的教材，我也不例外，從最直覺但有缺陷的方式開始思考，慢慢推導致Design Pattern的產生。並不時檢視著SOLID五大原則。非常適合打基礎。缺點是故事篇幅啥在太長，常常看到恍神。書中只講解到其中幾種的Design Pattern並非全部。</p>
+  </li>
+  <li>
+    <p>大話設計模式
+引導讀者進入情境，讓讀者思考該用甚麼方法解決問題，類似深入淺出設計模式。優點是故事較短，很容易閱讀。缺點是有些例子對Pattern的了解有限，程式碼有些是中文，較難閱讀。</p>
+  </li>
+  <li>
+    <p>設計樣式的解析與活用
+Teddy在網站中推薦的教材，少數有提到抽象型定義的書籍。</p>
+  </li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#design-pattern" class="page__taxonomy-item" rel="tag">Design Pattern</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-01-01T20:10:00+00:00">January 01, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/design-pattern-command-pattern/" class="pagination--pager" title="Design Pattern - Command Pattern
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

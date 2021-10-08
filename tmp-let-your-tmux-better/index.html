@@ -1,0 +1,630 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>TPM — 套件管理工具 ，讓你的 TMUX 更好用 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="tpm — 套件管理工具 ，讓你的 tmux 更好用">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="TPM — 套件管理工具 ，讓你的 TMUX 更好用">
+
+
+  <link rel="canonical" href="https://lukahuang.com/tmp-let-your-tmux-better/">
+  <meta property="og:url" content="https://lukahuang.com/tmp-let-your-tmux-better/">
+
+
+
+  <meta property="og:description" content="tpm — 套件管理工具 ，讓你的 tmux 更好用">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-06-02T19:51:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="TPM — 套件管理工具 ，讓你的 TMUX 更好用">
+    <meta itemprop="description" content="tpm — 套件管理工具 ，讓你的 tmux 更好用">
+    <meta itemprop="datePublished" content="June 02, 2020">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">TPM — 套件管理工具 ，讓你的 TMUX 更好用
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#tpm--套件管理工具-讓你的-tmux-更好用">tpm — 套件管理工具 ，讓你的 tmux 更好用</a></li>
+  <li><a href="#tmux-是什麼">tmux 是什麼？</a></li>
+  <li><a href="#hello-tpm">Hello, tpm</a></li>
+  <li><a href="#要怎麼使用-tpm-安裝-tmux-套件">要怎麼使用 tpm 安裝 tmux 套件</a></li>
+  <li><a href="#ctrlb-有點遠修改-prefix-為-ctrl--a">ctrl+b 有點遠，修改 prefix 為 ctrl + a</a></li>
+  <li><a href="#介紹幾個好用的套件">介紹幾個好用的套件</a>
+    <ul>
+      <li><a href="#tmux-yank">tmux-yank</a></li>
+      <li><a href="#tmux-pain-control">tmux-pain-control</a></li>
+      <li><a href="#讓切割視窗變得更加簡單">讓切割視窗變得更加簡單</a></li>
+      <li><a href="#用-vim-的方向鍵跳轉視窗">用 vim 的方向鍵跳轉視窗</a></li>
+      <li><a href="#用-vim-的方向鍵縮放視窗">用 vim 的方向鍵縮放視窗</a></li>
+      <li><a href="#tmux-copycat">tmux copycat</a></li>
+      <li><a href="#tmux-resurrect">tmux-resurrect</a></li>
+      <li><a href="#tmux-open">tmux-open</a></li>
+      <li><a href="#tmux-prefix-highlight">tmux-prefix-highlight</a></li>
+      <li><a href="#tmux-continuum">tmux-continuum</a></li>
+      <li><a href="#tmux-sensible">tmux-sensible</a></li>
+    </ul>
+  </li>
+  <li><a href="#小結">小結</a></li>
+  <li><a href="#參考資源">參考資源</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="tpm--套件管理工具-讓你的-tmux-更好用">tpm — 套件管理工具 ，讓你的 tmux 更好用</h2>
+
+<p>最近因為工作上需要用到開很多個視窗的情景，研究了一下如何把 tmux 變得更具有生產力。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/0*wJrJdR3tFO84Tdsd.jpg" alt="" /></p>
+
+<h2 id="tmux-是什麼">tmux 是什麼？</h2>
+
+<p><a href="https://github.com/tmux/tmux">tmux</a> 是一個很好用的遠端 session 管理套件，兼具效能與功能性，可以讓你在遠端伺服器中，輕易管理背景執行程式。</p>
+
+<p>Larry 在 **<a href="https://larrylu.blog/tmux-33a24e595fbc">終端機 session 管理神器 — tmux</a> **文章中介紹了基本的概念、使用方式與經典的使用情景。如果沒有看過的話，請看文章了解一下。
+<a href="https://larrylu.blog/tmux-33a24e595fbc"><strong>終端機 session 管理神器 — tmux</strong>
+<em>身為一名開發者對終端機應該不陌生，不管是要執行腳本、ssh 到遠端伺服器都會用到終端機。
+這邊要介紹給大家一個工具 tmux，tmux 是個 terminal multiplexer，可以讓你的終端機更好用</em>larrylu.blog</a><a href="https://larrylu.blog/tmux-33a24e595fbc">t</a></p>
+
+<p>不過其實不看也沒什麼關係啦，看我寫得就好<em>。</em></p>
+
+<h2 id="hello-tpm">Hello, tpm</h2>
+
+<p><a href="https://github.com/tmux-plugins/tpm">tpm</a> 是 tmux 的套件管理工具，英文是 Tmux Plugin Manager。tmux 之於 tpm 就如同是 nodejs 之於 npm。是一個在 github 上面有 6100 顆星星的開源專案。</p>
+
+<p>今天我的重點放在 tpm 的介紹上，如果還沒安裝 tmux，請按照 **<a href="https://larrylu.blog/tmux-33a24e595fbc">終端機 session 管理神器 — tmux</a> **文章中的教學逐步安裝並學習使用方法。</p>
+
+<p>回過頭來，我們想要用 tpm 來安裝一些好用的套件，先安裝好 tpm。 首先 git clone tpm 至本機。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone [https://github.com/tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) ~/.tmux/plugins/tpm
+</code></pre></div></div>
+
+<p>接著修改 ~/.tmux.conf 檔案的內容，將下列內容複製貼上至檔案中。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># List of plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+# Other examples:
+# set -g @plugin 'github_username/plugin_name'
+# set -g @plugin 'git@github.com/user/plugin'
+# set -g @plugin 'git@bitbucket.com/user/plugin'
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run -b '~/.tmux/plugins/tpm/tpm'
+</code></pre></div></div>
+
+<p>安裝完成後在終端機中輸入下列指令或是重開終端機即可載入完成。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tmux source ~/.tmux.conf
+</code></pre></div></div>
+
+<h2 id="要怎麼使用-tpm-安裝-tmux-套件">要怎麼使用 tpm 安裝 tmux 套件</h2>
+
+<p>安裝 tpm 套件可能跟你想的不太一樣，直接修改 ~/.tmux.conf 檔案的內容，並且重啟。例如你想要安裝 <a href="https://github.com/tmux-plugins/tmux-copycat">tmux-copycat</a>。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim ~/.tmux.conf
+</code></pre></div></div>
+
+<p>加入這一行</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set -g @plugin 'tmux-plugins/tmux-copycat'
+</code></pre></div></div>
+
+<p>接著，重開 tmux session 或是在 tmux 中輸入 prefix (ctrl+b) + I 即可。</p>
+
+<h2 id="ctrlb-有點遠修改-prefix-為-ctrl--a">ctrl+b 有點遠，修改 prefix 為 ctrl + a</h2>
+
+<p>tmux 大部分的指令是由組合鍵 prefix + 某某鍵所構成。 prefix 預設是 ctrl + b，外國鄉民大多是將 prefix 修改成 ctrl + a ，你也可以設成你喜歡的樣子，設定方法很簡單。在 .tmux.conf 中加上以下內容即可將 prefix 變成ctrl + a。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># remap prefix from 'C-b' to 'C-a'
+unbind C-b
+set-option -g prefix C-a
+bind-key C-a send-prefix
+</code></pre></div></div>
+
+<h2 id="介紹幾個好用的套件">介紹幾個好用的套件</h2>
+
+<h3 id="tmux-yank"><a href="https://github.com/tmux-plugins/tmux-yank">tmux-yank</a></h3>
+
+<p>讓你的 tmux 可以用系統的剪貼簿，支援 osx, linux, WSL(Windows Subsystem for Linux) … 等等的環境。</p>
+
+<h3 id="tmux-pain-control"><a href="https://github.com/tmux-plugins/tmux-pain-control">tmux-pain-control</a></h3>
+
+<p>這個套件有三大功能，第一是切割視窗，第二是在視窗中跳躍，第三是縮放視窗大小。</p>
+
+<h3 id="讓切割視窗變得更加簡單">讓切割視窗變得更加簡單</h3>
+
+<p>這兩個是 tmux 預設的切割視窗快捷鍵</p>
+
+<ol>
+  <li>
+    <p>prefix + “：進行<strong>水平</strong>分割</p>
+  </li>
+  <li>
+    <p>prefix + %：進行<strong>垂直</strong>分割</p>
+  </li>
+</ol>
+
+<p>這兩個符號我一直記不起來😭，但是在使用<a href="https://github.com/tmux-plugins/tmux-pain-control">tmux-pain-control</a> 之後：</p>
+
+<ol>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>prefix +</td>
+          <td>：進行<strong>水平</strong>分割</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>prefix + -：進行<strong>垂直</strong>分割</li>
+</ol>
+
+<p>圖型記憶法，真是太好記了。連續技用起來會有這樣的效果：</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*P3MQZDaihxlpHZwBNTvdpQ.gif" alt="" /></p>
+
+<h3 id="用-vim-的方向鍵跳轉視窗">用 vim 的方向鍵跳轉視窗</h3>
+
+<ol>
+  <li>
+    <p>prefix + h：往左跳</p>
+  </li>
+  <li>
+    <p>prefix + j：往上跳</p>
+  </li>
+  <li>
+    <p>prefix + k：往下跳</p>
+  </li>
+  <li>
+    <p>prefix + l：往右跳</p>
+  </li>
+</ol>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*F-mk4CsL1oh36EDK_cRr0g.gif" alt="" /></p>
+
+<h3 id="用-vim-的方向鍵縮放視窗">用 vim 的方向鍵縮放視窗</h3>
+
+<ol>
+  <li>
+    <p>prefix + shift + h：視窗邊界往左移</p>
+  </li>
+  <li>
+    <p>prefix + shift + j：視窗邊界往上移</p>
+  </li>
+  <li>
+    <p>prefix + shift + k：視窗邊界往下移</p>
+  </li>
+  <li>
+    <p>prefix + shift + l：視窗邊界往右移</p>
+  </li>
+</ol>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*lv0mJUFUVHmxCZMPuctZRg.gif" alt="" /></p>
+
+<h3 id="tmux-copycat"><a href="https://github.com/tmux-plugins/tmux-copycat">tmux copycat</a></h3>
+
+<p>tmux copycat 可以讓你不使用滑鼠就能夠複製文字。這個套件非常好用，礙於時間不夠無法錄製完整操作。殘念。</p>
+
+<h3 id="tmux-resurrect"><a href="https://github.com/tmux-plugins/tmux-resurrect">tmux-resurrect</a></h3>
+
+<p>讓系統重啟的時候保持 tmux 的設定。</p>
+
+<h3 id="tmux-open"><a href="https://github.com/tmux-plugins/tmux-open">tmux-open</a></h3>
+
+<p>能夠讓你快速的打開你選取到的文字對應的超連結或是檔案。</p>
+
+<h3 id="tmux-prefix-highlight"><a href="https://github.com/tmux-plugins/tmux-prefix-highlight">tmux-prefix-highlight</a></h3>
+
+<p>讓你知道你有沒有成功觸發 prefix，如果按成功了，在下方顯示列會有成功觸發的圖案。</p>
+
+<h3 id="tmux-continuum"><a href="https://github.com/tmux-plugins/tmux-continuum">tmux-continuum</a></h3>
+
+<p>持續幫你儲存 tmux 的設定。</p>
+
+<h3 id="tmux-sensible"><a href="https://github.com/tmux-plugins/tmux-sensible">tmux-sensible</a></h3>
+
+<p>讓 tmux 比較合乎邏輯，不然 tmux 有些預設的設定實在是有點難用，這是必備的 tmux 套件。</p>
+
+<h2 id="小結">小結</h2>
+
+<p>有了 tpm 可以輕鬆安裝好用套件，這讓 tmux 平易進人多了，操作上不再需要記憶太多奇怪的快捷鍵。就可以讓生產力獲得大幅的提升，真滴好。</p>
+
+<h2 id="參考資源">參考資源</h2>
+
+<ul>
+  <li>
+    <p><a href="https://www.hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/">Making tmux Pretty and Usable — A Guide to Customizing your tmux.conf</a></p>
+  </li>
+  <li>
+    <p><a href="https://medium.com/actualize-network/a-minimalist-guide-to-tmux-13675fb160fa">A minimalist guide to tmux</a></p>
+  </li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2020-06-02T19:51:00+00:00">June 02, 2020</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/unit-test/" class="pagination--pager" title="Unit Test 中的替身：搞不清楚的Dummy 、Stub、Spy、Mock、Fake
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/lens-the-ide-for-kubernetes/" class="pagination--pager" title="Kubernetes IDE - Lens 用圖形化介面管理 K8S
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

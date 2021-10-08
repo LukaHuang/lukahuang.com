@@ -1,0 +1,496 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Algorithm - Dijkstra’s Algorithm - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="資料結構Q是一個以d值來做鍵值的Queue，取出時會從最小的d開始取，也就是取出距離最短的頂點V。S是一個頂點的集合，用來存放從Q中刪除的頂點。Dijkstra’s AlgorithmDIJKSTRA(G,w,s)1.  INITIALIZE-SINGLE-SOURCE(G,s)2.  S = ∅3.  Q = G.V4.  while Q ≠ ∅5.     u = EXTRACT-MIN(Q)6.     S = S ∪ {u}7.     for each vertex v ∈ G.Adj[u]8.        RELAX(u,v,w)第3行初始化Q包含Graph中所有的頂點V。第5行EXTRACT-MIN(Q)搜尋了Q中有最小的u.d的頂點u，將u從Q中刪除，並返回給用戶。第6行把u加到S中。INITIALIZE-SINGLE-SOURCE(G,s)1.  for each vertex v ∈ G.V2.     v.d = ∞3.     v.pi = NIL4.  s.d = 0RELAX(u,v,w)1.  if v.d &gt; u.d + w(u,v)2.     v.d = u.d + w(u,v)3.     v.pi = u時間複雜度Basically the algorithm works as follows:  Initialize d’s, π’s, set s.d = 0, set S = ∅, and Q = G.V (i.e. put all the vertices into the queue with the source vertex having the smallest distance)  While the queue is not empty, extract the minimum vertex (whose distance will be the shortest path distance at this point), add this vertex to S, and relax (using the same condition as Bellman-Ford) all the edges in the vertex’s adjacency list for vertices still in Q reprioritizing the queue if necessaryThe run time of Dijkstra’s algorithm depends on how Q is implemented:  Simple array with search ⇒ O(V2 + E) = O(V2)  Binary min-heap (if G is sparse) ⇒ O((V + E) lg V) = O(E lg V)  Fibonacci heap ⇒ O(V lg V + E)Dijkstra’s Algorithm的正確性因為Dijkstra’s Algorithm永遠選擇最輕或最靠近的頂點來加入S，所以說們說它是採用貪婪的策略。貪婪策略不是擁有都會得到最佳的結果，所以我們必須推論它。因為太長就不推倒，詳見Theo24.6。參考資料Dijkstra’s Algorithm">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Algorithm - Dijkstra’s Algorithm">
+
+
+  <link rel="canonical" href="https://lukahuang.com/algorithm-notes-dijkstras-algorithm/">
+  <meta property="og:url" content="https://lukahuang.com/algorithm-notes-dijkstras-algorithm/">
+
+
+
+  <meta property="og:description" content="資料結構Q是一個以d值來做鍵值的Queue，取出時會從最小的d開始取，也就是取出距離最短的頂點V。S是一個頂點的集合，用來存放從Q中刪除的頂點。Dijkstra’s AlgorithmDIJKSTRA(G,w,s)1.  INITIALIZE-SINGLE-SOURCE(G,s)2.  S = ∅3.  Q = G.V4.  while Q ≠ ∅5.     u = EXTRACT-MIN(Q)6.     S = S ∪ {u}7.     for each vertex v ∈ G.Adj[u]8.        RELAX(u,v,w)第3行初始化Q包含Graph中所有的頂點V。第5行EXTRACT-MIN(Q)搜尋了Q中有最小的u.d的頂點u，將u從Q中刪除，並返回給用戶。第6行把u加到S中。INITIALIZE-SINGLE-SOURCE(G,s)1.  for each vertex v ∈ G.V2.     v.d = ∞3.     v.pi = NIL4.  s.d = 0RELAX(u,v,w)1.  if v.d &gt; u.d + w(u,v)2.     v.d = u.d + w(u,v)3.     v.pi = u時間複雜度Basically the algorithm works as follows:  Initialize d’s, π’s, set s.d = 0, set S = ∅, and Q = G.V (i.e. put all the vertices into the queue with the source vertex having the smallest distance)  While the queue is not empty, extract the minimum vertex (whose distance will be the shortest path distance at this point), add this vertex to S, and relax (using the same condition as Bellman-Ford) all the edges in the vertex’s adjacency list for vertices still in Q reprioritizing the queue if necessaryThe run time of Dijkstra’s algorithm depends on how Q is implemented:  Simple array with search ⇒ O(V2 + E) = O(V2)  Binary min-heap (if G is sparse) ⇒ O((V + E) lg V) = O(E lg V)  Fibonacci heap ⇒ O(V lg V + E)Dijkstra’s Algorithm的正確性因為Dijkstra’s Algorithm永遠選擇最輕或最靠近的頂點來加入S，所以說們說它是採用貪婪的策略。貪婪策略不是擁有都會得到最佳的結果，所以我們必須推論它。因為太長就不推倒，詳見Theo24.6。參考資料Dijkstra’s Algorithm">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-06-10T16:00:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Algorithm - Dijkstra’s Algorithm">
+    <meta itemprop="description" content="資料結構Q是一個以d值來做鍵值的Queue，取出時會從最小的d開始取，也就是取出距離最短的頂點V。S是一個頂點的集合，用來存放從Q中刪除的頂點。Dijkstra’s AlgorithmDIJKSTRA(G,w,s)1.  INITIALIZE-SINGLE-SOURCE(G,s)2.  S = ∅3.  Q = G.V4.  while Q ≠ ∅5.     u = EXTRACT-MIN(Q)6.     S = S ∪ {u}7.     for each vertex v ∈ G.Adj[u]8.        RELAX(u,v,w)第3行初始化Q包含Graph中所有的頂點V。第5行EXTRACT-MIN(Q)搜尋了Q中有最小的u.d的頂點u，將u從Q中刪除，並返回給用戶。第6行把u加到S中。INITIALIZE-SINGLE-SOURCE(G,s)1.  for each vertex v ∈ G.V2.     v.d = ∞3.     v.pi = NIL4.  s.d = 0RELAX(u,v,w)1.  if v.d &gt; u.d + w(u,v)2.     v.d = u.d + w(u,v)3.     v.pi = u時間複雜度Basically the algorithm works as follows:  Initialize d’s, π’s, set s.d = 0, set S = ∅, and Q = G.V (i.e. put all the vertices into the queue with the source vertex having the smallest distance)  While the queue is not empty, extract the minimum vertex (whose distance will be the shortest path distance at this point), add this vertex to S, and relax (using the same condition as Bellman-Ford) all the edges in the vertex’s adjacency list for vertices still in Q reprioritizing the queue if necessaryThe run time of Dijkstra’s algorithm depends on how Q is implemented:  Simple array with search ⇒ O(V2 + E) = O(V2)  Binary min-heap (if G is sparse) ⇒ O((V + E) lg V) = O(E lg V)  Fibonacci heap ⇒ O(V lg V + E)Dijkstra’s Algorithm的正確性因為Dijkstra’s Algorithm永遠選擇最輕或最靠近的頂點來加入S，所以說們說它是採用貪婪的策略。貪婪策略不是擁有都會得到最佳的結果，所以我們必須推論它。因為太長就不推倒，詳見Theo24.6。參考資料Dijkstra’s Algorithm">
+    <meta itemprop="datePublished" content="June 10, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Algorithm - Dijkstra’s Algorithm
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#資料結構">資料結構</a></li>
+  <li><a href="#dijkstras-algorithm">Dijkstra’s Algorithm</a></li>
+  <li><a href="#時間複雜度">時間複雜度</a></li>
+  <li><a href="#dijkstras-algorithm的正確性">Dijkstra’s Algorithm的正確性</a></li>
+  <li><a href="#參考資料">參考資料</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h3 id="資料結構">資料結構</h3>
+<p>Q是一個以d值來做鍵值的Queue，取出時會從最小的d開始取，也就是取出距離最短的頂點V。
+S是一個頂點的集合，用來存放從Q中刪除的頂點。</p>
+
+<h3 id="dijkstras-algorithm">Dijkstra’s Algorithm</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DIJKSTRA(G,w,s)
+1.  INITIALIZE-SINGLE-SOURCE(G,s)
+2.  S = ∅
+3.  Q = G.V
+4.  while Q ≠ ∅
+5.     u = EXTRACT-MIN(Q)
+6.     S = S ∪ {u}
+7.     for each vertex v ∈ G.Adj[u]
+8.        RELAX(u,v,w)
+</code></pre></div></div>
+
+<p>第3行初始化Q包含Graph中所有的頂點V。
+第5行EXTRACT-MIN(Q)搜尋了Q中有最小的u.d的頂點u，將u從Q中刪除，並返回給用戶。
+第6行把u加到S中。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INITIALIZE-SINGLE-SOURCE(G,s)
+1.  for each vertex v ∈ G.V
+2.     v.d = ∞
+3.     v.pi = NIL
+4.  s.d = 0
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RELAX(u,v,w)
+1.  if v.d &gt; u.d + w(u,v)
+2.     v.d = u.d + w(u,v)
+3.     v.pi = u
+</code></pre></div></div>
+
+<h3 id="時間複雜度">時間複雜度</h3>
+<p>Basically the algorithm works as follows:</p>
+
+<ol>
+  <li>Initialize d’s, π’s, set s.d = 0, set S = ∅, and Q = G.V (i.e. put all the vertices into the queue with the source vertex having the smallest distance)</li>
+  <li>While the queue is not empty, extract the minimum vertex (whose distance will be the shortest path distance at this point), add this vertex to S, and relax (using the same condition as Bellman-Ford) all the edges in the vertex’s adjacency list for vertices still in Q reprioritizing the queue if necessary</li>
+</ol>
+
+<p>The run time of Dijkstra’s algorithm depends on how Q is implemented:</p>
+
+<ul>
+  <li>Simple array with search ⇒ O(V2 + E) = O(V2)</li>
+  <li>Binary min-heap (if G is sparse) ⇒ O((V + E) lg V) = O(E lg V)</li>
+  <li>Fibonacci heap ⇒ O(V lg V + E)</li>
+</ul>
+
+<h3 id="dijkstras-algorithm的正確性">Dijkstra’s Algorithm的正確性</h3>
+<p>因為Dijkstra’s Algorithm永遠選擇最輕或最靠近的頂點來加入S，所以說們說它是採用貪婪的策略。貪婪策略不是擁有都會得到最佳的結果，所以我們必須推論它。因為太長就不推倒，詳見Theo24.6。</p>
+
+<h3 id="參考資料">參考資料</h3>
+<p><a href="http://faculty.ycp.edu/~dbabcock/cs360/lectures/lecture22.html">Dijkstra’s Algorithm</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#algorithm" class="page__taxonomy-item" rel="tag">Algorithm</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-06-10T16:00:00+00:00">June 10, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/front-end/html-tags/" class="pagination--pager" title="HTML額外標籤
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/algorithm/algorithm-notes-fundamental-graphics-algorithms-and-bfs/" class="pagination--pager" title="Algorithm - BFS(Breadth-first Search)(ch22.1 22.2)
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

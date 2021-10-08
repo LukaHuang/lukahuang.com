@@ -1,0 +1,523 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>HTML額外標籤 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="因為學習HTML在一般的標籤上並沒有遇到什麼問題，所以就不多做說明。直接進入比較容易混淆不理解的地方，就是HTML的額外標籤。HTML的額外標示一般常見的標籤，很容易理解，所以特別針對HTML的額外標示來加強需具備的Web知識。1. DOCTYPEhtml經歷了不同版本，所以每個網頁一開始都應該告訴瀏覽器使用的html版本。&lt;!DOCTYPE html&gt;2. 註解html裡的註解以表示3. id屬性a) 每個HTML屬性都可以使用id屬性，將某元素「獨立」辨識出來，也就是說它是唯一的。b) 同一個頁面上的兩個元素不能有相同的id屬性，否則該值就不再唯一。c) 學習javascript時，id屬性可以讓程式碼與特定元素互動。d) 屬性是全域變數(global attribute)。4. class屬性如果你想做的並非獨立辨識文件中的單一元素，而是選取特定的幾個元素，對這幾個元素進行「分組」的動作，這樣一來你就可以一次美化使用相同class屬性的所有成員。例如：你想區別內部連結與外部連結。就可以使用class屬性來標示它們。  quote 在任何屬性上的class屬性都可以套用相同的值。5. Block（區塊元素）有些元素會在瀏覽器視窗另起一行，稱為block level的元素。。6. Inline（行內元素）有些元素會跟鄰近元素保持在同一行，這些稱為行內元素。7. div元素&lt;div&gt;可以將一組元素全組起來，成為一個block level的方塊。因為div可以用在很多地方，在&lt;/div&gt;後面加一個註解，可以大大提昇可讀性。使用&lt;div&gt;元素來容納頁面的不同區域，可以讓管理原始碼的工作更容易。8. span元素&lt;span&gt;的作用就像&lt;div&gt;元素的inline版本。也就是它是一個inline level的元素。9. iframe元素&lt;iframe&gt;就像網頁上的一個小窗戶，透過這個小窗戶你可以看到其他網頁。常見的像是youtube或是google map都是這種用法。10. meta元素&lt;meta&gt;標示位在&lt;head&gt;元素內，包含網頁相關資訊。有以下幾個propertiesdescription:網頁的描述，有時候會在搜尋結果中出現。robots:此屬性標明搜尋引擎是否要將此頁面加到搜尋結果中。11. 其他一些不受到html5支援的額外標示就不在此寫出，需要用到的時候再去查詢即可。">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="HTML額外標籤">
+
+
+  <link rel="canonical" href="https://lukahuang.com/front-end/html-tags/">
+  <meta property="og:url" content="https://lukahuang.com/front-end/html-tags/">
+
+
+
+  <meta property="og:description" content="因為學習HTML在一般的標籤上並沒有遇到什麼問題，所以就不多做說明。直接進入比較容易混淆不理解的地方，就是HTML的額外標籤。HTML的額外標示一般常見的標籤，很容易理解，所以特別針對HTML的額外標示來加強需具備的Web知識。1. DOCTYPEhtml經歷了不同版本，所以每個網頁一開始都應該告訴瀏覽器使用的html版本。&lt;!DOCTYPE html&gt;2. 註解html裡的註解以表示3. id屬性a) 每個HTML屬性都可以使用id屬性，將某元素「獨立」辨識出來，也就是說它是唯一的。b) 同一個頁面上的兩個元素不能有相同的id屬性，否則該值就不再唯一。c) 學習javascript時，id屬性可以讓程式碼與特定元素互動。d) 屬性是全域變數(global attribute)。4. class屬性如果你想做的並非獨立辨識文件中的單一元素，而是選取特定的幾個元素，對這幾個元素進行「分組」的動作，這樣一來你就可以一次美化使用相同class屬性的所有成員。例如：你想區別內部連結與外部連結。就可以使用class屬性來標示它們。  quote 在任何屬性上的class屬性都可以套用相同的值。5. Block（區塊元素）有些元素會在瀏覽器視窗另起一行，稱為block level的元素。。6. Inline（行內元素）有些元素會跟鄰近元素保持在同一行，這些稱為行內元素。7. div元素&lt;div&gt;可以將一組元素全組起來，成為一個block level的方塊。因為div可以用在很多地方，在&lt;/div&gt;後面加一個註解，可以大大提昇可讀性。使用&lt;div&gt;元素來容納頁面的不同區域，可以讓管理原始碼的工作更容易。8. span元素&lt;span&gt;的作用就像&lt;div&gt;元素的inline版本。也就是它是一個inline level的元素。9. iframe元素&lt;iframe&gt;就像網頁上的一個小窗戶，透過這個小窗戶你可以看到其他網頁。常見的像是youtube或是google map都是這種用法。10. meta元素&lt;meta&gt;標示位在&lt;head&gt;元素內，包含網頁相關資訊。有以下幾個propertiesdescription:網頁的描述，有時候會在搜尋結果中出現。robots:此屬性標明搜尋引擎是否要將此頁面加到搜尋結果中。11. 其他一些不受到html5支援的額外標示就不在此寫出，需要用到的時候再去查詢即可。">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-04-18T15:51:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="HTML額外標籤">
+    <meta itemprop="description" content="因為學習HTML在一般的標籤上並沒有遇到什麼問題，所以就不多做說明。直接進入比較容易混淆不理解的地方，就是HTML的額外標籤。HTML的額外標示一般常見的標籤，很容易理解，所以特別針對HTML的額外標示來加強需具備的Web知識。1. DOCTYPEhtml經歷了不同版本，所以每個網頁一開始都應該告訴瀏覽器使用的html版本。&lt;!DOCTYPE html&gt;2. 註解html裡的註解以表示3. id屬性a) 每個HTML屬性都可以使用id屬性，將某元素「獨立」辨識出來，也就是說它是唯一的。b) 同一個頁面上的兩個元素不能有相同的id屬性，否則該值就不再唯一。c) 學習javascript時，id屬性可以讓程式碼與特定元素互動。d) 屬性是全域變數(global attribute)。4. class屬性如果你想做的並非獨立辨識文件中的單一元素，而是選取特定的幾個元素，對這幾個元素進行「分組」的動作，這樣一來你就可以一次美化使用相同class屬性的所有成員。例如：你想區別內部連結與外部連結。就可以使用class屬性來標示它們。  quote 在任何屬性上的class屬性都可以套用相同的值。5. Block（區塊元素）有些元素會在瀏覽器視窗另起一行，稱為block level的元素。。6. Inline（行內元素）有些元素會跟鄰近元素保持在同一行，這些稱為行內元素。7. div元素&lt;div&gt;可以將一組元素全組起來，成為一個block level的方塊。因為div可以用在很多地方，在&lt;/div&gt;後面加一個註解，可以大大提昇可讀性。使用&lt;div&gt;元素來容納頁面的不同區域，可以讓管理原始碼的工作更容易。8. span元素&lt;span&gt;的作用就像&lt;div&gt;元素的inline版本。也就是它是一個inline level的元素。9. iframe元素&lt;iframe&gt;就像網頁上的一個小窗戶，透過這個小窗戶你可以看到其他網頁。常見的像是youtube或是google map都是這種用法。10. meta元素&lt;meta&gt;標示位在&lt;head&gt;元素內，包含網頁相關資訊。有以下幾個propertiesdescription:網頁的描述，有時候會在搜尋結果中出現。robots:此屬性標明搜尋引擎是否要將此頁面加到搜尋結果中。11. 其他一些不受到html5支援的額外標示就不在此寫出，需要用到的時候再去查詢即可。">
+    <meta itemprop="datePublished" content="April 18, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">HTML額外標籤
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#html的額外標示">HTML的額外標示</a>
+    <ul>
+      <li><a href="#1-doctype">1. DOCTYPE</a></li>
+      <li><a href="#2-註解">2. 註解</a></li>
+      <li><a href="#3-id屬性">3. id屬性</a></li>
+      <li><a href="#4-class屬性">4. class屬性</a></li>
+      <li><a href="#5-block區塊元素">5. Block（區塊元素）</a></li>
+      <li><a href="#6-inline行內元素">6. Inline（行內元素）</a></li>
+      <li><a href="#7-div">7. div</a></li>
+      <li><a href="#8-span">8. span</a></li>
+      <li><a href="#9-iframe">9. iframe</a></li>
+      <li><a href="#10-meta">10. meta</a></li>
+      <li><a href="#11-其他">11. 其他</a></li>
+    </ul>
+  </li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>因為學習HTML在一般的標籤上並沒有遇到什麼問題，所以就不多做說明。
+直接進入比較容易混淆不理解的地方，就是HTML的額外標籤。</p>
+
+<h2 id="html的額外標示">HTML的額外標示</h2>
+<hr />
+<p>一般常見的標籤，很容易理解，所以特別針對HTML的額外標示來加強需具備的Web知識。</p>
+
+<h3 id="1-doctype">1. DOCTYPE</h3>
+<p>html經歷了不同版本，所以每個網頁一開始都應該告訴瀏覽器使用的html版本。
+<code class="highlighter-rouge"><span class="cp">&lt;!DOCTYPE html&gt;</span></code></p>
+
+<h3 id="2-註解">2. 註解</h3>
+<p>html裡的註解以<!-- -->表示</p>
+
+<h3 id="3-id屬性">3. id屬性</h3>
+<p>a) 每個HTML屬性都可以使用id屬性，將某元素「獨立」辨識出來，也就是說它是唯一的。
+b) 同一個頁面上的兩個元素不能有相同的id屬性，否則該值就不再唯一。
+c) 學習javascript時，id屬性可以讓程式碼與特定元素互動。
+d) 屬性是全域變數(global attribute)。</p>
+
+<h3 id="4-class屬性">4. class屬性</h3>
+<p>如果你想做的並非獨立辨識文件中的單一元素，而是選取特定的幾個元素，對這幾個元素進行「分組」的動作，這樣一來你就可以一次美化使用相同class屬性的所有成員。例如：你想區別內部連結與外部連結。就可以使用class屬性來標示它們。</p>
+<blockquote>
+  <p>quote 在任何屬性上的class屬性都可以套用相同的值。</p>
+</blockquote>
+
+<h3 id="5-block區塊元素">5. Block（區塊元素）</h3>
+<p>有些元素會在瀏覽器視窗另起一行，稱為block level的元素。。</p>
+
+<h3 id="6-inline行內元素">6. Inline（行內元素）</h3>
+<p>有些元素會跟鄰近元素保持在同一行，這些稱為行內元素。</p>
+
+<h3 id="7-div">7. div</h3>
+<p>元素<code class="highlighter-rouge">&lt;div&gt;</code>可以將一組元素全組起來，成為一個block level的方塊。
+因為div可以用在很多地方，在<code class="highlighter-rouge">&lt;/div&gt;</code>後面加一個註解，可以大大提昇可讀性。
+使用<code class="highlighter-rouge">&lt;div&gt;</code>元素來容納頁面的不同區域，可以讓管理原始碼的工作更容易。</p>
+
+<h3 id="8-span">8. span</h3>
+<p>元素<code class="highlighter-rouge">&lt;span&gt;</code>的作用就像<code class="highlighter-rouge">&lt;div&gt;</code>元素的inline版本。也就是它是一個inline level的元素。</p>
+
+<h3 id="9-iframe">9. iframe</h3>
+<p>元素<code class="highlighter-rouge">&lt;iframe&gt;</code>就像網頁上的一個小窗戶，透過這個小窗戶你可以看到其他網頁。常見的像是youtube或是google map都是這種用法。</p>
+
+<h3 id="10-meta">10. meta</h3>
+<p>元素<code class="highlighter-rouge">&lt;meta&gt;</code>標示位在<code class="highlighter-rouge">&lt;head&gt;</code>元素內，包含網頁相關資訊。
+有以下幾個properties
+description:
+網頁的描述，有時候會在搜尋結果中出現。
+robots:
+此屬性標明搜尋引擎是否要將此頁面加到搜尋結果中。</p>
+
+<h3 id="11-其他">11. 其他</h3>
+<p>一些不受到html5支援的額外標示就不在此寫出，需要用到的時候再去查詢即可。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#html" class="page__taxonomy-item" rel="tag">HTML</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/categories/#front-end" class="page__taxonomy-item" rel="tag">Front-end</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-04-18T15:51:00+00:00">April 18, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/front-end/introduction-to-css/" class="pagination--pager" title="CSS簡介
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/algorithm-notes-dijkstras-algorithm/" class="pagination--pager" title="Algorithm - Dijkstra’s Algorithm
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

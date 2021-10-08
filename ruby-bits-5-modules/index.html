@@ -1,0 +1,707 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Ruby bits ( 5 )：Modules - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Ruby bits的課程真的很不錯，講到的主題都是很重要的東西。有點相見恨晚的感覺，趕快把它做完吧!本節學習目標  module  activesupport ::Concern  了解self的意義part1: moduleclass method與instance methoduse extend to expose methods as class methodclass Tweet  extend Searchableend使用的時候，直接呼叫class（開頭大寫）。Tweet.find_all_from(&#39;@GreggPollack&#39;)use include to expose methods as instance methodsinstance method用include引進moduleclass Image  include ImageUtilsendimage = user.imageimage.previewpart2 :how to include class method and instance method in the same time第一種方法：依照直覺該怎麼寫第一種方法是在class中includ module並且extend classmothods。下例中Image想要使用ImageUtils這個module的class method與instance method，所以用兩種方式各自引用。class Image  include ImageUtils  extend ImageUtils::ClassMethodsendmodule ImageUtils  def preview  end  def transfer(destination)  end  module ClassMethods    def fetch_from_twitter(user)    end  endend使用上可以按照之前所學的來呼叫class method與instance methodimage = user.imageimage.previewImage.fetch_from_twitter(&#39;gregg&#39;)第二種方法:method hooks這樣每次使用module的時候都需要explore兩種module實在太麻煩了，引入class module這個動作在module完成，這樣我們就不需要每次都引入兩種method，只要引入module就可以了。於是第二種方法method hook產生了：class Image  include ImageUtils  #extend ImageUtils::ClassMethods       刪除掉引入class method的這一行endmodule ImageUtils  def self.included(base)  #加入self.include （self就是ImageUtils這個module）    base.extend(ClassMethods)  end  def preview  end  def transfer(destination)  end  module ClassMethods    def fetch_from_twitter(user)    end  endendpart3: 使用Activesupport :: Concern解決相依性問題  Activesupport :: Concern代表什麼意思:: is basically a namespace resolution operator. It allows you to access items in modules, or class-level items in classes. For example, say you had this setup:關鍵字double colon rubyWhat is Ruby’s double-colon (::) all about?使用方式在terminal下gem install activesupport安裝activesupport在module檔中(xxx.rb)中require ‘active_support/concern’require &#39;active_support/concern&#39; module ImageUtils  extend ActiveSupport::Concern  included do    clean_up	end  module ClassMethods    def fetch_from_twitter(user)    end    def clean_up    end  endend這樣就可以直接include ImageUtil的ClassMethodsclass Image	include ImageUtilsend這樣看起來沒什麼了不起的對吧？只是換個寫法。實際上cocern的出現是為了解決更重要的問題，讓我們看下去。Acitvesupport::concern要解決的問題module ImageUtils  def self.included(base)      #base is ImageProcessing module    base.extend(ClassMethods)  end  module ClassMethods    def clean_up; end	endendmodule ImageProcessing	include ImageUtils  def self.included(base)    base.clean_up                #undefined method error  endendclass Image   include ImageProcessingend這樣乍看之下好像沒問題，但是卻有個嚴重的問題導致無法執行，因為ImageUtils變成是由ImageProcessing所 include，所以對 ImageUtils 的 self.included 來說，他的參數 base 變成了 ImageProcessing 了，所以他就沒辦法存取到宿主 Host 的任何函式及變數，do_host_something 時就會失敗。Okay，ActiveSupport::Concern 就是來幫助解決這個難題，我們希望宿主可以不需要知道 modules 之間的 dependencies 關係。dependencies 關係寫在 module 裡面就好了。module ImageUtils  extend ActiveSupport::Concern  module ClassMethods    def clean_up; end  endendmodule ImageProcessing  extend ActiveSupport::Concern  include ImageUtils  included do    clean_up  endendclass Image  include ImageProcessingendDependencies are properly resolved！！part4 作答中遇到的問題5.1 宣告成class method原本的module GameUtils  def lend_to_friend(game, friend_email)  endend改成module GameUtils  def self.lend_to_friend(game, friend_email)  endend這樣呼叫時就會從原本的game = Game.new(&quot;Contra&quot;)game.lend_to_friend(game, &quot;gregg@codeschool.com&quot;)變成game = Game.new(&quot;Contra&quot;)GameUtils.lend_to_friend(game, &quot;gregg@codeschool.com&quot;)5.2 reopen game and include the gameutil module5.3 reopen Game and expose the method from module as class method of Game class原本class Gameend加上GameUtils的class methodclass Game  extend GameUtilsend5.4 extend the single game object with Playable module原本game = Game.new(&quot;Contra&quot;)game.play加入module Playable的method到game這個instance中。game = Game.new(&quot;Contra&quot;)game.extend(Playable)game.playmodule長這樣module Playable  def play  endend這個用法讓我有點困惑，特地查了一下ruby-docextend的解釋如下Adds to obj the instance methods from each module given as a parameter.雖然是用extend這個字，但並非是繼承的意思，而是加入instance method。5.5使用self.include初始化class method5.6使用ActiveSupport::Concern代替self.included5.7 AcitveSupport::Concern part II使用included class method5.8 AcitveSupport::Concern part III延伸閱讀：深入Rails3: ActiveSupport::ConcernSelf - The current/default objectActiveSupport::Concern">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Ruby bits ( 5 )：Modules">
+
+
+  <link rel="canonical" href="https://lukahuang.com/ruby-bits-5-modules/">
+  <meta property="og:url" content="https://lukahuang.com/ruby-bits-5-modules/">
+
+
+
+  <meta property="og:description" content="Ruby bits的課程真的很不錯，講到的主題都是很重要的東西。有點相見恨晚的感覺，趕快把它做完吧!本節學習目標  module  activesupport ::Concern  了解self的意義part1: moduleclass method與instance methoduse extend to expose methods as class methodclass Tweet  extend Searchableend使用的時候，直接呼叫class（開頭大寫）。Tweet.find_all_from(&#39;@GreggPollack&#39;)use include to expose methods as instance methodsinstance method用include引進moduleclass Image  include ImageUtilsendimage = user.imageimage.previewpart2 :how to include class method and instance method in the same time第一種方法：依照直覺該怎麼寫第一種方法是在class中includ module並且extend classmothods。下例中Image想要使用ImageUtils這個module的class method與instance method，所以用兩種方式各自引用。class Image  include ImageUtils  extend ImageUtils::ClassMethodsendmodule ImageUtils  def preview  end  def transfer(destination)  end  module ClassMethods    def fetch_from_twitter(user)    end  endend使用上可以按照之前所學的來呼叫class method與instance methodimage = user.imageimage.previewImage.fetch_from_twitter(&#39;gregg&#39;)第二種方法:method hooks這樣每次使用module的時候都需要explore兩種module實在太麻煩了，引入class module這個動作在module完成，這樣我們就不需要每次都引入兩種method，只要引入module就可以了。於是第二種方法method hook產生了：class Image  include ImageUtils  #extend ImageUtils::ClassMethods       刪除掉引入class method的這一行endmodule ImageUtils  def self.included(base)  #加入self.include （self就是ImageUtils這個module）    base.extend(ClassMethods)  end  def preview  end  def transfer(destination)  end  module ClassMethods    def fetch_from_twitter(user)    end  endendpart3: 使用Activesupport :: Concern解決相依性問題  Activesupport :: Concern代表什麼意思:: is basically a namespace resolution operator. It allows you to access items in modules, or class-level items in classes. For example, say you had this setup:關鍵字double colon rubyWhat is Ruby’s double-colon (::) all about?使用方式在terminal下gem install activesupport安裝activesupport在module檔中(xxx.rb)中require ‘active_support/concern’require &#39;active_support/concern&#39; module ImageUtils  extend ActiveSupport::Concern  included do    clean_up	end  module ClassMethods    def fetch_from_twitter(user)    end    def clean_up    end  endend這樣就可以直接include ImageUtil的ClassMethodsclass Image	include ImageUtilsend這樣看起來沒什麼了不起的對吧？只是換個寫法。實際上cocern的出現是為了解決更重要的問題，讓我們看下去。Acitvesupport::concern要解決的問題module ImageUtils  def self.included(base)      #base is ImageProcessing module    base.extend(ClassMethods)  end  module ClassMethods    def clean_up; end	endendmodule ImageProcessing	include ImageUtils  def self.included(base)    base.clean_up                #undefined method error  endendclass Image   include ImageProcessingend這樣乍看之下好像沒問題，但是卻有個嚴重的問題導致無法執行，因為ImageUtils變成是由ImageProcessing所 include，所以對 ImageUtils 的 self.included 來說，他的參數 base 變成了 ImageProcessing 了，所以他就沒辦法存取到宿主 Host 的任何函式及變數，do_host_something 時就會失敗。Okay，ActiveSupport::Concern 就是來幫助解決這個難題，我們希望宿主可以不需要知道 modules 之間的 dependencies 關係。dependencies 關係寫在 module 裡面就好了。module ImageUtils  extend ActiveSupport::Concern  module ClassMethods    def clean_up; end  endendmodule ImageProcessing  extend ActiveSupport::Concern  include ImageUtils  included do    clean_up  endendclass Image  include ImageProcessingendDependencies are properly resolved！！part4 作答中遇到的問題5.1 宣告成class method原本的module GameUtils  def lend_to_friend(game, friend_email)  endend改成module GameUtils  def self.lend_to_friend(game, friend_email)  endend這樣呼叫時就會從原本的game = Game.new(&quot;Contra&quot;)game.lend_to_friend(game, &quot;gregg@codeschool.com&quot;)變成game = Game.new(&quot;Contra&quot;)GameUtils.lend_to_friend(game, &quot;gregg@codeschool.com&quot;)5.2 reopen game and include the gameutil module5.3 reopen Game and expose the method from module as class method of Game class原本class Gameend加上GameUtils的class methodclass Game  extend GameUtilsend5.4 extend the single game object with Playable module原本game = Game.new(&quot;Contra&quot;)game.play加入module Playable的method到game這個instance中。game = Game.new(&quot;Contra&quot;)game.extend(Playable)game.playmodule長這樣module Playable  def play  endend這個用法讓我有點困惑，特地查了一下ruby-docextend的解釋如下Adds to obj the instance methods from each module given as a parameter.雖然是用extend這個字，但並非是繼承的意思，而是加入instance method。5.5使用self.include初始化class method5.6使用ActiveSupport::Concern代替self.included5.7 AcitveSupport::Concern part II使用included class method5.8 AcitveSupport::Concern part III延伸閱讀：深入Rails3: ActiveSupport::ConcernSelf - The current/default objectActiveSupport::Concern">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-05T08:52:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Ruby bits ( 5 )：Modules">
+    <meta itemprop="description" content="Ruby bits的課程真的很不錯，講到的主題都是很重要的東西。有點相見恨晚的感覺，趕快把它做完吧!本節學習目標  module  activesupport ::Concern  了解self的意義part1: moduleclass method與instance methoduse extend to expose methods as class methodclass Tweet  extend Searchableend使用的時候，直接呼叫class（開頭大寫）。Tweet.find_all_from(&#39;@GreggPollack&#39;)use include to expose methods as instance methodsinstance method用include引進moduleclass Image  include ImageUtilsendimage = user.imageimage.previewpart2 :how to include class method and instance method in the same time第一種方法：依照直覺該怎麼寫第一種方法是在class中includ module並且extend classmothods。下例中Image想要使用ImageUtils這個module的class method與instance method，所以用兩種方式各自引用。class Image  include ImageUtils  extend ImageUtils::ClassMethodsendmodule ImageUtils  def preview  end  def transfer(destination)  end  module ClassMethods    def fetch_from_twitter(user)    end  endend使用上可以按照之前所學的來呼叫class method與instance methodimage = user.imageimage.previewImage.fetch_from_twitter(&#39;gregg&#39;)第二種方法:method hooks這樣每次使用module的時候都需要explore兩種module實在太麻煩了，引入class module這個動作在module完成，這樣我們就不需要每次都引入兩種method，只要引入module就可以了。於是第二種方法method hook產生了：class Image  include ImageUtils  #extend ImageUtils::ClassMethods       刪除掉引入class method的這一行endmodule ImageUtils  def self.included(base)  #加入self.include （self就是ImageUtils這個module）    base.extend(ClassMethods)  end  def preview  end  def transfer(destination)  end  module ClassMethods    def fetch_from_twitter(user)    end  endendpart3: 使用Activesupport :: Concern解決相依性問題  Activesupport :: Concern代表什麼意思:: is basically a namespace resolution operator. It allows you to access items in modules, or class-level items in classes. For example, say you had this setup:關鍵字double colon rubyWhat is Ruby’s double-colon (::) all about?使用方式在terminal下gem install activesupport安裝activesupport在module檔中(xxx.rb)中require ‘active_support/concern’require &#39;active_support/concern&#39; module ImageUtils  extend ActiveSupport::Concern  included do    clean_up	end  module ClassMethods    def fetch_from_twitter(user)    end    def clean_up    end  endend這樣就可以直接include ImageUtil的ClassMethodsclass Image	include ImageUtilsend這樣看起來沒什麼了不起的對吧？只是換個寫法。實際上cocern的出現是為了解決更重要的問題，讓我們看下去。Acitvesupport::concern要解決的問題module ImageUtils  def self.included(base)      #base is ImageProcessing module    base.extend(ClassMethods)  end  module ClassMethods    def clean_up; end	endendmodule ImageProcessing	include ImageUtils  def self.included(base)    base.clean_up                #undefined method error  endendclass Image   include ImageProcessingend這樣乍看之下好像沒問題，但是卻有個嚴重的問題導致無法執行，因為ImageUtils變成是由ImageProcessing所 include，所以對 ImageUtils 的 self.included 來說，他的參數 base 變成了 ImageProcessing 了，所以他就沒辦法存取到宿主 Host 的任何函式及變數，do_host_something 時就會失敗。Okay，ActiveSupport::Concern 就是來幫助解決這個難題，我們希望宿主可以不需要知道 modules 之間的 dependencies 關係。dependencies 關係寫在 module 裡面就好了。module ImageUtils  extend ActiveSupport::Concern  module ClassMethods    def clean_up; end  endendmodule ImageProcessing  extend ActiveSupport::Concern  include ImageUtils  included do    clean_up  endendclass Image  include ImageProcessingendDependencies are properly resolved！！part4 作答中遇到的問題5.1 宣告成class method原本的module GameUtils  def lend_to_friend(game, friend_email)  endend改成module GameUtils  def self.lend_to_friend(game, friend_email)  endend這樣呼叫時就會從原本的game = Game.new(&quot;Contra&quot;)game.lend_to_friend(game, &quot;gregg@codeschool.com&quot;)變成game = Game.new(&quot;Contra&quot;)GameUtils.lend_to_friend(game, &quot;gregg@codeschool.com&quot;)5.2 reopen game and include the gameutil module5.3 reopen Game and expose the method from module as class method of Game class原本class Gameend加上GameUtils的class methodclass Game  extend GameUtilsend5.4 extend the single game object with Playable module原本game = Game.new(&quot;Contra&quot;)game.play加入module Playable的method到game這個instance中。game = Game.new(&quot;Contra&quot;)game.extend(Playable)game.playmodule長這樣module Playable  def play  endend這個用法讓我有點困惑，特地查了一下ruby-docextend的解釋如下Adds to obj the instance methods from each module given as a parameter.雖然是用extend這個字，但並非是繼承的意思，而是加入instance method。5.5使用self.include初始化class method5.6使用ActiveSupport::Concern代替self.included5.7 AcitveSupport::Concern part II使用included class method5.8 AcitveSupport::Concern part III延伸閱讀：深入Rails3: ActiveSupport::ConcernSelf - The current/default objectActiveSupport::Concern">
+    <meta itemprop="datePublished" content="September 05, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Ruby bits ( 5 )：Modules
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#本節學習目標">本節學習目標</a></li>
+  <li><a href="#class-method與instance-method">class method與instance method</a>
+    <ul>
+      <li><a href="#use-extend-to-expose-methods-as-class-method">use extend to expose methods as class method</a></li>
+      <li><a href="#use-include-to-expose-methods-as-instance-methods">use include to expose methods as instance methods</a></li>
+    </ul>
+  </li>
+  <li><a href="#第一種方法依照直覺該怎麼寫">第一種方法：依照直覺該怎麼寫</a></li>
+  <li><a href="#第二種方法method-hooks">第二種方法:method hooks</a></li>
+  <li><a href="#使用方式">使用方式</a></li>
+  <li><a href="#acitvesupportconcern要解決的問題">Acitvesupport::concern要解決的問題</a></li>
+  <li><a href="#51-宣告成class-method">5.1 宣告成class method</a></li>
+  <li><a href="#52-reopen-game-and-include-the-gameutil-module">5.2 reopen game and include the gameutil module</a></li>
+  <li><a href="#53-reopen-game-and-expose-the-method-from-module-as-class-method-of-game-class">5.3 reopen Game and expose the method from module as class method of Game class</a></li>
+  <li><a href="#54-extend-the-single-game-object-with-playable-module">5.4 extend the single game object with Playable module</a></li>
+  <li><a href="#55">5.5</a></li>
+  <li><a href="#56">5.6</a></li>
+  <li><a href="#57-acitvesupportconcern-part-ii">5.7 AcitveSupport::Concern part II</a></li>
+  <li><a href="#58-acitvesupportconcern-part-iii">5.8 AcitveSupport::Concern part III</a></li>
+  <li><a href="#延伸閱讀">延伸閱讀：</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>Ruby bits的課程真的很不錯，講到的主題都是很重要的東西。有點相見恨晚的感覺，趕快把它做完吧!</p>
+
+<h2 id="本節學習目標">本節學習目標</h2>
+<ol>
+  <li>module</li>
+  <li>activesupport ::Concern</li>
+  <li>了解self的意義</li>
+</ol>
+
+<h1 id="part1-module">part1: module</h1>
+<h2 id="class-method與instance-method">class method與instance method</h2>
+
+<h3 id="use-extend-to-expose-methods-as-class-method">use extend to expose methods as class method</h3>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Tweet</span>
+  <span class="kp">extend</span> <span class="no">Searchable</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>使用的時候，直接呼叫class（開頭大寫）。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Tweet</span><span class="p">.</span><span class="nf">find_all_from</span><span class="p">(</span><span class="s1">'@GreggPollack'</span><span class="p">)</span>
+</code></pre></div></div>
+<h3 id="use-include-to-expose-methods-as-instance-methods">use include to expose methods as instance methods</h3>
+<p>instance method用include引進module</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Image</span>
+  <span class="kp">include</span> <span class="no">ImageUtils</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">image</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">image</span>
+<span class="n">image</span><span class="p">.</span><span class="nf">preview</span>
+</code></pre></div></div>
+
+<h1 id="part2-how-to-include-class-method-and-instance-method-in-the-same-time">part2 :how to include class method and instance method in the same time</h1>
+
+<h2 id="第一種方法依照直覺該怎麼寫">第一種方法：依照直覺該怎麼寫</h2>
+<p>第一種方法是在class中includ module並且extend classmothods。
+下例中Image想要使用ImageUtils這個module的class method與instance method，所以用兩種方式各自引用。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Image</span>
+  <span class="kp">include</span> <span class="no">ImageUtils</span>
+  <span class="kp">extend</span> <span class="no">ImageUtils</span><span class="o">::</span><span class="no">ClassMethods</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">ImageUtils</span>
+
+  <span class="k">def</span> <span class="nf">preview</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">transfer</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">fetch_from_twitter</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre></div></div>
+<p>使用上可以按照之前所學的來呼叫class method與instance method</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">image</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">image</span>
+<span class="n">image</span><span class="p">.</span><span class="nf">preview</span>
+<span class="no">Image</span><span class="p">.</span><span class="nf">fetch_from_twitter</span><span class="p">(</span><span class="s1">'gregg'</span><span class="p">)</span>
+</code></pre></div></div>
+<h2 id="第二種方法method-hooks">第二種方法:method hooks</h2>
+<p>這樣每次使用module的時候都需要explore兩種module實在太麻煩了，引入class module這個動作在module完成，這樣我們就不需要每次都引入兩種method，只要引入module就可以了。於是第二種方法method hook產生了：</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Image</span>
+  <span class="kp">include</span> <span class="no">ImageUtils</span>
+  <span class="c1">#extend ImageUtils::ClassMethods       刪除掉引入class method的這一行</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">ImageUtils</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>  <span class="c1">#加入self.include （self就是ImageUtils這個module）</span>
+    <span class="n">base</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">preview</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">transfer</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">fetch_from_twitter</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<h1 id="part3-使用activesupport--concern解決相依性問題">part3: 使用Activesupport :: Concern解決相依性問題</h1>
+
+<blockquote>
+  <p>Activesupport :: Concern代表什麼意思
+:: is basically a namespace resolution operator. It allows you to access items in modules, or class-level items in classes. For example, say you had this setup:
+關鍵字double colon ruby
+<a href="http://stackoverflow.com/questions/3009477/what-is-rubys-double-colon-all-about">What is Ruby’s double-colon (::) all about?</a></p>
+</blockquote>
+
+<h2 id="使用方式">使用方式</h2>
+<p>在terminal下<code class="highlighter-rouge">gem install activesupport</code>安裝activesupport
+在module檔中(xxx.rb)中require ‘active_support/concern’</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'active_support/concern'</span> <span class="k">module</span> <span class="nn">ImageUtils</span>
+
+  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+
+  <span class="n">included</span> <span class="k">do</span>
+    <span class="n">clean_up</span>
+	<span class="k">end</span>
+
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">fetch_from_twitter</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">clean_up</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>這樣就可以直接include ImageUtil的ClassMethods</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Image</span>
+	<span class="kp">include</span> <span class="no">ImageUtils</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>這樣看起來沒什麼了不起的對吧？只是換個寫法。實際上cocern的出現是為了解決更重要的問題，讓我們看下去。</p>
+
+<h2 id="acitvesupportconcern要解決的問題">Acitvesupport::concern要解決的問題</h2>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">ImageUtils</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>      <span class="c1">#base is ImageProcessing module</span>
+    <span class="n">base</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">clean_up</span><span class="p">;</span> <span class="k">end</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">ImageProcessing</span>
+
+	<span class="kp">include</span> <span class="no">ImageUtils</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="n">base</span><span class="p">.</span><span class="nf">clean_up</span>                <span class="c1">#undefined method error</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Image</span>
+   <span class="kp">include</span> <span class="no">ImageProcessing</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>這樣乍看之下好像沒問題，但是卻有個嚴重的問題導致無法執行，因為ImageUtils變成是由ImageProcessing所 include，所以對 ImageUtils 的 self.included 來說，他的參數 base 變成了 ImageProcessing 了，所以他就沒辦法存取到宿主 Host 的任何函式及變數，do_host_something 時就會失敗。</p>
+
+<p>Okay，ActiveSupport::Concern 就是來幫助解決這個難題，我們希望宿主可以不需要知道 modules 之間的 dependencies 關係。dependencies 關係寫在 module 裡面就好了。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">ImageUtils</span>
+
+  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">clean_up</span><span class="p">;</span> <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">ImageProcessing</span>
+
+  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+  <span class="kp">include</span> <span class="no">ImageUtils</span>
+
+  <span class="n">included</span> <span class="k">do</span>
+    <span class="n">clean_up</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Image</span>
+  <span class="kp">include</span> <span class="no">ImageProcessing</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>Dependencies are properly resolved！！</p>
+
+<h1 id="part4-作答中遇到的問題">part4 作答中遇到的問題</h1>
+<h2 id="51-宣告成class-method">5.1 宣告成class method</h2>
+<p>原本的</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">GameUtils</span>
+  <span class="k">def</span> <span class="nf">lend_to_friend</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">friend_email</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>改成</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">GameUtils</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">lend_to_friend</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">friend_email</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>這樣呼叫時就會從原本的</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">"Contra"</span><span class="p">)</span>
+<span class="n">game</span><span class="p">.</span><span class="nf">lend_to_friend</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="s2">"gregg@codeschool.com"</span><span class="p">)</span>
+</code></pre></div></div>
+<p>變成</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">"Contra"</span><span class="p">)</span>
+<span class="no">GameUtils</span><span class="p">.</span><span class="nf">lend_to_friend</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="s2">"gregg@codeschool.com"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="52-reopen-game-and-include-the-gameutil-module">5.2 reopen game and include the gameutil module</h2>
+
+<h2 id="53-reopen-game-and-expose-the-method-from-module-as-class-method-of-game-class">5.3 reopen Game and expose the method from module as class method of Game class</h2>
+<p>原本</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Game</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>加上GameUtils的class method</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Game</span>
+  <span class="kp">extend</span> <span class="no">GameUtils</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<h2 id="54-extend-the-single-game-object-with-playable-module">5.4 extend the single game object with Playable module</h2>
+<p>原本</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">"Contra"</span><span class="p">)</span>
+<span class="n">game</span><span class="p">.</span><span class="nf">play</span>
+</code></pre></div></div>
+<p>加入module Playable的method到game這個instance中。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">"Contra"</span><span class="p">)</span>
+<span class="n">game</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="no">Playable</span><span class="p">)</span>
+<span class="n">game</span><span class="p">.</span><span class="nf">play</span>
+</code></pre></div></div>
+<p>module長這樣</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Playable</span>
+  <span class="k">def</span> <span class="nf">play</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>這個用法讓我有點困惑，特地查了一下<a href="http://ruby-doc.org/core-2.1.2/Object.html#method-i-extend">ruby-doc</a>
+extend的解釋如下
+Adds to obj the instance methods from each module given as a parameter.
+雖然是用extend這個字，但並非是繼承的意思，而是加入instance method。</p>
+
+<h2 id="55">5.5</h2>
+<p>使用self.include初始化class method</p>
+
+<h2 id="56">5.6</h2>
+<p>使用ActiveSupport::Concern代替self.included</p>
+
+<h2 id="57-acitvesupportconcern-part-ii">5.7 AcitveSupport::Concern part II</h2>
+<p>使用included class method</p>
+
+<h2 id="58-acitvesupportconcern-part-iii">5.8 AcitveSupport::Concern part III</h2>
+
+<h2 id="延伸閱讀">延伸閱讀：</h2>
+<p><a href="http://ihower.tw/blog/archives/3949">深入Rails3: ActiveSupport::Concern</a>
+<a href="http://rubylearning.com/satishtalim/ruby_self.html">Self - The current/default object</a>
+<a href="http://api.rubyonrails.org/classes/ActiveSupport/Concern.html">ActiveSupport::Concern</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby-bit" class="page__taxonomy-item" rel="tag">Ruby Bit</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ruby" class="page__taxonomy-item" rel="tag">Ruby</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-05T08:52:00+00:00">September 05, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/ruby-bits-4-active-support/" class="pagination--pager" title="Ruby bits ( 4 )：ActiveSupport
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/ruby-bits-6-blocks/" class="pagination--pager" title="Ruby bits ( 6 )：Blocks 學習筆記
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

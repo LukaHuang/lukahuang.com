@@ -1,0 +1,537 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>jQuery Return Flight Ch5 ( 1 )：Advanced Event - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="advanced event handlertrigger使用trigger就像是你按下那個按鈕。範例:function picture() { console.log(&#39;Show Plane&#39;); }function status() { console.log(&#39;In Service&#39;); }function zoom() { console.log(&#39;Zoom Picture&#39;); }$(document).ready(function() {    $(&#39;button&#39;).on(&#39;click.image&#39;, picture);    $(&#39;button&#39;).on(&#39;click.details&#39;, status);    $(&#39;button&#39;).on(&#39;mouseover.image&#39;, zoom);    ...    $(&#39;button&#39;).trigger(&#39;click&#39;);});使用trigger觸發事件(等於使用者按下按鈕)$(&#39;button&#39;).trigger(&#39;click&#39;);會觸發這兩個$(&#39;button&#39;).on(&#39;click.image&#39;, picture);$(&#39;button&#39;).on(&#39;click.details&#39;, status);自訂&lt;event&gt;同時觸發多個事件照理說evnt的格式是：$(&lt;dom element&gt;).on(&quot;&lt;event&gt;.&lt;namespace&gt;&quot;, &lt;method&gt;)但其實jquery可以自訂event，讓我們做更多方便的操作。現在我們來自訂一個event。$(&#39;.vacation&#39;).on(&#39;show.price&#39;, showPrice);可以看到本來應該是’click’的部份，已經用show.price這個我們新創的event所代替。這樣我們就可以透過這個event來trigger所有的vacation。$(&#39;.vacation&#39;).trigger(&#39;show.price&#39;);或是透過這個event來trigger最後一個vacation。$(&#39;.vacation:last&#39;).trigger(&#39;show.price&#39;)完整範例：var showPrice = function() {...};$(&#39;.vacation&#39;).on(&#39;click.price&#39;, &#39;button&#39;, showPrice)$(&#39;.vacation&#39;).on(&#39;show.price&#39;, showPrice);$(&#39;show-prices&#39;).on(&#39;click&#39;, function(event) {  event.preventDefault();  $(&#39;.vacation&#39;).trigger(&#39;show.price&#39;);};下面這個例子是，要在點擊show photo按鈕時，也會顯示天氣。這$(document).ready(function(){  // Get Weather  $(&#39;button&#39;).on(&#39;show.weather&#39;, function() {    var results = $(this).closest(&#39;li&#39;).find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;&#39;);    $(this).off(&#39;show.weather&#39;);  });  // Show Photos  $(&#39;button&#39;).on(&#39;click.photos&#39;, function() {    var tour = $(this).closest(&#39;li&#39;);    var results = tour.find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;&lt;img src=&quot;/assets/photos/&#39;+tour.data(&#39;loc&#39;)+&#39;.jpg&quot; /&gt;&lt;/p&gt;&#39;);    $(this).off(&#39;click.photos&#39;);    $(this).trigger(&#39;show.weather&#39;);  });});這樣就不會像原來一個button綁兩個click listener，而是綁定一個click listener依序執行兩個函數。$(document).ready(function(){  // Get Weather  $(&#39;button&#39;).on(&#39;click.weather&#39;, function() {    var results = $(this).closest(&#39;li&#39;).find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;&#39;);    $(this).off(&#39;click.weather&#39;);  });  // Show Photos  $(&#39;button&#39;).on(&#39;click.photos&#39;, function() {    var tour = $(this).closest(&#39;li&#39;);    var results = tour.find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;&lt;img src=&quot;/assets/photos/&#39;+tour.data(&#39;loc&#39;)+&#39;.jpg&quot; /&gt;&lt;/p&gt;&#39;);    $(this).off(&#39;click.photos&#39;);    $(this).trigger(&#39;click.weather&#39;);  });});off將符合event.namespace的handler移除刪除符合event的handler也可以指定namespace，符合namespace的handler都移除">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="jQuery Return Flight Ch5 ( 1 )：Advanced Event">
+
+
+  <link rel="canonical" href="https://lukahuang.com/jquery-return-flight-5-jquery-plugins/">
+  <meta property="og:url" content="https://lukahuang.com/jquery-return-flight-5-jquery-plugins/">
+
+
+
+  <meta property="og:description" content="advanced event handlertrigger使用trigger就像是你按下那個按鈕。範例:function picture() { console.log(&#39;Show Plane&#39;); }function status() { console.log(&#39;In Service&#39;); }function zoom() { console.log(&#39;Zoom Picture&#39;); }$(document).ready(function() {    $(&#39;button&#39;).on(&#39;click.image&#39;, picture);    $(&#39;button&#39;).on(&#39;click.details&#39;, status);    $(&#39;button&#39;).on(&#39;mouseover.image&#39;, zoom);    ...    $(&#39;button&#39;).trigger(&#39;click&#39;);});使用trigger觸發事件(等於使用者按下按鈕)$(&#39;button&#39;).trigger(&#39;click&#39;);會觸發這兩個$(&#39;button&#39;).on(&#39;click.image&#39;, picture);$(&#39;button&#39;).on(&#39;click.details&#39;, status);自訂&lt;event&gt;同時觸發多個事件照理說evnt的格式是：$(&lt;dom element&gt;).on(&quot;&lt;event&gt;.&lt;namespace&gt;&quot;, &lt;method&gt;)但其實jquery可以自訂event，讓我們做更多方便的操作。現在我們來自訂一個event。$(&#39;.vacation&#39;).on(&#39;show.price&#39;, showPrice);可以看到本來應該是’click’的部份，已經用show.price這個我們新創的event所代替。這樣我們就可以透過這個event來trigger所有的vacation。$(&#39;.vacation&#39;).trigger(&#39;show.price&#39;);或是透過這個event來trigger最後一個vacation。$(&#39;.vacation:last&#39;).trigger(&#39;show.price&#39;)完整範例：var showPrice = function() {...};$(&#39;.vacation&#39;).on(&#39;click.price&#39;, &#39;button&#39;, showPrice)$(&#39;.vacation&#39;).on(&#39;show.price&#39;, showPrice);$(&#39;show-prices&#39;).on(&#39;click&#39;, function(event) {  event.preventDefault();  $(&#39;.vacation&#39;).trigger(&#39;show.price&#39;);};下面這個例子是，要在點擊show photo按鈕時，也會顯示天氣。這$(document).ready(function(){  // Get Weather  $(&#39;button&#39;).on(&#39;show.weather&#39;, function() {    var results = $(this).closest(&#39;li&#39;).find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;&#39;);    $(this).off(&#39;show.weather&#39;);  });  // Show Photos  $(&#39;button&#39;).on(&#39;click.photos&#39;, function() {    var tour = $(this).closest(&#39;li&#39;);    var results = tour.find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;&lt;img src=&quot;/assets/photos/&#39;+tour.data(&#39;loc&#39;)+&#39;.jpg&quot; /&gt;&lt;/p&gt;&#39;);    $(this).off(&#39;click.photos&#39;);    $(this).trigger(&#39;show.weather&#39;);  });});這樣就不會像原來一個button綁兩個click listener，而是綁定一個click listener依序執行兩個函數。$(document).ready(function(){  // Get Weather  $(&#39;button&#39;).on(&#39;click.weather&#39;, function() {    var results = $(this).closest(&#39;li&#39;).find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;&#39;);    $(this).off(&#39;click.weather&#39;);  });  // Show Photos  $(&#39;button&#39;).on(&#39;click.photos&#39;, function() {    var tour = $(this).closest(&#39;li&#39;);    var results = tour.find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;&lt;img src=&quot;/assets/photos/&#39;+tour.data(&#39;loc&#39;)+&#39;.jpg&quot; /&gt;&lt;/p&gt;&#39;);    $(this).off(&#39;click.photos&#39;);    $(this).trigger(&#39;click.weather&#39;);  });});off將符合event.namespace的handler移除刪除符合event的handler也可以指定namespace，符合namespace的handler都移除">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-10-10T07:27:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="jQuery Return Flight Ch5 ( 1 )：Advanced Event">
+    <meta itemprop="description" content="advanced event handlertrigger使用trigger就像是你按下那個按鈕。範例:function picture() { console.log(&#39;Show Plane&#39;); }function status() { console.log(&#39;In Service&#39;); }function zoom() { console.log(&#39;Zoom Picture&#39;); }$(document).ready(function() {    $(&#39;button&#39;).on(&#39;click.image&#39;, picture);    $(&#39;button&#39;).on(&#39;click.details&#39;, status);    $(&#39;button&#39;).on(&#39;mouseover.image&#39;, zoom);    ...    $(&#39;button&#39;).trigger(&#39;click&#39;);});使用trigger觸發事件(等於使用者按下按鈕)$(&#39;button&#39;).trigger(&#39;click&#39;);會觸發這兩個$(&#39;button&#39;).on(&#39;click.image&#39;, picture);$(&#39;button&#39;).on(&#39;click.details&#39;, status);自訂&lt;event&gt;同時觸發多個事件照理說evnt的格式是：$(&lt;dom element&gt;).on(&quot;&lt;event&gt;.&lt;namespace&gt;&quot;, &lt;method&gt;)但其實jquery可以自訂event，讓我們做更多方便的操作。現在我們來自訂一個event。$(&#39;.vacation&#39;).on(&#39;show.price&#39;, showPrice);可以看到本來應該是’click’的部份，已經用show.price這個我們新創的event所代替。這樣我們就可以透過這個event來trigger所有的vacation。$(&#39;.vacation&#39;).trigger(&#39;show.price&#39;);或是透過這個event來trigger最後一個vacation。$(&#39;.vacation:last&#39;).trigger(&#39;show.price&#39;)完整範例：var showPrice = function() {...};$(&#39;.vacation&#39;).on(&#39;click.price&#39;, &#39;button&#39;, showPrice)$(&#39;.vacation&#39;).on(&#39;show.price&#39;, showPrice);$(&#39;show-prices&#39;).on(&#39;click&#39;, function(event) {  event.preventDefault();  $(&#39;.vacation&#39;).trigger(&#39;show.price&#39;);};下面這個例子是，要在點擊show photo按鈕時，也會顯示天氣。這$(document).ready(function(){  // Get Weather  $(&#39;button&#39;).on(&#39;show.weather&#39;, function() {    var results = $(this).closest(&#39;li&#39;).find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;&#39;);    $(this).off(&#39;show.weather&#39;);  });  // Show Photos  $(&#39;button&#39;).on(&#39;click.photos&#39;, function() {    var tour = $(this).closest(&#39;li&#39;);    var results = tour.find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;&lt;img src=&quot;/assets/photos/&#39;+tour.data(&#39;loc&#39;)+&#39;.jpg&quot; /&gt;&lt;/p&gt;&#39;);    $(this).off(&#39;click.photos&#39;);    $(this).trigger(&#39;show.weather&#39;);  });});這樣就不會像原來一個button綁兩個click listener，而是綁定一個click listener依序執行兩個函數。$(document).ready(function(){  // Get Weather  $(&#39;button&#39;).on(&#39;click.weather&#39;, function() {    var results = $(this).closest(&#39;li&#39;).find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;&#39;);    $(this).off(&#39;click.weather&#39;);  });  // Show Photos  $(&#39;button&#39;).on(&#39;click.photos&#39;, function() {    var tour = $(this).closest(&#39;li&#39;);    var results = tour.find(&#39;.results&#39;);    results.append(&#39;&lt;p&gt;&lt;img src=&quot;/assets/photos/&#39;+tour.data(&#39;loc&#39;)+&#39;.jpg&quot; /&gt;&lt;/p&gt;&#39;);    $(this).off(&#39;click.photos&#39;);    $(this).trigger(&#39;click.weather&#39;);  });});off將符合event.namespace的handler移除刪除符合event的handler也可以指定namespace，符合namespace的handler都移除">
+    <meta itemprop="datePublished" content="October 10, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">jQuery Return Flight Ch5 ( 1 )：Advanced Event
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#trigger">trigger</a></li>
+  <li><a href="#自訂event同時觸發多個事件">自訂&lt;event&gt;同時觸發多個事件</a></li>
+  <li><a href="#off">off</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h1 id="advanced-event-handler">advanced event handler</h1>
+<h2 id="trigger">trigger</h2>
+<p>使用trigger就像是你按下那個按鈕。範例:</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">picture</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Show Plane</span><span class="dl">'</span><span class="p">);</span> <span class="p">}</span>
+<span class="kd">function</span> <span class="nx">status</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">In Service</span><span class="dl">'</span><span class="p">);</span> <span class="p">}</span>
+<span class="kd">function</span> <span class="nx">zoom</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Zoom Picture</span><span class="dl">'</span><span class="p">);</span> <span class="p">}</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.image</span><span class="dl">'</span><span class="p">,</span> <span class="nx">picture</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.details</span><span class="dl">'</span><span class="p">,</span> <span class="nx">status</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">mouseover.image</span><span class="dl">'</span><span class="p">,</span> <span class="nx">zoom</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+<p>使用trigger觸發事件(等於使用者按下按鈕)</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+<p>會觸發這兩個</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.image</span><span class="dl">'</span><span class="p">,</span> <span class="nx">picture</span><span class="p">);</span>
+<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.details</span><span class="dl">'</span><span class="p">,</span> <span class="nx">status</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="自訂event同時觸發多個事件">自訂<code class="highlighter-rouge">&lt;event&gt;</code>同時觸發多個事件</h2>
+<p>照理說evnt的格式是：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">dom</span> <span class="nx">element</span><span class="o">&gt;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">&lt;event&gt;.&lt;namespace&gt;</span><span class="dl">"</span><span class="p">,</span> <span class="o">&lt;</span><span class="nx">method</span><span class="o">&gt;</span><span class="p">)</span>
+</code></pre></div></div>
+<p>但其實jquery可以自訂event，讓我們做更多方便的操作。現在我們來自訂一個event。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.vacation</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.price</span><span class="dl">'</span><span class="p">,</span> <span class="nx">showPrice</span><span class="p">);</span>
+</code></pre></div></div>
+<p>可以看到本來應該是’click’的部份，已經用<code class="highlighter-rouge">show.price</code>這個我們新創的event所代替。
+這樣我們就可以透過這個event來trigger所有的vacation。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.vacation</span><span class="dl">'</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.price</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+<p>或是透過這個event來trigger最後一個vacation。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.vacation:last</span><span class="dl">'</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.price</span><span class="dl">'</span><span class="p">)</span>
+</code></pre></div></div>
+<p>完整範例：</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">showPrice</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{...};</span>
+<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.vacation</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.price</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span> <span class="nx">showPrice</span><span class="p">)</span>
+<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.vacation</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.price</span><span class="dl">'</span><span class="p">,</span> <span class="nx">showPrice</span><span class="p">);</span>
+<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">show-prices</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.vacation</span><span class="dl">'</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.price</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+<p>下面這個例子是，要在點擊show photo按鈕時，也會顯示天氣。這</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="c1">// Get Weather</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.weather</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="dl">'</span><span class="s1">li</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">'</span><span class="s1">.results</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">results</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">off</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.weather</span><span class="dl">'</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="c1">// Show Photos</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.photos</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="dl">'</span><span class="s1">li</span><span class="dl">'</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="nx">tour</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="dl">'</span><span class="s1">.results</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">results</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;p&gt;&lt;img src="/assets/photos/</span><span class="dl">'</span><span class="o">+</span><span class="nx">tour</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="dl">'</span><span class="s1">loc</span><span class="dl">'</span><span class="p">)</span><span class="o">+</span><span class="dl">'</span><span class="s1">.jpg" /&gt;&lt;/p&gt;</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">off</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.photos</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="dl">'</span><span class="s1">show.weather</span><span class="dl">'</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+<p>這樣就不會像原來一個button綁兩個click listener，而是綁定一個click listener依序執行兩個函數。</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="c1">// Get Weather</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.weather</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="dl">'</span><span class="s1">li</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">'</span><span class="s1">.results</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">results</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;p&gt;Weather: 74&amp;deg;&lt;/p&gt;</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">off</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.weather</span><span class="dl">'</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="c1">// Show Photos</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.photos</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="dl">'</span><span class="s1">li</span><span class="dl">'</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="nx">tour</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="dl">'</span><span class="s1">.results</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">results</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;p&gt;&lt;img src="/assets/photos/</span><span class="dl">'</span><span class="o">+</span><span class="nx">tour</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="dl">'</span><span class="s1">loc</span><span class="dl">'</span><span class="p">)</span><span class="o">+</span><span class="dl">'</span><span class="s1">.jpg" /&gt;&lt;/p&gt;</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">off</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.photos</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="dl">'</span><span class="s1">click.weather</span><span class="dl">'</span><span class="p">);</span>
+
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="off">off</h2>
+<p>將符合event.namespace的handler移除
+<img src="https://lh4.googleusercontent.com/-Pponyl2bHfo/VDeZTWsGPlI/AAAAAAAADHc/8_d1EMnLjzc/w1650-h530-no/Screen%2BShot%2B2014-10-10%2Bat%2B15.31.35.png" alt="" />
+刪除符合event的handler
+<img src="https://lh4.googleusercontent.com/-OjeqhJM-sAQ/VDeZTcVpIZI/AAAAAAAADHk/RcghF-py-X4/w1650-h685-no/Screen%2BShot%2B2014-10-10%2Bat%2B15.31.45.png" alt="" />
+也可以指定namespace，符合namespace的handler都移除
+<img src="https://lh6.googleusercontent.com/-mA0cKkXEn74/VDeZTYFMVgI/AAAAAAAADHg/ffIlXNo3iuU/w1650-h688-no/Screen%2BShot%2B2014-10-10%2Bat%2B15.32.45.png" alt="" /></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#jquery" class="page__taxonomy-item" rel="tag">jQuery</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-10-10T07:27:00+00:00">October 10, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/jquery-return-flight-4/" class="pagination--pager" title="jQuery Return Flight Ch4：Utility Methods
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/edx-linux-foundation-ch15shell-script/" class="pagination--pager" title="EDX Linux Foundation Ch15：Shell Script ( Ch14跳過 )
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,501 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Time in Rails - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Rails 中的時間Rails 中的時間是個有趣的議題，如果不多加注意，很容易被雷到。尤其是一般在本地端開發的的時候並不會有時區不同的問題，但是一放到 Server 上，就會忽然爆炸。是不能不小心的一個問題。如果你在 config/application.rb 設定 Time.zone，範例如下:config.i18n.default_locale = &quot;zh-TW&quot;如果透過 ActiveRecord 來存取，取得的會是你在 application.rb 裡面設定的 Time.zone比如說你有一個 User 物件:user = User.firstuser.created_at.zone# =&gt; &quot;CST&quot;CST 即中原標準時間. it’s right!Time.now VS Time.current接著來比較 Time.now 和 Time.currentTime.now.zone=&gt; &quot;UTC&quot;Time.current.zone=&gt; &quot;CST&quot;很明顯的可以看到，如果是 Time.now 的話回傳的會是格林威治時間 UTC, 但若是使用 Time.current 回傳的則會是我們在 config/application.rb 裡面設定的 Time.zone。究竟為什麼會有這個差異呢? 其實很簡單，因為 Time.now 是 Ruby 的原生物件，而 Time.current 是 Rails ActiveSupport 的物件。Time.now.class=&gt; TimeTime.current.class=&gt; ActiveSupport::TimeWithZone我們再來做個測試，來看看剛剛的 user.created_at 是不是真的如果們所想:User.last.created_at.class=&gt; ActiveSupport::TimeWithZone太棒了! 果然如此，這樣一來是不是很容易理解 Rails 的時間了。Rails 時間的另一個重點 - SQLRails 時間另一個需要注意的地方是 SQL 的時間。來比較一下使用 Time.now 和 Time.current 在 ActiveRecord Relation 中的時間:User.where(&quot;created_at &gt; ?&quot;, Time.now)#=&gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;deleted_at&quot; IS NULL AND (created_at &gt; &#39;2017-11-17 14:46:01.698018&#39;)User.where(&quot;created_at &gt; ?&quot;, Time.current)#=&gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;deleted_at&quot; IS NULL AND (created_at &gt; &#39;2017-11-17 14:46:09.655406&#39;)筆者在測試的時候是台北時間(CST)晚上 22:46，可以發現兩者依賴的時區都是在 config/application.rb 設定的時區。">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Time in Rails">
+
+
+  <link rel="canonical" href="https://lukahuang.com/time-in-rails/">
+  <meta property="og:url" content="https://lukahuang.com/time-in-rails/">
+
+
+
+  <meta property="og:description" content="Rails 中的時間Rails 中的時間是個有趣的議題，如果不多加注意，很容易被雷到。尤其是一般在本地端開發的的時候並不會有時區不同的問題，但是一放到 Server 上，就會忽然爆炸。是不能不小心的一個問題。如果你在 config/application.rb 設定 Time.zone，範例如下:config.i18n.default_locale = &quot;zh-TW&quot;如果透過 ActiveRecord 來存取，取得的會是你在 application.rb 裡面設定的 Time.zone比如說你有一個 User 物件:user = User.firstuser.created_at.zone# =&gt; &quot;CST&quot;CST 即中原標準時間. it’s right!Time.now VS Time.current接著來比較 Time.now 和 Time.currentTime.now.zone=&gt; &quot;UTC&quot;Time.current.zone=&gt; &quot;CST&quot;很明顯的可以看到，如果是 Time.now 的話回傳的會是格林威治時間 UTC, 但若是使用 Time.current 回傳的則會是我們在 config/application.rb 裡面設定的 Time.zone。究竟為什麼會有這個差異呢? 其實很簡單，因為 Time.now 是 Ruby 的原生物件，而 Time.current 是 Rails ActiveSupport 的物件。Time.now.class=&gt; TimeTime.current.class=&gt; ActiveSupport::TimeWithZone我們再來做個測試，來看看剛剛的 user.created_at 是不是真的如果們所想:User.last.created_at.class=&gt; ActiveSupport::TimeWithZone太棒了! 果然如此，這樣一來是不是很容易理解 Rails 的時間了。Rails 時間的另一個重點 - SQLRails 時間另一個需要注意的地方是 SQL 的時間。來比較一下使用 Time.now 和 Time.current 在 ActiveRecord Relation 中的時間:User.where(&quot;created_at &gt; ?&quot;, Time.now)#=&gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;deleted_at&quot; IS NULL AND (created_at &gt; &#39;2017-11-17 14:46:01.698018&#39;)User.where(&quot;created_at &gt; ?&quot;, Time.current)#=&gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;deleted_at&quot; IS NULL AND (created_at &gt; &#39;2017-11-17 14:46:09.655406&#39;)筆者在測試的時候是台北時間(CST)晚上 22:46，可以發現兩者依賴的時區都是在 config/application.rb 設定的時區。">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2017-10-23T22:34:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Time in Rails">
+    <meta itemprop="description" content="Rails 中的時間Rails 中的時間是個有趣的議題，如果不多加注意，很容易被雷到。尤其是一般在本地端開發的的時候並不會有時區不同的問題，但是一放到 Server 上，就會忽然爆炸。是不能不小心的一個問題。如果你在 config/application.rb 設定 Time.zone，範例如下:config.i18n.default_locale = &quot;zh-TW&quot;如果透過 ActiveRecord 來存取，取得的會是你在 application.rb 裡面設定的 Time.zone比如說你有一個 User 物件:user = User.firstuser.created_at.zone# =&gt; &quot;CST&quot;CST 即中原標準時間. it’s right!Time.now VS Time.current接著來比較 Time.now 和 Time.currentTime.now.zone=&gt; &quot;UTC&quot;Time.current.zone=&gt; &quot;CST&quot;很明顯的可以看到，如果是 Time.now 的話回傳的會是格林威治時間 UTC, 但若是使用 Time.current 回傳的則會是我們在 config/application.rb 裡面設定的 Time.zone。究竟為什麼會有這個差異呢? 其實很簡單，因為 Time.now 是 Ruby 的原生物件，而 Time.current 是 Rails ActiveSupport 的物件。Time.now.class=&gt; TimeTime.current.class=&gt; ActiveSupport::TimeWithZone我們再來做個測試，來看看剛剛的 user.created_at 是不是真的如果們所想:User.last.created_at.class=&gt; ActiveSupport::TimeWithZone太棒了! 果然如此，這樣一來是不是很容易理解 Rails 的時間了。Rails 時間的另一個重點 - SQLRails 時間另一個需要注意的地方是 SQL 的時間。來比較一下使用 Time.now 和 Time.current 在 ActiveRecord Relation 中的時間:User.where(&quot;created_at &gt; ?&quot;, Time.now)#=&gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;deleted_at&quot; IS NULL AND (created_at &gt; &#39;2017-11-17 14:46:01.698018&#39;)User.where(&quot;created_at &gt; ?&quot;, Time.current)#=&gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;deleted_at&quot; IS NULL AND (created_at &gt; &#39;2017-11-17 14:46:09.655406&#39;)筆者在測試的時候是台北時間(CST)晚上 22:46，可以發現兩者依賴的時區都是在 config/application.rb 設定的時區。">
+    <meta itemprop="datePublished" content="October 23, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Time in Rails
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#rails-中的時間">Rails 中的時間</a></li>
+  <li><a href="#timenow-vs-timecurrent">Time.now VS Time.current</a></li>
+  <li><a href="#rails-時間的另一個重點---sql">Rails 時間的另一個重點 - SQL</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="rails-中的時間">Rails 中的時間</h2>
+
+<p>Rails 中的時間是個有趣的議題，如果不多加注意，很容易被雷到。
+尤其是一般在本地端開發的的時候並不會有時區不同的問題，但是一放到 Server 上，就會忽然爆炸。
+是不能不小心的一個問題。
+如果你在 <code class="highlighter-rouge">config/application.rb</code> 設定 Time.zone，範例如下:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">i18n</span><span class="p">.</span><span class="nf">default_locale</span> <span class="o">=</span> <span class="s2">"zh-TW"</span>
+</code></pre></div></div>
+
+<p>如果透過 ActiveRecord 來存取，取得的會是你在 <code class="highlighter-rouge">application.rb</code> 裡面設定的 Time.zone
+比如說你有一個 <code class="highlighter-rouge">User</code> 物件:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">first</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">created_at</span><span class="p">.</span><span class="nf">zone</span>
+<span class="c1"># =&gt; "CST"</span>
+</code></pre></div></div>
+
+<p>CST 即中原標準時間. it’s right!</p>
+
+<h2 id="timenow-vs-timecurrent">Time.now VS Time.current</h2>
+
+<p>接著來比較 Time.now 和 Time.current</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">zone</span>
+<span class="o">=&gt;</span> <span class="s2">"UTC"</span>
+<span class="no">Time</span><span class="p">.</span><span class="nf">current</span><span class="p">.</span><span class="nf">zone</span>
+<span class="o">=&gt;</span> <span class="s2">"CST"</span>
+</code></pre></div></div>
+
+<p>很明顯的可以看到，如果是 <code class="highlighter-rouge">Time.now</code> 的話回傳的會是格林威治時間 <code class="highlighter-rouge">UTC</code>, 但若是使用 <code class="highlighter-rouge">Time.current</code> 回傳的則會是我們在 <code class="highlighter-rouge">config/application.rb</code> 裡面設定的 Time.zone。究竟為什麼會有這個差異呢? 其實很簡單，因為 Time.now 是 Ruby 的原生物件，而 Time.current 是 Rails ActiveSupport 的物件。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">class</span>
+<span class="o">=&gt;</span> <span class="no">Time</span>
+<span class="no">Time</span><span class="p">.</span><span class="nf">current</span><span class="p">.</span><span class="nf">class</span>
+<span class="o">=&gt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TimeWithZone</span>
+</code></pre></div></div>
+
+<p>我們再來做個測試，來看看剛剛的 <code class="highlighter-rouge">user.created_at</code> 是不是真的如果們所想:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">last</span><span class="p">.</span><span class="nf">created_at</span><span class="p">.</span><span class="nf">class</span>
+<span class="o">=&gt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TimeWithZone</span>
+</code></pre></div></div>
+
+<p>太棒了! 果然如此，這樣一來是不是很容易理解 Rails 的時間了。</p>
+
+<h2 id="rails-時間的另一個重點---sql">Rails 時間的另一個重點 - SQL</h2>
+
+<p>Rails 時間另一個需要注意的地方是 SQL 的時間。來比較一下使用 Time.now 和 Time.current 在 ActiveRecord Relation 中的時間:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt; ?"</span><span class="p">,</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">)</span>
+<span class="c1">#=&gt; SELECT "users".* FROM "users" WHERE "users"."deleted_at" IS NULL AND (created_at &gt; '2017-11-17 14:46:01.698018')</span>
+
+<span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt; ?"</span><span class="p">,</span> <span class="no">Time</span><span class="p">.</span><span class="nf">current</span><span class="p">)</span>
+<span class="c1">#=&gt; SELECT "users".* FROM "users" WHERE "users"."deleted_at" IS NULL AND (created_at &gt; '2017-11-17 14:46:09.655406')</span>
+</code></pre></div></div>
+
+<p>筆者在測試的時候是台北時間(CST)晚上 22:46，可以發現兩者依賴的時區都是在 <code class="highlighter-rouge">config/application.rb</code> 設定的時區。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#rails" class="page__taxonomy-item" rel="tag">Rails</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#time" class="page__taxonomy-item" rel="tag">Time</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-10-23T22:34:00+00:00">October 23, 2017</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/gvm-in-osx/" class="pagination--pager" title="Go - 在 OSX 安裝 GVM
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/git-precommit-hooks-copy/" class="pagination--pager" title="使用 GIT Precommit hooks 防止 Binding.pry 進入 Commit
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,632 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Rails Project 1 URL Shortener - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="前言接下來我要藉由實作一些比較小型的Rails Project，來練習工程師必備的技能，其中最主要訓練的目標是能抓出需要實作的use case與如何從use case中實踐功能。因為沒有網頁的相關背景，如何磨練Html css javascript的基本實作能力也是這一階段的重點。熟悉了如何使用Rails完成所要的需求與一些常見功能的開發之後，下一階段可以是學習Rails如何跟API互動或是開始學習Design Patterns。學習Dessign Pattern的原因有：一是可以讀的懂程式碼，二是了解為什麼要這麼寫。anyway，先把眼前的事情做好最重要let’s do it！Use Case , Page Flow and Data在練習實作Project的過程中，我會格外地注意Use Case、Page Flow和Data。一個網站從無到有，便是先抓出使用者的需求，也就是Use Case，可以表達出身為不同的使用者，各需要哪些需求。Use CaseUrl Shortener顧名思義要能夠縮減網址，我們可以抓出幾個需求。  使用者可以使用URL Shortener縮短網址  輸入URL Shortener產生的網址時必須連接到原網址。Page FlowDataURL Shortener in Rails1. 建立專案rails new url_shortener2. route中加入url的resource，並指定首頁為url#newroot to: :redirect(&#39;/urls/new&#39;)resources :urls3. 建立controller，controller要加srails generate controller urlsModel  建立model，名詞是單數。要使用的Model有兩個欄位，original用來記錄原始網址，random_id用來記錄縮址。    rails g model url original:string random_id:string        在model加上validates，這邊的意思是儲存時一定要有「原網址」的欄位。    validates :original, presence: true      ControllerIndex繼續完成controller，從index開始著手，在index我們希望可以看到全部儲存的連結。class UrlsController &lt; ApplicationController  def  index	  @urls = Url.all  endendShow在action show我們希望可以做到的功能是「當使用者輸入縮址時，會轉址到原網址」，這也是也這個URL Shortener的核心功能。class UrlsController &lt; ApplicationController  .  .  .  def show  	url = Url.where( random_id: params[:id] ).first    if url    	redirect_to url.original    else    	render &quot;index&quot;    end  endendNew在action new要做的事情是「當使用者輸入原始網址，會產生相對應的縮網址」class UrlsController &lt; ApplicationController  .  .  .  def new  	@url = Url.new    letters = [(&#39;a&#39;..&#39;z&#39;),(&#39;A&#39;..&#39;Z&#39;)].map{|i| i.to_a}.flatten    @url.random_id = (0...8).map{ letters[rand(letters.length)]}.join  endendletter陣列用來裝所有的字母包含大寫A-Z與小寫a-z。flatten使屬於Array的method是用來把許多陣列合併成單一的陣列。第二行產生隨機小寫英數字 幾種方法 and 效能Create儲存一筆url資料，記得要使用strong parameter核對欄位。class UrlsController &lt; ApplicationController	.  .  .  def urls_params    params.require(:url).permit(:original, :random_id)  end  def create    @url = Url.new(urls_parmas)    if @url.save      redirect_to url_path    else      render &quot;new&quot;    end	endend比較show與new可以發現，前面有加@的變數，是view會使用到的變數。如果view不會用到，那就不要添加@，以免造成混淆，這樣在閱讀程式碼的時候，可以更清楚的知道這些變數作用在哪些地方。來複習一下render的用法主要有四種：第一種是直接回傳結果，回傳的格式可以是xml,json,text…等等檔案格式。範例：render text: &quot;hello world&quot;、render json: @event.to_json。第二種是render template。可以直接指定template的路徑如：render &quot;/events/index.html.erb&quot;。如果是同controller的action可以寫成render &quot;index&quot;。第三種是回傳status code例如：render status: 500。第四種是回傳某template使用的layout，例如：render layout: &quot;special_layout&quot;。其他用法請參考：Layouts and Rendering in RailsViews因為URL Shortener的action show是轉址，並不需要view，所以我們要實作的view只有index.html.erb和new.html.erb。index.html.erb&lt;h1&gt;Url Shortener&lt;/h1&gt;&lt;% @urls.each do |url| %&gt;  &lt;p&gt;    &lt;%= link_to url.random_id, url_path(id: url.random_id) %&gt; --&gt; &lt;%= url.original %&gt;  &lt;/p&gt;&lt;% end %&gt;&lt;%= link_to &quot;Shorten another URL&quot;, new_url_path %&gt;new.html.erb&lt;h1&gt;Shorten a URL&lt;/h1&gt;erb&lt;% @url.errors.each do|attr,msg| %&gt;  &lt;%= msg %&gt; on &lt;%= attr %&gt;&lt;% end %&gt;&lt;%= form_for @url do |f| %&gt;  &lt;p&gt;    &lt;%= f.label :original %&gt; : &lt;%= f.text_field :original %&gt;  &lt;/p&gt;  &lt;%= f.hidden_field :random_id, value: @url.random_id %&gt;  &lt;%= f.submit &quot;Shorten my URL&quot; %&gt;&lt;% end %&gt;SummaryURL Shortener這個小Project需求上跟一般實作的留言板有點不一樣，但還是可以用new和index兩個action來達成了Use Case所抓出來的需求。這非常有趣，多做點不同專案的好處就是能夠用不同的角度來累積經驗。">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Rails Project 1 URL Shortener">
+
+
+  <link rel="canonical" href="https://lukahuang.com/rails-project-1-url-shorter/">
+  <meta property="og:url" content="https://lukahuang.com/rails-project-1-url-shorter/">
+
+
+
+  <meta property="og:description" content="前言接下來我要藉由實作一些比較小型的Rails Project，來練習工程師必備的技能，其中最主要訓練的目標是能抓出需要實作的use case與如何從use case中實踐功能。因為沒有網頁的相關背景，如何磨練Html css javascript的基本實作能力也是這一階段的重點。熟悉了如何使用Rails完成所要的需求與一些常見功能的開發之後，下一階段可以是學習Rails如何跟API互動或是開始學習Design Patterns。學習Dessign Pattern的原因有：一是可以讀的懂程式碼，二是了解為什麼要這麼寫。anyway，先把眼前的事情做好最重要let’s do it！Use Case , Page Flow and Data在練習實作Project的過程中，我會格外地注意Use Case、Page Flow和Data。一個網站從無到有，便是先抓出使用者的需求，也就是Use Case，可以表達出身為不同的使用者，各需要哪些需求。Use CaseUrl Shortener顧名思義要能夠縮減網址，我們可以抓出幾個需求。  使用者可以使用URL Shortener縮短網址  輸入URL Shortener產生的網址時必須連接到原網址。Page FlowDataURL Shortener in Rails1. 建立專案rails new url_shortener2. route中加入url的resource，並指定首頁為url#newroot to: :redirect(&#39;/urls/new&#39;)resources :urls3. 建立controller，controller要加srails generate controller urlsModel  建立model，名詞是單數。要使用的Model有兩個欄位，original用來記錄原始網址，random_id用來記錄縮址。    rails g model url original:string random_id:string        在model加上validates，這邊的意思是儲存時一定要有「原網址」的欄位。    validates :original, presence: true      ControllerIndex繼續完成controller，從index開始著手，在index我們希望可以看到全部儲存的連結。class UrlsController &lt; ApplicationController  def  index	  @urls = Url.all  endendShow在action show我們希望可以做到的功能是「當使用者輸入縮址時，會轉址到原網址」，這也是也這個URL Shortener的核心功能。class UrlsController &lt; ApplicationController  .  .  .  def show  	url = Url.where( random_id: params[:id] ).first    if url    	redirect_to url.original    else    	render &quot;index&quot;    end  endendNew在action new要做的事情是「當使用者輸入原始網址，會產生相對應的縮網址」class UrlsController &lt; ApplicationController  .  .  .  def new  	@url = Url.new    letters = [(&#39;a&#39;..&#39;z&#39;),(&#39;A&#39;..&#39;Z&#39;)].map{|i| i.to_a}.flatten    @url.random_id = (0...8).map{ letters[rand(letters.length)]}.join  endendletter陣列用來裝所有的字母包含大寫A-Z與小寫a-z。flatten使屬於Array的method是用來把許多陣列合併成單一的陣列。第二行產生隨機小寫英數字 幾種方法 and 效能Create儲存一筆url資料，記得要使用strong parameter核對欄位。class UrlsController &lt; ApplicationController	.  .  .  def urls_params    params.require(:url).permit(:original, :random_id)  end  def create    @url = Url.new(urls_parmas)    if @url.save      redirect_to url_path    else      render &quot;new&quot;    end	endend比較show與new可以發現，前面有加@的變數，是view會使用到的變數。如果view不會用到，那就不要添加@，以免造成混淆，這樣在閱讀程式碼的時候，可以更清楚的知道這些變數作用在哪些地方。來複習一下render的用法主要有四種：第一種是直接回傳結果，回傳的格式可以是xml,json,text…等等檔案格式。範例：render text: &quot;hello world&quot;、render json: @event.to_json。第二種是render template。可以直接指定template的路徑如：render &quot;/events/index.html.erb&quot;。如果是同controller的action可以寫成render &quot;index&quot;。第三種是回傳status code例如：render status: 500。第四種是回傳某template使用的layout，例如：render layout: &quot;special_layout&quot;。其他用法請參考：Layouts and Rendering in RailsViews因為URL Shortener的action show是轉址，並不需要view，所以我們要實作的view只有index.html.erb和new.html.erb。index.html.erb&lt;h1&gt;Url Shortener&lt;/h1&gt;&lt;% @urls.each do |url| %&gt;  &lt;p&gt;    &lt;%= link_to url.random_id, url_path(id: url.random_id) %&gt; --&gt; &lt;%= url.original %&gt;  &lt;/p&gt;&lt;% end %&gt;&lt;%= link_to &quot;Shorten another URL&quot;, new_url_path %&gt;new.html.erb&lt;h1&gt;Shorten a URL&lt;/h1&gt;erb&lt;% @url.errors.each do|attr,msg| %&gt;  &lt;%= msg %&gt; on &lt;%= attr %&gt;&lt;% end %&gt;&lt;%= form_for @url do |f| %&gt;  &lt;p&gt;    &lt;%= f.label :original %&gt; : &lt;%= f.text_field :original %&gt;  &lt;/p&gt;  &lt;%= f.hidden_field :random_id, value: @url.random_id %&gt;  &lt;%= f.submit &quot;Shorten my URL&quot; %&gt;&lt;% end %&gt;SummaryURL Shortener這個小Project需求上跟一般實作的留言板有點不一樣，但還是可以用new和index兩個action來達成了Use Case所抓出來的需求。這非常有趣，多做點不同專案的好處就是能夠用不同的角度來累積經驗。">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-01-04T01:02:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Rails Project 1 URL Shortener">
+    <meta itemprop="description" content="前言接下來我要藉由實作一些比較小型的Rails Project，來練習工程師必備的技能，其中最主要訓練的目標是能抓出需要實作的use case與如何從use case中實踐功能。因為沒有網頁的相關背景，如何磨練Html css javascript的基本實作能力也是這一階段的重點。熟悉了如何使用Rails完成所要的需求與一些常見功能的開發之後，下一階段可以是學習Rails如何跟API互動或是開始學習Design Patterns。學習Dessign Pattern的原因有：一是可以讀的懂程式碼，二是了解為什麼要這麼寫。anyway，先把眼前的事情做好最重要let’s do it！Use Case , Page Flow and Data在練習實作Project的過程中，我會格外地注意Use Case、Page Flow和Data。一個網站從無到有，便是先抓出使用者的需求，也就是Use Case，可以表達出身為不同的使用者，各需要哪些需求。Use CaseUrl Shortener顧名思義要能夠縮減網址，我們可以抓出幾個需求。  使用者可以使用URL Shortener縮短網址  輸入URL Shortener產生的網址時必須連接到原網址。Page FlowDataURL Shortener in Rails1. 建立專案rails new url_shortener2. route中加入url的resource，並指定首頁為url#newroot to: :redirect(&#39;/urls/new&#39;)resources :urls3. 建立controller，controller要加srails generate controller urlsModel  建立model，名詞是單數。要使用的Model有兩個欄位，original用來記錄原始網址，random_id用來記錄縮址。    rails g model url original:string random_id:string        在model加上validates，這邊的意思是儲存時一定要有「原網址」的欄位。    validates :original, presence: true      ControllerIndex繼續完成controller，從index開始著手，在index我們希望可以看到全部儲存的連結。class UrlsController &lt; ApplicationController  def  index	  @urls = Url.all  endendShow在action show我們希望可以做到的功能是「當使用者輸入縮址時，會轉址到原網址」，這也是也這個URL Shortener的核心功能。class UrlsController &lt; ApplicationController  .  .  .  def show  	url = Url.where( random_id: params[:id] ).first    if url    	redirect_to url.original    else    	render &quot;index&quot;    end  endendNew在action new要做的事情是「當使用者輸入原始網址，會產生相對應的縮網址」class UrlsController &lt; ApplicationController  .  .  .  def new  	@url = Url.new    letters = [(&#39;a&#39;..&#39;z&#39;),(&#39;A&#39;..&#39;Z&#39;)].map{|i| i.to_a}.flatten    @url.random_id = (0...8).map{ letters[rand(letters.length)]}.join  endendletter陣列用來裝所有的字母包含大寫A-Z與小寫a-z。flatten使屬於Array的method是用來把許多陣列合併成單一的陣列。第二行產生隨機小寫英數字 幾種方法 and 效能Create儲存一筆url資料，記得要使用strong parameter核對欄位。class UrlsController &lt; ApplicationController	.  .  .  def urls_params    params.require(:url).permit(:original, :random_id)  end  def create    @url = Url.new(urls_parmas)    if @url.save      redirect_to url_path    else      render &quot;new&quot;    end	endend比較show與new可以發現，前面有加@的變數，是view會使用到的變數。如果view不會用到，那就不要添加@，以免造成混淆，這樣在閱讀程式碼的時候，可以更清楚的知道這些變數作用在哪些地方。來複習一下render的用法主要有四種：第一種是直接回傳結果，回傳的格式可以是xml,json,text…等等檔案格式。範例：render text: &quot;hello world&quot;、render json: @event.to_json。第二種是render template。可以直接指定template的路徑如：render &quot;/events/index.html.erb&quot;。如果是同controller的action可以寫成render &quot;index&quot;。第三種是回傳status code例如：render status: 500。第四種是回傳某template使用的layout，例如：render layout: &quot;special_layout&quot;。其他用法請參考：Layouts and Rendering in RailsViews因為URL Shortener的action show是轉址，並不需要view，所以我們要實作的view只有index.html.erb和new.html.erb。index.html.erb&lt;h1&gt;Url Shortener&lt;/h1&gt;&lt;% @urls.each do |url| %&gt;  &lt;p&gt;    &lt;%= link_to url.random_id, url_path(id: url.random_id) %&gt; --&gt; &lt;%= url.original %&gt;  &lt;/p&gt;&lt;% end %&gt;&lt;%= link_to &quot;Shorten another URL&quot;, new_url_path %&gt;new.html.erb&lt;h1&gt;Shorten a URL&lt;/h1&gt;erb&lt;% @url.errors.each do|attr,msg| %&gt;  &lt;%= msg %&gt; on &lt;%= attr %&gt;&lt;% end %&gt;&lt;%= form_for @url do |f| %&gt;  &lt;p&gt;    &lt;%= f.label :original %&gt; : &lt;%= f.text_field :original %&gt;  &lt;/p&gt;  &lt;%= f.hidden_field :random_id, value: @url.random_id %&gt;  &lt;%= f.submit &quot;Shorten my URL&quot; %&gt;&lt;% end %&gt;SummaryURL Shortener這個小Project需求上跟一般實作的留言板有點不一樣，但還是可以用new和index兩個action來達成了Use Case所抓出來的需求。這非常有趣，多做點不同專案的好處就是能夠用不同的角度來累積經驗。">
+    <meta itemprop="datePublished" content="January 04, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Rails Project 1 URL Shortener
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#前言">前言</a></li>
+  <li><a href="#use-case--page-flow-and-data">Use Case , Page Flow and Data</a>
+    <ul>
+      <li><a href="#use-case">Use Case</a></li>
+      <li><a href="#page-flow">Page Flow</a></li>
+      <li><a href="#data">Data</a></li>
+    </ul>
+  </li>
+  <li><a href="#1-建立專案">1. 建立專案</a></li>
+  <li><a href="#2-route中加入url的resource並指定首頁為urlnew">2. route中加入url的resource，並指定首頁為url#new</a></li>
+  <li><a href="#3-建立controllercontroller要加s">3. 建立controller，controller要加s</a></li>
+  <li><a href="#model">Model</a></li>
+  <li><a href="#controller">Controller</a>
+    <ul>
+      <li><a href="#index">Index</a></li>
+      <li><a href="#show">Show</a></li>
+    </ul>
+  </li>
+  <li><a href="#views">Views</a>
+    <ul>
+      <li><a href="#indexhtmlerb">index.html.erb</a></li>
+      <li><a href="#newhtmlerb">new.html.erb</a></li>
+    </ul>
+  </li>
+  <li><a href="#summary">Summary</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="前言">前言</h2>
+
+<p>接下來我要藉由實作一些比較小型的Rails Project，來練習工程師必備的技能，其中最主要訓練的目標是能抓出需要實作的use case與如何從use case中實踐功能。因為沒有網頁的相關背景，如何磨練Html css javascript的基本實作能力也是這一階段的重點。</p>
+
+<p>熟悉了如何使用Rails完成所要的需求與一些常見功能的開發之後，下一階段可以是學習Rails如何跟API互動或是開始學習Design Patterns。學習Dessign Pattern的原因有：一是可以讀的懂程式碼，二是了解為什麼要這麼寫。anyway，先把眼前的事情做好最重要let’s do it！</p>
+
+<h2 id="use-case--page-flow-and-data">Use Case , Page Flow and Data</h2>
+
+<p>在練習實作Project的過程中，我會格外地注意Use Case、Page Flow和Data。一個網站從無到有，便是先抓出使用者的需求，也就是Use Case，可以表達出身為不同的使用者，各需要哪些需求。</p>
+
+<h3 id="use-case">Use Case</h3>
+
+<p>Url Shortener顧名思義要能夠縮減網址，我們可以抓出幾個需求。</p>
+
+<ul>
+  <li>使用者可以使用URL Shortener縮短網址</li>
+  <li>輸入URL Shortener產生的網址時必須連接到原網址。</li>
+</ul>
+
+<h3 id="page-flow">Page Flow</h3>
+
+<h3 id="data">Data</h3>
+
+<h1 id="url-shortener-in-rails">URL Shortener in Rails</h1>
+
+<h2 id="1-建立專案">1. 建立專案</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails new url_shortener
+</code></pre></div></div>
+
+<h2 id="2-route中加入url的resource並指定首頁為urlnew">2. route中加入url的resource，並指定首頁為<code class="highlighter-rouge">url#new</code></h2>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">root</span> <span class="ss">to: :redirect</span><span class="p">(</span><span class="s1">'/urls/new'</span><span class="p">)</span>
+<span class="n">resources</span> <span class="ss">:urls</span>
+</code></pre></div></div>
+
+<h2 id="3-建立controllercontroller要加s">3. 建立controller，controller要加s</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails generate controller urls
+</code></pre></div></div>
+
+<h2 id="model">Model</h2>
+
+<ol>
+  <li>建立model，名詞是單數。要使用的Model有兩個欄位，original用來記錄原始網址，random_id用來記錄縮址。
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails g model url original:string random_id:string
+</code></pre></div>    </div>
+  </li>
+  <li>在model加上validates，這邊的意思是儲存時一定要有「原網址」的欄位。
+    <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">validates</span> <span class="ss">:original</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="controller">Controller</h2>
+
+<h3 id="index">Index</h3>
+
+<p>繼續完成controller，從index開始著手，在index我們希望可以看到全部儲存的連結。</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UrlsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span>  <span class="nf">index</span>
+	  <span class="vi">@urls</span> <span class="o">=</span> <span class="no">Url</span><span class="p">.</span><span class="nf">all</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="show">Show</h3>
+<p>在action show我們希望可以做到的功能是「當使用者輸入縮址時，會轉址到原網址」，這也是也這個URL Shortener的核心功能。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UrlsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+
+  <span class="nf">def</span> <span class="n">show</span>
+  	<span class="n">url</span> <span class="o">=</span> <span class="no">Url</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span> <span class="ss">random_id: </span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">]</span> <span class="p">).</span><span class="nf">first</span>
+
+    <span class="k">if</span> <span class="n">url</span>
+    	<span class="n">redirect_to</span> <span class="n">url</span><span class="p">.</span><span class="nf">original</span>
+    <span class="k">else</span>
+    	<span class="n">render</span> <span class="s2">"index"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h4 id="new">New</h4>
+<p>在action new要做的事情是「當使用者輸入原始網址，會產生相對應的縮網址」</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UrlsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+
+  <span class="nf">def</span> <span class="n">new</span>
+  	<span class="vi">@url</span> <span class="o">=</span> <span class="no">Url</span><span class="p">.</span><span class="nf">new</span>
+
+    <span class="n">letters</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">'a'</span><span class="o">..</span><span class="s1">'z'</span><span class="p">),(</span><span class="s1">'A'</span><span class="o">..</span><span class="s1">'Z'</span><span class="p">)].</span><span class="nf">map</span><span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">i</span><span class="p">.</span><span class="nf">to_a</span><span class="p">}.</span><span class="nf">flatten</span>
+    <span class="vi">@url</span><span class="p">.</span><span class="nf">random_id</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">...</span><span class="mi">8</span><span class="p">).</span><span class="nf">map</span><span class="p">{</span> <span class="n">letters</span><span class="p">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">letters</span><span class="p">.</span><span class="nf">length</span><span class="p">)]}.</span><span class="nf">join</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p>letter陣列用來裝所有的字母包含大寫A-Z與小寫a-z。flatten使屬於Array的method是用來把許多陣列合併成單一的陣列。第二行</p>
+
+<p><a href="http://railsfun.tw/t/and/46">產生隨機小寫英數字 幾種方法 and 效能</a></p>
+
+<h4 id="create">Create</h4>
+<p>儲存一筆url資料，記得要使用strong parameter核對欄位。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UrlsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+	<span class="p">.</span>
+  <span class="nf">.</span>
+  <span class="p">.</span>
+  <span class="nf">def</span> <span class="n">urls_params</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:url</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:original</span><span class="p">,</span> <span class="ss">:random_id</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@url</span> <span class="o">=</span> <span class="no">Url</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">urls_parmas</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@url</span><span class="p">.</span><span class="nf">save</span>
+      <span class="n">redirect_to</span> <span class="n">url_path</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="s2">"new"</span>
+    <span class="k">end</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>比較show與new可以發現，前面有加@的變數，是view會使用到的變數。如果view不會用到，那就不要添加@，以免造成混淆，這樣在閱讀程式碼的時候，可以更清楚的知道這些變數作用在哪些地方。</p>
+
+<p>來複習一下render的用法主要有四種：第一種是直接回傳結果，回傳的格式可以是xml,json,text…等等檔案格式。範例：<code class="highlighter-rouge">render text: "hello world"</code>、<code class="highlighter-rouge">render json: @event.to_json</code>。第二種是render template。可以直接指定template的路徑如：<code class="highlighter-rouge">render "/events/index.html.erb"</code>。如果是同controller的action可以寫成<code class="highlighter-rouge">render "index"</code>。第三種是回傳status code例如：<code class="highlighter-rouge">render status: 500</code>。第四種是回傳某template使用的layout，例如：<code class="highlighter-rouge">render layout: "special_layout"</code>。</p>
+
+<p>其他用法請參考：<a href="http://guides.rubyonrails.org/layouts_and_rendering.html#using-render">Layouts and Rendering in Rails</a></p>
+
+<h2 id="views">Views</h2>
+<p>因為URL Shortener的action show是轉址，並不需要view，所以我們要實作的view只有index.html.erb和new.html.erb。</p>
+
+<h3 id="indexhtmlerb">index.html.erb</h3>
+
+<pre><code class="language-html.erb">&lt;h1&gt;Url Shortener&lt;/h1&gt;
+&lt;% @urls.each do |url| %&gt;
+  &lt;p&gt;
+    &lt;%= link_to url.random_id, url_path(id: url.random_id) %&gt; --&gt; &lt;%= url.original %&gt;
+  &lt;/p&gt;
+&lt;% end %&gt;
+
+&lt;%= link_to "Shorten another URL", new_url_path %&gt;
+</code></pre>
+
+<h3 id="newhtmlerb">new.html.erb</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;h1&gt;Shorten a URL&lt;/h1&gt;
+erb
+&lt;% @url.errors.each do|attr,msg| %&gt;
+  &lt;%= msg %&gt; on &lt;%= attr %&gt;
+&lt;% end %&gt;
+
+&lt;%= form_for @url do |f| %&gt;
+  &lt;p&gt;
+    &lt;%= f.label :original %&gt; : &lt;%= f.text_field :original %&gt;
+  &lt;/p&gt;
+  &lt;%= f.hidden_field :random_id, value: @url.random_id %&gt;
+  &lt;%= f.submit "Shorten my URL" %&gt;
+&lt;% end %&gt;
+</code></pre></div></div>
+<h2 id="summary">Summary</h2>
+
+<p>URL Shortener這個小Project需求上跟一般實作的留言板有點不一樣，但還是可以用new和index兩個action來達成了Use Case所抓出來的需求。這非常有趣，多做點不同專案的好處就是能夠用不同的角度來累積經驗。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#rails" class="page__taxonomy-item" rel="tag">Rails</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-01-04T01:02:00+00:00">January 04, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/atom-prevent-snippet-package-updates/" class="pagination--pager" title="Atom 防止 Snippet Package 更新
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/atom-shortcuts/" class="pagination--pager" title="Atom 常用快速鍵
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

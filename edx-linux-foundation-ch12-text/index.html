@@ -1,0 +1,662 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>EDX Linux Foundation Ch13 Manipulating Text - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Section 1 cat and echocat(concatenate)cat file顯示檔案，按空白鍵可以捲動cat file1 file2把file1和file2接起來顯示cat file1 file2 &gt; newfile把file1和file2接起來並且存成newfile。cat &gt; filename可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。cat &gt;&gt; existingfile代表在檔案後端插入( append )檔案，可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。cat &gt; filename &lt;&lt; EOF新增檔案的另一個方法，可以自行輸入內容，要離開的時候在句首輸入EOF。taccat反過來 ，效果是從檔案的後面幾行開始顯示，用法跟cat相同tac filetac file file2 &gt; newfileecho跟cat不同是的是echo預設插入或新增一行。加上-e後允許使用\n或\t…等等的的特殊字元echo string &gt; newfileecho string &gt;&gt; existingfileecho $variable印出變數。Section 2 sed and awksedsed Command Syntaxsed -e command &lt;filename&gt;sed -f scriptfile &lt;filename&gt;sed 的格式sed s/pattern/replace_string/ filesed s/pattern/replace_string/g filesed 1,3s/pattern/replace_string/g filesed -i s/pattern/replace_string/g file  如果需要寫入檔案，建議直接輸出，不要使用 -i 參數，會比較安全。例如：$ sed s/pattern/replace_string/g file &gt; file2awkawk ‘command’ var=value fileawk -f scriptfile var=value fileExamples:awk &#39;{ print $0 }&#39; /etc/passwdawk -F: &#39;{ print $1 }&#39; /etc/passwdawk -F: &#39;{ print $1 $6 }&#39; /etc/passwdSection 3 File Manipulationsortsort filenamesort -usort -rsort -u 將重複的資料僅列出一個(這邊不太確定)sort -k pos1[,pos2] 指定排序的keyuniq刪除檔案中重複的資料，並儲存到另一個檔案，可以使用以下兩個方法。sort file1 file2 | uniq &gt; file3sort -u file1 file2 &gt; file3使用-u比較好，因為uniq本身有bug，只有在兩個相同的東西相鄰時才會合併。uniq -c filename計算重複的entry數量paste想要把兩張表合併起來可以用paste來做到，輸出的結果依照delimiters來區分欄位，delimiter可以是tab、空格, comma,  ‘|’等等。paste並不是很嚴謹的合併，需要先進行set且資料欄位齊全才可以使用。常用在user與group的對應。paste -d使用 -d可以自訂delimiter。paste -spaste file1 file2paste -d, file1 file2paste -d &#39;:&#39; names phonejoin$ cat phonebook555-123-4567 Bob555-231-3325 Carol555-340-5678 Ted555-289-6193 Alice$ cat directory555-123-4567 Anytown555-231-3325 Mytown555-340-5678 Yourtown555-289-6193 YoungstownThe result of joining$ join phonebook directory555-123-4567 Bob Anytown555-231-3325 Carol Mytown555-340-5678 Ted Yourtown555-289-6193 Alice Youngstownsplitsplit infile &lt;Prefix&gt;範例：把一個字典檔切成99000行wc可以用來查看檔案的行數或字數$ wc -l american-english99171 american-english$ split american-english dictionary$ ls -l dictionary*-rw-rw-r 1 me me 8552 Mar 23 20:19 dictionaryab-rw-rw-r 1 me me 8653 Mar 23 20:19 dictionaryaa. . .Section 4 grep用來搜尋文字的工具，會依照設定的pattern來搜尋，pattern中可以使用regular experssiongrepgrep [pattern] &lt;filename&gt;grep -v [pattern] &lt;filename&gt;grep [0-9] &lt;filename&gt;grep -C 3 [pattern] &lt;filename&gt;grep -A 3 [pattern] &lt;filename&gt;grep -B 3 [pattern] &lt;filename&gt;Section 5tr用來刪除一段文字，或者替換一段文字。Command	Usage$ tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZConvert lower case to upper case$ tr &#39;{}&#39; &#39;()&#39; &lt; inputfile &gt;outputfile	Translate braces into parenthesis$ echo &quot;This is for testing&quot; | tr [:space:] &#39;\t&#39;Translate white-space to tabs$ echo &quot;This is for testing&quot; | tr -s [:space:]Squeeze repetition of characters using -s$ echo &quot;the geek stuff&quot; | tr -d &#39;t&#39;Delete specified characters using -d option$ echo &quot;my username is 432234&quot; | tr -cd [:digit:]Complement the sets using -c option$ tr -cd [:print:] &lt; file.txtRemove all non-printable character from a file$ tr -s &#39;\n&#39; &#39; &#39; &lt; file.txtJoin all the lines in a file into a single linetee想要將這個資料流的處理過程中將某段訊息存下來，就使用tee指令。ls -l | tee newfilewcword count計算line的數量或字數cut這個指令可以將一段訊息的某一段給他『切』出來Section 6使用 strings 需安裝 binutils。string可以用來作業更好的解法(By Carl)Lab 2awk -F: &#39;{ print $7 }&#39; /etc/passwd | sort -u | sed &#39;/^$/d&#39;orawk -F: &#39;{ print $7 }&#39; /etc/passwd | sort -u | grep -v &#39;^$&#39;Lab 3解答的做法不好，應該單獨對 $7 做處理。讀後心得課程中對awk sed等強大的指令只有輕輕帶過，但這次的範圍跟之後要學的shell script有密切的關係，開啟了">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="EDX Linux Foundation Ch13 Manipulating Text">
+
+
+  <link rel="canonical" href="https://lukahuang.com/edx-linux-foundation-ch12-text/">
+  <meta property="og:url" content="https://lukahuang.com/edx-linux-foundation-ch12-text/">
+
+
+
+  <meta property="og:description" content="Section 1 cat and echocat(concatenate)cat file顯示檔案，按空白鍵可以捲動cat file1 file2把file1和file2接起來顯示cat file1 file2 &gt; newfile把file1和file2接起來並且存成newfile。cat &gt; filename可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。cat &gt;&gt; existingfile代表在檔案後端插入( append )檔案，可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。cat &gt; filename &lt;&lt; EOF新增檔案的另一個方法，可以自行輸入內容，要離開的時候在句首輸入EOF。taccat反過來 ，效果是從檔案的後面幾行開始顯示，用法跟cat相同tac filetac file file2 &gt; newfileecho跟cat不同是的是echo預設插入或新增一行。加上-e後允許使用\n或\t…等等的的特殊字元echo string &gt; newfileecho string &gt;&gt; existingfileecho $variable印出變數。Section 2 sed and awksedsed Command Syntaxsed -e command &lt;filename&gt;sed -f scriptfile &lt;filename&gt;sed 的格式sed s/pattern/replace_string/ filesed s/pattern/replace_string/g filesed 1,3s/pattern/replace_string/g filesed -i s/pattern/replace_string/g file  如果需要寫入檔案，建議直接輸出，不要使用 -i 參數，會比較安全。例如：$ sed s/pattern/replace_string/g file &gt; file2awkawk ‘command’ var=value fileawk -f scriptfile var=value fileExamples:awk &#39;{ print $0 }&#39; /etc/passwdawk -F: &#39;{ print $1 }&#39; /etc/passwdawk -F: &#39;{ print $1 $6 }&#39; /etc/passwdSection 3 File Manipulationsortsort filenamesort -usort -rsort -u 將重複的資料僅列出一個(這邊不太確定)sort -k pos1[,pos2] 指定排序的keyuniq刪除檔案中重複的資料，並儲存到另一個檔案，可以使用以下兩個方法。sort file1 file2 | uniq &gt; file3sort -u file1 file2 &gt; file3使用-u比較好，因為uniq本身有bug，只有在兩個相同的東西相鄰時才會合併。uniq -c filename計算重複的entry數量paste想要把兩張表合併起來可以用paste來做到，輸出的結果依照delimiters來區分欄位，delimiter可以是tab、空格, comma,  ‘|’等等。paste並不是很嚴謹的合併，需要先進行set且資料欄位齊全才可以使用。常用在user與group的對應。paste -d使用 -d可以自訂delimiter。paste -spaste file1 file2paste -d, file1 file2paste -d &#39;:&#39; names phonejoin$ cat phonebook555-123-4567 Bob555-231-3325 Carol555-340-5678 Ted555-289-6193 Alice$ cat directory555-123-4567 Anytown555-231-3325 Mytown555-340-5678 Yourtown555-289-6193 YoungstownThe result of joining$ join phonebook directory555-123-4567 Bob Anytown555-231-3325 Carol Mytown555-340-5678 Ted Yourtown555-289-6193 Alice Youngstownsplitsplit infile &lt;Prefix&gt;範例：把一個字典檔切成99000行wc可以用來查看檔案的行數或字數$ wc -l american-english99171 american-english$ split american-english dictionary$ ls -l dictionary*-rw-rw-r 1 me me 8552 Mar 23 20:19 dictionaryab-rw-rw-r 1 me me 8653 Mar 23 20:19 dictionaryaa. . .Section 4 grep用來搜尋文字的工具，會依照設定的pattern來搜尋，pattern中可以使用regular experssiongrepgrep [pattern] &lt;filename&gt;grep -v [pattern] &lt;filename&gt;grep [0-9] &lt;filename&gt;grep -C 3 [pattern] &lt;filename&gt;grep -A 3 [pattern] &lt;filename&gt;grep -B 3 [pattern] &lt;filename&gt;Section 5tr用來刪除一段文字，或者替換一段文字。Command	Usage$ tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZConvert lower case to upper case$ tr &#39;{}&#39; &#39;()&#39; &lt; inputfile &gt;outputfile	Translate braces into parenthesis$ echo &quot;This is for testing&quot; | tr [:space:] &#39;\t&#39;Translate white-space to tabs$ echo &quot;This is for testing&quot; | tr -s [:space:]Squeeze repetition of characters using -s$ echo &quot;the geek stuff&quot; | tr -d &#39;t&#39;Delete specified characters using -d option$ echo &quot;my username is 432234&quot; | tr -cd [:digit:]Complement the sets using -c option$ tr -cd [:print:] &lt; file.txtRemove all non-printable character from a file$ tr -s &#39;\n&#39; &#39; &#39; &lt; file.txtJoin all the lines in a file into a single linetee想要將這個資料流的處理過程中將某段訊息存下來，就使用tee指令。ls -l | tee newfilewcword count計算line的數量或字數cut這個指令可以將一段訊息的某一段給他『切』出來Section 6使用 strings 需安裝 binutils。string可以用來作業更好的解法(By Carl)Lab 2awk -F: &#39;{ print $7 }&#39; /etc/passwd | sort -u | sed &#39;/^$/d&#39;orawk -F: &#39;{ print $7 }&#39; /etc/passwd | sort -u | grep -v &#39;^$&#39;Lab 3解答的做法不好，應該單獨對 $7 做處理。讀後心得課程中對awk sed等強大的指令只有輕輕帶過，但這次的範圍跟之後要學的shell script有密切的關係，開啟了">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-10-07T14:59:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="EDX Linux Foundation Ch13 Manipulating Text">
+    <meta itemprop="description" content="Section 1 cat and echocat(concatenate)cat file顯示檔案，按空白鍵可以捲動cat file1 file2把file1和file2接起來顯示cat file1 file2 &gt; newfile把file1和file2接起來並且存成newfile。cat &gt; filename可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。cat &gt;&gt; existingfile代表在檔案後端插入( append )檔案，可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。cat &gt; filename &lt;&lt; EOF新增檔案的另一個方法，可以自行輸入內容，要離開的時候在句首輸入EOF。taccat反過來 ，效果是從檔案的後面幾行開始顯示，用法跟cat相同tac filetac file file2 &gt; newfileecho跟cat不同是的是echo預設插入或新增一行。加上-e後允許使用\n或\t…等等的的特殊字元echo string &gt; newfileecho string &gt;&gt; existingfileecho $variable印出變數。Section 2 sed and awksedsed Command Syntaxsed -e command &lt;filename&gt;sed -f scriptfile &lt;filename&gt;sed 的格式sed s/pattern/replace_string/ filesed s/pattern/replace_string/g filesed 1,3s/pattern/replace_string/g filesed -i s/pattern/replace_string/g file  如果需要寫入檔案，建議直接輸出，不要使用 -i 參數，會比較安全。例如：$ sed s/pattern/replace_string/g file &gt; file2awkawk ‘command’ var=value fileawk -f scriptfile var=value fileExamples:awk &#39;{ print $0 }&#39; /etc/passwdawk -F: &#39;{ print $1 }&#39; /etc/passwdawk -F: &#39;{ print $1 $6 }&#39; /etc/passwdSection 3 File Manipulationsortsort filenamesort -usort -rsort -u 將重複的資料僅列出一個(這邊不太確定)sort -k pos1[,pos2] 指定排序的keyuniq刪除檔案中重複的資料，並儲存到另一個檔案，可以使用以下兩個方法。sort file1 file2 | uniq &gt; file3sort -u file1 file2 &gt; file3使用-u比較好，因為uniq本身有bug，只有在兩個相同的東西相鄰時才會合併。uniq -c filename計算重複的entry數量paste想要把兩張表合併起來可以用paste來做到，輸出的結果依照delimiters來區分欄位，delimiter可以是tab、空格, comma,  ‘|’等等。paste並不是很嚴謹的合併，需要先進行set且資料欄位齊全才可以使用。常用在user與group的對應。paste -d使用 -d可以自訂delimiter。paste -spaste file1 file2paste -d, file1 file2paste -d &#39;:&#39; names phonejoin$ cat phonebook555-123-4567 Bob555-231-3325 Carol555-340-5678 Ted555-289-6193 Alice$ cat directory555-123-4567 Anytown555-231-3325 Mytown555-340-5678 Yourtown555-289-6193 YoungstownThe result of joining$ join phonebook directory555-123-4567 Bob Anytown555-231-3325 Carol Mytown555-340-5678 Ted Yourtown555-289-6193 Alice Youngstownsplitsplit infile &lt;Prefix&gt;範例：把一個字典檔切成99000行wc可以用來查看檔案的行數或字數$ wc -l american-english99171 american-english$ split american-english dictionary$ ls -l dictionary*-rw-rw-r 1 me me 8552 Mar 23 20:19 dictionaryab-rw-rw-r 1 me me 8653 Mar 23 20:19 dictionaryaa. . .Section 4 grep用來搜尋文字的工具，會依照設定的pattern來搜尋，pattern中可以使用regular experssiongrepgrep [pattern] &lt;filename&gt;grep -v [pattern] &lt;filename&gt;grep [0-9] &lt;filename&gt;grep -C 3 [pattern] &lt;filename&gt;grep -A 3 [pattern] &lt;filename&gt;grep -B 3 [pattern] &lt;filename&gt;Section 5tr用來刪除一段文字，或者替換一段文字。Command	Usage$ tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZConvert lower case to upper case$ tr &#39;{}&#39; &#39;()&#39; &lt; inputfile &gt;outputfile	Translate braces into parenthesis$ echo &quot;This is for testing&quot; | tr [:space:] &#39;\t&#39;Translate white-space to tabs$ echo &quot;This is for testing&quot; | tr -s [:space:]Squeeze repetition of characters using -s$ echo &quot;the geek stuff&quot; | tr -d &#39;t&#39;Delete specified characters using -d option$ echo &quot;my username is 432234&quot; | tr -cd [:digit:]Complement the sets using -c option$ tr -cd [:print:] &lt; file.txtRemove all non-printable character from a file$ tr -s &#39;\n&#39; &#39; &#39; &lt; file.txtJoin all the lines in a file into a single linetee想要將這個資料流的處理過程中將某段訊息存下來，就使用tee指令。ls -l | tee newfilewcword count計算line的數量或字數cut這個指令可以將一段訊息的某一段給他『切』出來Section 6使用 strings 需安裝 binutils。string可以用來作業更好的解法(By Carl)Lab 2awk -F: &#39;{ print $7 }&#39; /etc/passwd | sort -u | sed &#39;/^$/d&#39;orawk -F: &#39;{ print $7 }&#39; /etc/passwd | sort -u | grep -v &#39;^$&#39;Lab 3解答的做法不好，應該單獨對 $7 做處理。讀後心得課程中對awk sed等強大的指令只有輕輕帶過，但這次的範圍跟之後要學的shell script有密切的關係，開啟了">
+    <meta itemprop="datePublished" content="October 07, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">EDX Linux Foundation Ch13 Manipulating Text
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#catconcatenate">cat(concatenate)</a></li>
+  <li><a href="#tac">tac</a></li>
+  <li><a href="#echo">echo</a></li>
+  <li><a href="#sed">sed</a></li>
+  <li><a href="#sed-的格式">sed 的格式</a></li>
+  <li><a href="#awk">awk</a></li>
+  <li><a href="#sort">sort</a></li>
+  <li><a href="#uniq">uniq</a></li>
+  <li><a href="#paste">paste</a></li>
+  <li><a href="#join">join</a></li>
+  <li><a href="#split">split</a></li>
+  <li><a href="#grep">grep</a></li>
+  <li><a href="#tr">tr</a></li>
+  <li><a href="#tee">tee</a></li>
+  <li><a href="#wc">wc</a></li>
+  <li><a href="#cut">cut</a></li>
+  <li><a href="#作業更好的解法by-carl">作業更好的解法(By Carl)</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h1 id="section-1-cat-and-echo">Section 1 cat and echo</h1>
+<h2 id="catconcatenate">cat(concatenate)</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat file
+</code></pre></div></div>
+<p>顯示檔案，按空白鍵可以捲動</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat file1 file2
+</code></pre></div></div>
+<p>把file1和file2接起來顯示</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat file1 file2 &gt; newfile
+</code></pre></div></div>
+<p>把file1和file2接起來並且存成newfile。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt; filename
+</code></pre></div></div>
+<p>可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt;&gt; existingfile
+</code></pre></div></div>
+<p>代表在檔案後端插入( append )檔案，可以自行輸入內容，輸入完跳出後存成file(可輸入多行)。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt; filename &lt;&lt; EOF
+</code></pre></div></div>
+<p>新增檔案的另一個方法，可以自行輸入內容，要離開的時候在句首輸入EOF。</p>
+
+<h2 id="tac">tac</h2>
+<p>cat反過來 ，效果是從檔案的後面幾行開始顯示，用法跟cat相同
+tac file
+tac file file2 &gt; newfile</p>
+
+<h2 id="echo">echo</h2>
+<p>跟cat不同是的是echo預設插入或新增一行。
+加上<code class="highlighter-rouge">-e</code>後允許使用<code class="highlighter-rouge">\n</code>或<code class="highlighter-rouge">\t</code>…等等的的特殊字元</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo string &gt; newfile
+echo string &gt;&gt; existingfile
+echo $variable
+</code></pre></div></div>
+<p>印出變數。</p>
+
+<h1 id="section-2-sed-and-awk">Section 2 sed and awk</h1>
+<h2 id="sed">sed</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sed Command Syntax
+sed -e command &lt;filename&gt;
+sed -f scriptfile &lt;filename&gt;
+</code></pre></div></div>
+<h2 id="sed-的格式">sed 的格式</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sed s/pattern/replace_string/ file
+sed s/pattern/replace_string/g file
+sed 1,3s/pattern/replace_string/g file
+sed -i s/pattern/replace_string/g file
+</code></pre></div></div>
+<blockquote>
+  <p>如果需要寫入檔案，建議直接輸出，不要使用 <code class="highlighter-rouge">-i</code> 參數，會比較安全。例如：<code class="highlighter-rouge">$ sed s/pattern/replace_string/g file &gt; file2</code></p>
+</blockquote>
+
+<h2 id="awk">awk</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>awk ‘command’ var=value file
+awk -f scriptfile var=value file
+</code></pre></div></div>
+<p>Examples:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>awk '{ print $0 }' /etc/passwd
+awk -F: '{ print $1 }' /etc/passwd
+awk -F: '{ print $1 $6 }' /etc/passwd
+</code></pre></div></div>
+
+<h1 id="section-3-file-manipulation">Section 3 File Manipulation</h1>
+
+<h2 id="sort">sort</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sort filename
+sort -u
+sort -r
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">sort -u</code> 將重複的資料僅列出一個(這邊不太確定)
+<code class="highlighter-rouge">sort -k pos1[,pos2]</code> 指定排序的key</p>
+
+<h2 id="uniq">uniq</h2>
+<p>刪除檔案中重複的資料，並儲存到另一個檔案，可以使用以下兩個方法。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sort file1 file2 | uniq &gt; file3
+sort -u file1 file2 &gt; file3
+</code></pre></div></div>
+<p>使用<code class="highlighter-rouge">-u</code>比較好，因為<code class="highlighter-rouge">uniq</code>本身有bug，只有在兩個相同的東西相鄰時才會合併。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uniq -c filename
+</code></pre></div></div>
+<p>計算重複的entry數量</p>
+
+<h2 id="paste">paste</h2>
+<p>想要把兩張表合併起來可以用paste來做到，輸出的結果依照delimiters來區分欄位，delimiter可以是tab、空格, comma,  ‘|’等等。paste並不是很嚴謹的合併，需要先進行set且資料欄位齊全才可以使用。常用在user與group的對應。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>paste -d
+</code></pre></div></div>
+<p>使用<code class="highlighter-rouge"> -d</code>可以自訂delimiter。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>paste -s
+paste file1 file2
+paste -d, file1 file2
+paste -d ':' names phone
+</code></pre></div></div>
+
+<h2 id="join">join</h2>
+
+<p>$ cat phonebook</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>555-123-4567 Bob
+555-231-3325 Carol
+555-340-5678 Ted
+555-289-6193 Alice
+</code></pre></div></div>
+
+<p>$ cat directory</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>555-123-4567 Anytown
+555-231-3325 Mytown
+555-340-5678 Yourtown
+555-289-6193 Youngstown
+</code></pre></div></div>
+
+<p>The result of joining
+$ join phonebook directory</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>555-123-4567 Bob Anytown
+555-231-3325 Carol Mytown
+555-340-5678 Ted Yourtown
+555-289-6193 Alice Youngstown
+</code></pre></div></div>
+<h2 id="split">split</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>split infile &lt;Prefix&gt;
+</code></pre></div></div>
+<p>範例：把一個字典檔切成99000行
+wc可以用來查看檔案的行數或字數
+$ wc -l american-english</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>99171 american-english
+</code></pre></div></div>
+<p>$ split american-english dictionary</p>
+
+<p>$ ls -l dictionary*</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-rw-rw-r 1 me me 8552 Mar 23 20:19 dictionaryab
+-rw-rw-r 1 me me 8653 Mar 23 20:19 dictionaryaa
+. . .
+</code></pre></div></div>
+
+<h1 id="section-4-grep">Section 4 grep</h1>
+<p>用來搜尋文字的工具，會依照設定的pattern來搜尋，pattern中可以使用regular experssion</p>
+
+<h2 id="grep">grep</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>grep [pattern] &lt;filename&gt;
+grep -v [pattern] &lt;filename&gt;
+grep [0-9] &lt;filename&gt;
+grep -C 3 [pattern] &lt;filename&gt;
+grep -A 3 [pattern] &lt;filename&gt;
+grep -B 3 [pattern] &lt;filename&gt;
+</code></pre></div></div>
+
+<h1 id="section-5">Section 5</h1>
+
+<h2 id="tr">tr</h2>
+<p>用來刪除一段文字，或者替換一段文字。</p>
+
+<p>Command	Usage</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
+</code></pre></div></div>
+<p>Convert lower case to upper case</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tr '{}' '()' &lt; inputfile &gt;
+</code></pre></div></div>
+<p>outputfile	Translate braces into parenthesis</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "This is for testing" | tr [:space:] '\t'
+</code></pre></div></div>
+<p>Translate white-space to tabs</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "This is for testing" | tr -s [:space:]
+</code></pre></div></div>
+<p>Squeeze repetition of characters using -s</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "the geek stuff" | tr -d 't'
+</code></pre></div></div>
+<p>Delete specified characters using -d option</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "my username is 432234" | tr -cd [:digit:]
+</code></pre></div></div>
+<p>Complement the sets using -c option</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tr -cd [:print:] &lt; file.txt
+</code></pre></div></div>
+<p>Remove all non-printable character from a file</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tr -s '\n' ' ' &lt; file.txt
+</code></pre></div></div>
+<p>Join all the lines in a file into a single line</p>
+
+<h2 id="tee">tee</h2>
+<p>想要將這個資料流的處理過程中將某段訊息存下來，就使用tee指令。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls -l | tee newfile
+</code></pre></div></div>
+
+<h2 id="wc">wc</h2>
+<p>word count
+計算line的數量或字數</p>
+
+<h2 id="cut">cut</h2>
+<p>這個指令可以將一段訊息的某一段給他『切』出來</p>
+
+<h1 id="section-6">Section 6</h1>
+<p>使用 <code class="highlighter-rouge">strings</code> 需安裝 <code class="highlighter-rouge">binutils</code>。string可以用來</p>
+
+<h2 id="作業更好的解法by-carl">作業更好的解法(By Carl)</h2>
+<p>Lab 2</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>awk -F: '{ print $7 }' /etc/passwd | sort -u | sed '/^$/d'
+</code></pre></div></div>
+<p>or</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>awk -F: '{ print $7 }' /etc/passwd | sort -u | grep -v '^$'
+</code></pre></div></div>
+
+<p>Lab 3
+解答的做法不好，應該單獨對 <code class="highlighter-rouge">$7</code> 做處理。</p>
+
+<h1 id="讀後心得">讀後心得</h1>
+<p>課程中對awk sed等強大的指令只有輕輕帶過，但這次的範圍跟之後要學的shell script有密切的關係，開啟了</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#edx-linux-foundation" class="page__taxonomy-item" rel="tag">EDX Linux Foundation</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#linux" class="page__taxonomy-item" rel="tag">Linux</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-10-07T14:59:00+00:00">October 07, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/jquery-return-flight-2/" class="pagination--pager" title="jQuery Returm Flight Ch2：Javascript Object &amp; Function
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/jquery-return-flight-4/" class="pagination--pager" title="jQuery Return Flight Ch4：Utility Methods
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

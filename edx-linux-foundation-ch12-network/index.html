@@ -1,0 +1,576 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>EDX Linux Foundation Ch12：Network - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="IP and packageIP(Internet Protocol) address is essential for routing packets of information through the network.These packets contain data buffers together with headers which contain information about where the packet is going to and coming from, and where it fits in the sequence of packets that constitute the stream.Decoding IPv4 AddressesA 32-bit IPv4 address is divided into four 8-bit sections called octets.IP address are divided into five classesClasses A, B, and C are classified into two parts: Network addresses(Net ID) and Host address (Host ID). The Net ID is used to identify the network, while the Host ID is used to identify a host in the network.Class D is used for special multicast applications (information is broadcast to multiple computers simultaneously)Class E is reserved for future use.IP Address AllocationTypically, a range of IP addresses are requested from your Internet Service Provider(ISP) by your organization’s network administratorYou can assign IP addresses to computers over a network manually or dynamically.When you assign IP addresses manually, you add static (never changing) addresses to the network. When you assign IP addresses dynamically (they can change every time you reboot or even more often), the Dynamic Host Configuration Protocol (DHCP) is used to assign IP addresses.Manually Allocating an IP Address??ipcalcName ResolutionName Resolution is used to convert numerical IP address values into a human-readable format known as the hostname.text For example, 140.211.169.4 is the numerical IP address that refers to the linuxfoundation.org hostname. Hostnames are easier to remember.Using Domain Name System (DNS) and Name Resolution ToolsDomain Name System (DNS) translates Internet domain and host names to IP addresses.私有IP對應的主機名稱cat /etc/hosts顯示DNS IPcat /etc/resolv.confhost linuxfoundation.orgnslookup linuxfoundation.orgdig linuxfoundation.orglook up domain name informationNetwork InterfacesNetwork interfaces are a connection channel between a device and a network.Physically, network interfaces can proceed through a network interface card (NIC) or can be more abstractly implemented as software.A list of currently active network interfaces is reported by the ifconfig utility which you may have to run as the superuser.Network Configuration Files/etc/init.d/network start ???Network Configuration CommandsTo view the IP address:$ /sbin/ip addr showTo view the routing information:$ /sbin/ip route showip is a very powerful program that can do many things. Older (and more specific) utilities such as ifconfig and route are often used to accomplish similar tasks. A look at the relevant man pages can tell you much more about these utilities.pingping is used to check whether or not a machine attached to the network can receive and send data; i.e., it confirms that the remote host is online and is responding.To check the status of the remote host, at the command prompt, type ping &lt;hostname&gt;.routeServers maintain routing tables containing the addresses of each node in the network.route is used to view or change the IP routing table.traceroute？？？traceroute is used to inspect the route which the data packet takes to reach the destination host which makes it quite useful for troubleshooting network delays and errors.Check the route which the data packet takes to reach the destination host (google.com). Type traceroute &lt;domain&gt;.More Networking ToolsNow, let’s learn about some additional networking tools. Networking tools are very useful for monitoring and debugging network problems, such as network connectivity and network traffic.Using More Networking Toolssudo ethtool eth0netstat -rsudo nmap -sP 10.0.2.15/24先看自己啟動哪些serviceservice statslsof socket_namestrace ls可以知道command怎麼run的netstat grep某個port看某個server的port其他指令forkoperatingclifd: 識別馬lsof 可以茶城市到底開了多少個fd">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="EDX Linux Foundation Ch12：Network">
+
+
+  <link rel="canonical" href="https://lukahuang.com/edx-linux-foundation-ch12-network/">
+  <meta property="og:url" content="https://lukahuang.com/edx-linux-foundation-ch12-network/">
+
+
+
+  <meta property="og:description" content="IP and packageIP(Internet Protocol) address is essential for routing packets of information through the network.These packets contain data buffers together with headers which contain information about where the packet is going to and coming from, and where it fits in the sequence of packets that constitute the stream.Decoding IPv4 AddressesA 32-bit IPv4 address is divided into four 8-bit sections called octets.IP address are divided into five classesClasses A, B, and C are classified into two parts: Network addresses(Net ID) and Host address (Host ID). The Net ID is used to identify the network, while the Host ID is used to identify a host in the network.Class D is used for special multicast applications (information is broadcast to multiple computers simultaneously)Class E is reserved for future use.IP Address AllocationTypically, a range of IP addresses are requested from your Internet Service Provider(ISP) by your organization’s network administratorYou can assign IP addresses to computers over a network manually or dynamically.When you assign IP addresses manually, you add static (never changing) addresses to the network. When you assign IP addresses dynamically (they can change every time you reboot or even more often), the Dynamic Host Configuration Protocol (DHCP) is used to assign IP addresses.Manually Allocating an IP Address??ipcalcName ResolutionName Resolution is used to convert numerical IP address values into a human-readable format known as the hostname.text For example, 140.211.169.4 is the numerical IP address that refers to the linuxfoundation.org hostname. Hostnames are easier to remember.Using Domain Name System (DNS) and Name Resolution ToolsDomain Name System (DNS) translates Internet domain and host names to IP addresses.私有IP對應的主機名稱cat /etc/hosts顯示DNS IPcat /etc/resolv.confhost linuxfoundation.orgnslookup linuxfoundation.orgdig linuxfoundation.orglook up domain name informationNetwork InterfacesNetwork interfaces are a connection channel between a device and a network.Physically, network interfaces can proceed through a network interface card (NIC) or can be more abstractly implemented as software.A list of currently active network interfaces is reported by the ifconfig utility which you may have to run as the superuser.Network Configuration Files/etc/init.d/network start ???Network Configuration CommandsTo view the IP address:$ /sbin/ip addr showTo view the routing information:$ /sbin/ip route showip is a very powerful program that can do many things. Older (and more specific) utilities such as ifconfig and route are often used to accomplish similar tasks. A look at the relevant man pages can tell you much more about these utilities.pingping is used to check whether or not a machine attached to the network can receive and send data; i.e., it confirms that the remote host is online and is responding.To check the status of the remote host, at the command prompt, type ping &lt;hostname&gt;.routeServers maintain routing tables containing the addresses of each node in the network.route is used to view or change the IP routing table.traceroute？？？traceroute is used to inspect the route which the data packet takes to reach the destination host which makes it quite useful for troubleshooting network delays and errors.Check the route which the data packet takes to reach the destination host (google.com). Type traceroute &lt;domain&gt;.More Networking ToolsNow, let’s learn about some additional networking tools. Networking tools are very useful for monitoring and debugging network problems, such as network connectivity and network traffic.Using More Networking Toolssudo ethtool eth0netstat -rsudo nmap -sP 10.0.2.15/24先看自己啟動哪些serviceservice statslsof socket_namestrace ls可以知道command怎麼run的netstat grep某個port看某個server的port其他指令forkoperatingclifd: 識別馬lsof 可以茶城市到底開了多少個fd">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-09-30T04:17:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="EDX Linux Foundation Ch12：Network">
+    <meta itemprop="description" content="IP and packageIP(Internet Protocol) address is essential for routing packets of information through the network.These packets contain data buffers together with headers which contain information about where the packet is going to and coming from, and where it fits in the sequence of packets that constitute the stream.Decoding IPv4 AddressesA 32-bit IPv4 address is divided into four 8-bit sections called octets.IP address are divided into five classesClasses A, B, and C are classified into two parts: Network addresses(Net ID) and Host address (Host ID). The Net ID is used to identify the network, while the Host ID is used to identify a host in the network.Class D is used for special multicast applications (information is broadcast to multiple computers simultaneously)Class E is reserved for future use.IP Address AllocationTypically, a range of IP addresses are requested from your Internet Service Provider(ISP) by your organization’s network administratorYou can assign IP addresses to computers over a network manually or dynamically.When you assign IP addresses manually, you add static (never changing) addresses to the network. When you assign IP addresses dynamically (they can change every time you reboot or even more often), the Dynamic Host Configuration Protocol (DHCP) is used to assign IP addresses.Manually Allocating an IP Address??ipcalcName ResolutionName Resolution is used to convert numerical IP address values into a human-readable format known as the hostname.text For example, 140.211.169.4 is the numerical IP address that refers to the linuxfoundation.org hostname. Hostnames are easier to remember.Using Domain Name System (DNS) and Name Resolution ToolsDomain Name System (DNS) translates Internet domain and host names to IP addresses.私有IP對應的主機名稱cat /etc/hosts顯示DNS IPcat /etc/resolv.confhost linuxfoundation.orgnslookup linuxfoundation.orgdig linuxfoundation.orglook up domain name informationNetwork InterfacesNetwork interfaces are a connection channel between a device and a network.Physically, network interfaces can proceed through a network interface card (NIC) or can be more abstractly implemented as software.A list of currently active network interfaces is reported by the ifconfig utility which you may have to run as the superuser.Network Configuration Files/etc/init.d/network start ???Network Configuration CommandsTo view the IP address:$ /sbin/ip addr showTo view the routing information:$ /sbin/ip route showip is a very powerful program that can do many things. Older (and more specific) utilities such as ifconfig and route are often used to accomplish similar tasks. A look at the relevant man pages can tell you much more about these utilities.pingping is used to check whether or not a machine attached to the network can receive and send data; i.e., it confirms that the remote host is online and is responding.To check the status of the remote host, at the command prompt, type ping &lt;hostname&gt;.routeServers maintain routing tables containing the addresses of each node in the network.route is used to view or change the IP routing table.traceroute？？？traceroute is used to inspect the route which the data packet takes to reach the destination host which makes it quite useful for troubleshooting network delays and errors.Check the route which the data packet takes to reach the destination host (google.com). Type traceroute &lt;domain&gt;.More Networking ToolsNow, let’s learn about some additional networking tools. Networking tools are very useful for monitoring and debugging network problems, such as network connectivity and network traffic.Using More Networking Toolssudo ethtool eth0netstat -rsudo nmap -sP 10.0.2.15/24先看自己啟動哪些serviceservice statslsof socket_namestrace ls可以知道command怎麼run的netstat grep某個port看某個server的port其他指令forkoperatingclifd: 識別馬lsof 可以茶城市到底開了多少個fd">
+    <meta itemprop="datePublished" content="September 30, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">EDX Linux Foundation Ch12：Network
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#ip-and-package">IP and package</a></li>
+  <li><a href="#decoding-ipv4-addresses">Decoding IPv4 Addresses</a></li>
+  <li><a href="#ip-address-allocation">IP Address Allocation</a></li>
+  <li><a href="#manually-allocating-an-ip-address">Manually Allocating an IP Address</a></li>
+  <li><a href="#name-resolution">Name Resolution</a></li>
+  <li><a href="#using-domain-name-system-dns-and-name-resolution-tools">Using Domain Name System (DNS) and Name Resolution Tools</a></li>
+  <li><a href="#network-interfaces">Network Interfaces</a></li>
+  <li><a href="#network-configuration-files">Network Configuration Files</a></li>
+  <li><a href="#network-configuration-commands">Network Configuration Commands</a></li>
+  <li><a href="#ping">ping</a></li>
+  <li><a href="#route">route</a></li>
+  <li><a href="#traceroute">traceroute</a></li>
+  <li><a href="#more-networking-tools">More Networking Tools</a></li>
+  <li><a href="#using-more-networking-tools">Using More Networking Tools</a>
+    <ul>
+      <li><a href="#strace-ls">strace ls</a></li>
+      <li><a href="#netstat-grep某個port">netstat grep某個port</a></li>
+    </ul>
+  </li>
+  <li><a href="#其他指令">其他指令</a>
+    <ul>
+      <li><a href="#fork">fork</a></li>
+      <li><a href="#cli">cli</a></li>
+    </ul>
+  </li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="ip-and-package">IP and package</h2>
+<p>IP(Internet Protocol) address is essential for routing packets of information through the network.These packets contain <strong>data buffers</strong> together with <strong>headers</strong> which contain information about where the packet is going to and coming from, and where it fits in the sequence of packets that constitute the stream.</p>
+
+<h2 id="decoding-ipv4-addresses">Decoding IPv4 Addresses</h2>
+<p>A 32-bit IPv4 address is divided into four 8-bit sections called octets.</p>
+
+<p><img src="https://lh5.googleusercontent.com/-B9UGhE1NesY/VCoF-IowH0I/AAAAAAAADDQ/0QZbRLRjUlk/w1653-h213-no/Screen%2BShot%2B2014-09-30%2Bat%2B09.15.39.png" alt="" /></p>
+
+<p><strong>IP address</strong> are divided into five classes</p>
+
+<p><img src="https://lh6.googleusercontent.com/-rgUCVtxI9gk/VCoF-H3gCzI/AAAAAAAADDU/sJFdNhvXi9k/w1655-h803-no/Screen%2BShot%2B2014-09-30%2Bat%2B09.18.47.png" alt="" /></p>
+
+<p>Classes A, B, and C are classified into two parts: <strong>Network addresses(Net ID)</strong> and <strong>Host address (Host ID)</strong>. The Net ID is used to identify the network, while the Host ID is used to identify a host in the network.
+Class D is used for special multicast applications (information is broadcast to multiple computers simultaneously)
+Class E is reserved for future use.</p>
+
+<h2 id="ip-address-allocation">IP Address Allocation</h2>
+<p>Typically, a range of IP addresses are requested from your <strong>Internet Service Provider(ISP)</strong> by your organization’s network administrator</p>
+
+<p>You can assign IP addresses to computers over a network manually or dynamically.</p>
+
+<p><img src="https://lh3.googleusercontent.com/-Gdkko-JytG4/VCoK16007yI/AAAAAAAADDs/BKfxn8tDBfA/w1278-h660-no/Screen%2BShot%2B2014-09-30%2Bat%2B09.43.14.png" alt="" /></p>
+
+<p>When you assign IP addresses manually, you add static (never changing) addresses to the network. When you assign IP addresses dynamically (they can change every time you reboot or even more often), the <strong>Dynamic Host Configuration Protocol (DHCP)</strong> is used to assign IP addresses.</p>
+
+<h2 id="manually-allocating-an-ip-address">Manually Allocating an IP Address</h2>
+<p>??
+ipcalc</p>
+
+<h2 id="name-resolution">Name Resolution</h2>
+<p>Name Resolution is used to convert numerical IP address values into a human-readable format known as the <strong>hostname</strong>.<strong>text</strong> For example, 140.211.169.4 is the numerical IP address that refers to the linuxfoundation.org hostname. Hostnames are easier to remember.
+<img src="https://lh5.googleusercontent.com/2VU-chSrk_oMUIEB0vphQlRJ43uY73L016WiEjS-JkI=w1490-h1140-no" alt="" /></p>
+
+<h2 id="using-domain-name-system-dns-and-name-resolution-tools">Using Domain Name System (DNS) and Name Resolution Tools</h2>
+<p>Domain Name System (DNS) translates Internet domain and host names to IP addresses.
+私有IP對應的主機名稱<code class="highlighter-rouge">cat /etc/hosts</code>
+顯示DNS IP<code class="highlighter-rouge">cat /etc/resolv.conf</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>host linuxfoundation.org
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nslookup linuxfoundation.org
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dig linuxfoundation.org
+</code></pre></div></div>
+<p>look up domain name information</p>
+
+<p><img src="https://plus.google.com/photos/106207382048371838527/albums/6044136604797521137/6061411979084535810?pid=6061411979084535810&amp;oid=106207382048371838527" alt="" /></p>
+
+<h2 id="network-interfaces">Network Interfaces</h2>
+<p>Network interfaces are a connection channel between a device and a network.</p>
+
+<p>Physically, network interfaces can proceed through a <strong>network interface card (NIC)</strong> or can be more abstractly implemented as software.</p>
+
+<p>A list of currently active network interfaces is reported by the ifconfig utility which you may have to run as the superuser.</p>
+
+<h2 id="network-configuration-files">Network Configuration Files</h2>
+
+<p>/etc/init.d/network start
+ ???</p>
+
+<h2 id="network-configuration-commands">Network Configuration Commands</h2>
+<p>To view the IP address:
+$ /sbin/ip addr show</p>
+
+<p>To view the routing information:
+$ /sbin/ip route show</p>
+
+<p><strong>ip</strong> is a very powerful program that can do many things. Older (and more specific) utilities such as <strong>ifconfig</strong> and <strong>route</strong> are often used to accomplish similar tasks. A look at the relevant man pages can tell you much more about these utilities.</p>
+
+<h2 id="ping">ping</h2>
+<p><strong>ping</strong> is used to check whether or not a machine attached to the network can receive and send data; i.e., it confirms that the remote host is online and is responding.
+To check the status of the remote host, at the command prompt, type <code class="highlighter-rouge">ping &lt;hostname&gt;</code>.
+<img src="https://lh3.googleusercontent.com/-WWCJScptKVw/VCoaHRUmzLI/AAAAAAAADEY/LDb4BD_pTZY/w1517-h653-no/Screen%2BShot%2B2014-09-30%2Bat%2B10.48.06.png" alt="" /></p>
+
+<h2 id="route">route</h2>
+<p>Servers maintain <strong>routing tables</strong> containing the addresses of each node in the network.<strong>route</strong> is used to view or change the IP routing table.
+<img src="https://lh6.googleusercontent.com/-8Xy4nDL37cE/VCocCP4OY1I/AAAAAAAADEs/XiRhyVmMkEc/w1653-h490-no/Screen%2BShot%2B2014-09-30%2Bat%2B10.56.54.png" alt="" /></p>
+
+<h2 id="traceroute">traceroute</h2>
+<p>？？？
+traceroute is used to inspect the route which the data packet takes to reach the destination host which makes it quite useful for troubleshooting network delays and errors.</p>
+
+<p>Check the route which the data packet takes to reach the destination host (google.com). Type <code class="highlighter-rouge">traceroute &lt;domain&gt;</code>.</p>
+
+<h2 id="more-networking-tools">More Networking Tools</h2>
+<p>Now, let’s learn about some additional networking tools. Networking tools are very useful for monitoring and debugging network problems, such as network connectivity and network traffic.
+<img src="https://lh6.googleusercontent.com/-kGM0kxMWbts/VCotWIqGvwI/AAAAAAAADFc/OlpwAh0CkQ4/w1653-h708-no/Screen%2BShot%2B2014-09-30%2Bat%2B12.10.45.png" alt="" /></p>
+
+<h2 id="using-more-networking-tools">Using More Networking Tools</h2>
+<p>sudo ethtool eth0
+netstat -r
+sudo nmap -sP 10.0.2.15/24</p>
+
+<p>先看自己啟動哪些service
+service stats
+lsof socket_name</p>
+
+<h3 id="strace-ls">strace ls</h3>
+<p>可以知道command怎麼run的</p>
+
+<h3 id="netstat-grep某個port">netstat grep某個port</h3>
+<p>看某個server的port</p>
+
+<h2 id="其他指令">其他指令</h2>
+<h3 id="fork">fork</h3>
+<p>operating</p>
+<h3 id="cli">cli</h3>
+
+<p>fd: 識別馬
+lsof 可以茶城市到底開了多少個fd</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#edx-linux-foundation" class="page__taxonomy-item" rel="tag">EDX Linux Foundation</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#linux" class="page__taxonomy-item" rel="tag">Linux</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-09-30T04:17:00+00:00">September 30, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/personal-kanban/" class="pagination--pager" title="Personal Kanban：能夠用在自己身上的敏捷方法 學習筆記
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/edx-linux-foundation-to-add-notes/" class="pagination--pager" title="EDX Linux Foundation 補充筆記
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

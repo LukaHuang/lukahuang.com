@@ -1,0 +1,479 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>排版練習1：PSD to HTML Porfolio - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="最近在訓練排版的熟練度，要快速打造protype基本的前端技能是必須的。我選擇的教材是tuts的psd to html porfolio。課程中介紹了詳細的切版流程，從切圖到建構html到用css排版都有詳細的介紹。本篇是psd to html也就是排版練習第一篇，練習的是使用純css來刻網站。接下來會練習更多題目，直到我掌握基本的排版技巧為止。photoshop基本操作psd to html 顧名思義就是把設計師做好的 photoshop 檔案，用 html 和 css 刻成網頁。這個練習很棒的地方就是模擬了一個設計師跟你合作。所以首先你的電腦裡需要安裝photoshop。我使用的是photoshop cc 2014版本。  測量元素距離  查看字型、字體大小和行高  查看顏色chrome基本操作  使用page ruler測量網頁元素距離，可以看看  在dev tool修改css屬性即時更新畫面效果。  在dev tool中觀看html結構（雖然是自己刻的但是還是會忘記呀-.-）。  使用 livereload 套件即時更新修改結果。開始實作  首先是header的部份，使用具有透明度的圖片格式會是png，加上背景色之後就會呈現以下效果。設定好背景與圖片之後使用float進行排版即完成。  第二個部分是section .feature，使用的排版技巧是將三個li的寬度(width)設成33.333%，再使用float:left進行排版。需要注意的是，加上border時會產生寬度大於原本container寬度的bug，使用box-sizing:border-box將內部寬度大於原本ul寬度的問題修正掉。中間image的置中的效果其實是用anchor先包覆住image與h3，接著設定padding-top:100px來固定他的位置。  第三部分是section .porfolio，使用的排版技跟剛剛的.feature有所不同。首先設定.container的大小，本練習中.container的寬度設為900px。因為需要三個20px的間隔，所以900px-20px * 3=840px。最後除以四210px就是個元素的寬度  最後介紹的是footer，這邊使用的排版技巧跟feature相同，寬度設定為33.333%後使用float:left進行排版。Registration Form使用的排版技巧：設定input的寬度為100%，這樣就會看起來一列有一個input。對input設定padding會讓placeholer跟border有所空間，看起來更美觀。練習後心得這個練習難易度較低，但是也因為如此可以熟練chrome、text-editor和photoshop等必備的開發工具。對我來說是很適合的練習。練習過後對一些常用的CSS屬性更加熟悉，對開發速度是很有幫助的。">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="排版練習1：PSD to HTML Porfolio">
+
+
+  <link rel="canonical" href="https://lukahuang.com/psd-to-html-porfolio/">
+  <meta property="og:url" content="https://lukahuang.com/psd-to-html-porfolio/">
+
+
+
+  <meta property="og:description" content="最近在訓練排版的熟練度，要快速打造protype基本的前端技能是必須的。我選擇的教材是tuts的psd to html porfolio。課程中介紹了詳細的切版流程，從切圖到建構html到用css排版都有詳細的介紹。本篇是psd to html也就是排版練習第一篇，練習的是使用純css來刻網站。接下來會練習更多題目，直到我掌握基本的排版技巧為止。photoshop基本操作psd to html 顧名思義就是把設計師做好的 photoshop 檔案，用 html 和 css 刻成網頁。這個練習很棒的地方就是模擬了一個設計師跟你合作。所以首先你的電腦裡需要安裝photoshop。我使用的是photoshop cc 2014版本。  測量元素距離  查看字型、字體大小和行高  查看顏色chrome基本操作  使用page ruler測量網頁元素距離，可以看看  在dev tool修改css屬性即時更新畫面效果。  在dev tool中觀看html結構（雖然是自己刻的但是還是會忘記呀-.-）。  使用 livereload 套件即時更新修改結果。開始實作  首先是header的部份，使用具有透明度的圖片格式會是png，加上背景色之後就會呈現以下效果。設定好背景與圖片之後使用float進行排版即完成。  第二個部分是section .feature，使用的排版技巧是將三個li的寬度(width)設成33.333%，再使用float:left進行排版。需要注意的是，加上border時會產生寬度大於原本container寬度的bug，使用box-sizing:border-box將內部寬度大於原本ul寬度的問題修正掉。中間image的置中的效果其實是用anchor先包覆住image與h3，接著設定padding-top:100px來固定他的位置。  第三部分是section .porfolio，使用的排版技跟剛剛的.feature有所不同。首先設定.container的大小，本練習中.container的寬度設為900px。因為需要三個20px的間隔，所以900px-20px * 3=840px。最後除以四210px就是個元素的寬度  最後介紹的是footer，這邊使用的排版技巧跟feature相同，寬度設定為33.333%後使用float:left進行排版。Registration Form使用的排版技巧：設定input的寬度為100%，這樣就會看起來一列有一個input。對input設定padding會讓placeholer跟border有所空間，看起來更美觀。練習後心得這個練習難易度較低，但是也因為如此可以熟練chrome、text-editor和photoshop等必備的開發工具。對我來說是很適合的練習。練習過後對一些常用的CSS屬性更加熟悉，對開發速度是很有幫助的。">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-02-12T04:51:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="排版練習1：PSD to HTML Porfolio">
+    <meta itemprop="description" content="最近在訓練排版的熟練度，要快速打造protype基本的前端技能是必須的。我選擇的教材是tuts的psd to html porfolio。課程中介紹了詳細的切版流程，從切圖到建構html到用css排版都有詳細的介紹。本篇是psd to html也就是排版練習第一篇，練習的是使用純css來刻網站。接下來會練習更多題目，直到我掌握基本的排版技巧為止。photoshop基本操作psd to html 顧名思義就是把設計師做好的 photoshop 檔案，用 html 和 css 刻成網頁。這個練習很棒的地方就是模擬了一個設計師跟你合作。所以首先你的電腦裡需要安裝photoshop。我使用的是photoshop cc 2014版本。  測量元素距離  查看字型、字體大小和行高  查看顏色chrome基本操作  使用page ruler測量網頁元素距離，可以看看  在dev tool修改css屬性即時更新畫面效果。  在dev tool中觀看html結構（雖然是自己刻的但是還是會忘記呀-.-）。  使用 livereload 套件即時更新修改結果。開始實作  首先是header的部份，使用具有透明度的圖片格式會是png，加上背景色之後就會呈現以下效果。設定好背景與圖片之後使用float進行排版即完成。  第二個部分是section .feature，使用的排版技巧是將三個li的寬度(width)設成33.333%，再使用float:left進行排版。需要注意的是，加上border時會產生寬度大於原本container寬度的bug，使用box-sizing:border-box將內部寬度大於原本ul寬度的問題修正掉。中間image的置中的效果其實是用anchor先包覆住image與h3，接著設定padding-top:100px來固定他的位置。  第三部分是section .porfolio，使用的排版技跟剛剛的.feature有所不同。首先設定.container的大小，本練習中.container的寬度設為900px。因為需要三個20px的間隔，所以900px-20px * 3=840px。最後除以四210px就是個元素的寬度  最後介紹的是footer，這邊使用的排版技巧跟feature相同，寬度設定為33.333%後使用float:left進行排版。Registration Form使用的排版技巧：設定input的寬度為100%，這樣就會看起來一列有一個input。對input設定padding會讓placeholer跟border有所空間，看起來更美觀。練習後心得這個練習難易度較低，但是也因為如此可以熟練chrome、text-editor和photoshop等必備的開發工具。對我來說是很適合的練習。練習過後對一些常用的CSS屬性更加熟悉，對開發速度是很有幫助的。">
+    <meta itemprop="datePublished" content="February 12, 2015">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">排版練習1：PSD to HTML Porfolio
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#photoshop基本操作">photoshop基本操作</a></li>
+  <li><a href="#chrome基本操作">chrome基本操作</a></li>
+  <li><a href="#開始實作">開始實作</a></li>
+  <li><a href="#練習後心得">練習後心得</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>最近在訓練排版的熟練度，要快速打造protype基本的前端技能是必須的。我選擇的教材是tuts的psd to html porfolio。課程中介紹了詳細的切版流程，從切圖到建構html到用css排版都有詳細的介紹。本篇是psd to html也就是排版練習第一篇，練習的是使用純css來刻網站。接下來會練習更多題目，直到我掌握基本的排版技巧為止。</p>
+
+<h2 id="photoshop基本操作">photoshop基本操作</h2>
+<p>psd to html 顧名思義就是把設計師做好的 photoshop 檔案，用 html 和 css 刻成網頁。這個練習很棒的地方就是模擬了一個設計師跟你合作。所以首先你的電腦裡需要安裝photoshop。我使用的是photoshop cc 2014版本。</p>
+<ol>
+  <li>測量元素距離</li>
+  <li>查看字型、字體大小和行高</li>
+  <li>查看顏色</li>
+</ol>
+
+<h2 id="chrome基本操作">chrome基本操作</h2>
+<ol>
+  <li>使用page ruler測量網頁元素距離，可以看看</li>
+  <li>在dev tool修改css屬性即時更新畫面效果。</li>
+  <li>在dev tool中觀看html結構（雖然是自己刻的但是還是會忘記呀-.-）。</li>
+  <li>使用 livereload 套件即時更新修改結果。</li>
+</ol>
+
+<h2 id="開始實作">開始實作</h2>
+<ol>
+  <li>首先是header的部份，使用具有透明度的圖片格式會是png，加上背景色之後就會呈現以下效果。設定好背景與圖片之後使用float進行排版即完成。
+<img src="https://lh6.googleusercontent.com/-8Q9iZXAZiqk/VNw2LXZr5bI/AAAAAAAAE6A/ktsL_idFtFM/w1423-h62-no/03.jpg" alt="" /></li>
+  <li>第二個部分是<code class="highlighter-rouge">section .feature</code>，使用的排版技巧是將三個<code class="highlighter-rouge">li</code>的寬度(width)設成33.333%，再使用<code class="highlighter-rouge">float:left</code>進行排版。需要注意的是，加上border時會產生寬度大於原本container寬度的bug，使用<code class="highlighter-rouge">box-sizing:border-box</code>將內部寬度大於原本ul寬度的問題修正掉。中間image的置中的效果其實是用anchor先包覆住image與h3，接著設定<code class="highlighter-rouge">padding-top:100px</code>來固定他的位置。
+<img src="https://lh3.googleusercontent.com/-6LXa00qZ29Y/VNw2KO3IG-I/AAAAAAAAE50/12hFpINuOxE/w1518-h464-no/04.jpg" alt="" /></li>
+  <li>第三部分是<code class="highlighter-rouge">section .porfolio</code>，使用的排版技跟剛剛的<code class="highlighter-rouge">.feature有所不同</code>。首先設定<code class="highlighter-rouge">.container</code>的大小，本練習中<code class="highlighter-rouge">.container</code>的寬度設為900px。因為需要三個20px的間隔，所以900px-20px * 3=840px。最後除以四210px就是個元素的寬度
+<img src="https://lh3.googleusercontent.com/-IyV80Ie1x_o/VNw2H5tbK4I/AAAAAAAAE5o/StvGRpSkwL8/w1438-h450-no/01.jpg" alt="" /></li>
+  <li>最後介紹的是footer，這邊使用的排版技巧跟feature相同，寬度設定為33.333%後使用<code class="highlighter-rouge">float:left</code>進行排版。Registration Form使用的排版技巧：設定input的寬度為100%，這樣就會看起來一列有一個input。對input設定padding會讓placeholer跟border有所空間，看起來更美觀。</li>
+</ol>
+
+<h2 id="練習後心得">練習後心得</h2>
+<p>這個練習難易度較低，但是也因為如此可以熟練chrome、text-editor和photoshop等必備的開發工具。對我來說是很適合的練習。練習過後對一些常用的CSS屬性更加熟悉，對開發速度是很有幫助的。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#css" class="page__taxonomy-item" rel="tag">CSS</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#html" class="page__taxonomy-item" rel="tag">HTML</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#psd-to-html" class="page__taxonomy-item" rel="tag">PSD to HTML</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2015-02-12T04:51:00+00:00">February 12, 2015</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/atom-kit-recommended/" class="pagination--pager" title="Atom 套件整理
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/psd-to-html-with-bootstrap/" class="pagination--pager" title="排版練習2：PSD to html with Bootstrap
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

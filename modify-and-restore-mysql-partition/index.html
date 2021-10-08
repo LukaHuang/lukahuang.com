@@ -1,0 +1,671 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Mysql - 如何修改 partition 並還原資料 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="情境">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Mysql - 如何修改 partition 並還原資料">
+
+
+  <link rel="canonical" href="https://lukahuang.com/modify-and-restore-mysql-partition/">
+  <meta property="og:url" content="https://lukahuang.com/modify-and-restore-mysql-partition/">
+
+
+
+  <meta property="og:description" content="情境">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2018-03-04T12:50:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Mysql - 如何修改 partition 並還原資料">
+    <meta itemprop="description" content="情境">
+    <meta itemprop="datePublished" content="March 04, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Mysql - 如何修改 partition 並還原資料
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#情境">情境</a></li>
+  <li><a href="#深入了解-mysqldump">深入了解 mysqldump</a></li>
+  <li><a href="#partition-backup-and-restore">Partition backup and restore</a>
+    <ul>
+      <li><a href="#地雷---created_at">地雷 - created_at</a></li>
+    </ul>
+  </li>
+  <li><a href="#rails-migration">Rails Migration</a></li>
+  <li><a href="#參考資料">參考資料</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="情境">情境</h2>
+
+<p>在測試環境中我們想要置換 partition 的分區方式，而我們不想要遺失測試資料，所以需要備份 partition table 的資料。因為要修改的資料欄位很多，我不想要直接使用 alter table 的方式來修改 partition 分區，取而代之的是，我想要用 Migration 的方式來管理，所以會採用先備份 -&gt; 修改 -&gt; 接著再還原的方式。</p>
+
+<h2 id="深入了解-mysqldump">深入了解 mysqldump</h2>
+
+<p>一般我們在備份還原的時候會使用 Mysqldump，並使用還原指令來還原。但是因為這次我需要回復的資料已經經過 Partition 分區了。用一般的回復方式很可能會失敗。秉持的實驗精神，我就來看看 mysqldump 到底是怎麼運作的。輸入指令備份資料庫：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysqldump -u username -p your_database &gt; dump.sql
+</code></pre></div></div>
+
+<p>產生出來的檔案我們打開來看:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="n">dump</span><span class="p">.</span><span class="k">sql</span>
+<span class="c1">-- MySQL dump 10.13  Distrib 5.7.20, for osx10.11 (x86_64)</span>
+<span class="c1">--</span>
+<span class="c1">-- Host: localhost    Database: log_sharding</span>
+<span class="c1">-- ------------------------------------------------------</span>
+<span class="c1">-- Server version	5.7.20</span>
+
+<span class="cm">/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET NAMES utf8 */</span><span class="p">;</span>
+<span class="cm">/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */</span><span class="p">;</span>
+<span class="cm">/*!40103 SET TIME_ZONE='+00:00' */</span><span class="p">;</span>
+<span class="cm">/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */</span><span class="p">;</span>
+<span class="cm">/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */</span><span class="p">;</span>
+<span class="cm">/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */</span><span class="p">;</span>
+
+<span class="c1">--</span>
+<span class="c1">-- Table structure for table `alert_logs`</span>
+<span class="c1">--</span>
+
+<span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">EXISTS</span> <span class="nv">`alert_logs`</span><span class="p">;</span>
+<span class="cm">/*!40101 SET @saved_cs_client     = @@character_set_client */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET character_set_client = utf8 */</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nv">`alert_logs`</span> <span class="p">(</span>
+  <span class="nv">`id`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="nv">`alert_id`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_code`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="k">COLLATE</span> <span class="n">utf8_unicode_ci</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_name`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span> <span class="k">COLLATE</span> <span class="n">utf8_unicode_ci</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_time`</span> <span class="nb">datetime</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_status`</span> <span class="nb">tinyint</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="s1">'0'</span><span class="p">,</span>
+  <span class="nv">`created_at`</span> <span class="nb">datetime</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="k">DEFAULT</span> <span class="s1">'2055-06-01 00:00:00'</span><span class="p">,</span>
+  <span class="nv">`updated_at`</span> <span class="nb">datetime</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="nv">`id`</span><span class="p">,</span><span class="nv">`created_at`</span><span class="p">),</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">4899</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span> <span class="k">COLLATE</span><span class="o">=</span><span class="n">utf8_unicode_ci</span>
+<span class="cm">/*!50500 PARTITION BY RANGE  COLUMNS(alert_time)
+(PARTITION p001 VALUES LESS THAN ('2018-01-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p002 VALUES LESS THAN ('2018-02-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p003 VALUES LESS THAN ('2018-03-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p004 VALUES LESS THAN ('2018-04-01 00:00:00') ENGINE = InnoDB,
+ .
+ .
+ .
+ .
+ PARTITION p451 VALUES LESS THAN (MAXVALUE) ENGINE = InnoDB) */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET character_set_client = @saved_cs_client */</span><span class="p">;</span>
+
+
+<span class="c1">--</span>
+<span class="c1">-- Dumping data for table `alert_logs`</span>
+<span class="c1">--</span>
+
+<span class="k">LOCK</span> <span class="n">TABLES</span> <span class="nv">`alert_logs`</span> <span class="k">WRITE</span><span class="p">;</span>
+<span class="cm">/*!40000 ALTER TABLE `alert_logs` DISABLE KEYS */</span><span class="p">;</span>
+<span class="o">#</span> <span class="n">This</span> <span class="k">is</span> <span class="n">fake</span> <span class="k">data</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`alert_logs`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="mi">49</span><span class="p">,</span><span class="mi">12</span><span class="p">),(</span><span class="mi">9</span><span class="p">,</span><span class="mi">14</span><span class="p">),(</span><span class="mi">21</span><span class="p">,</span><span class="mi">17</span><span class="p">),(</span><span class="mi">11</span><span class="p">,</span><span class="mi">57</span><span class="p">),(</span><span class="mi">71</span><span class="p">,</span><span class="mi">63</span><span class="p">),(</span><span class="mi">270</span><span class="p">,</span><span class="mi">91</span><span class="p">),(</span><span class="mi">86</span><span class="p">,</span><span class="mi">180</span><span class="p">),(</span><span class="mi">125</span><span class="p">,</span><span class="mi">193</span><span class="p">),(</span><span class="mi">99</span><span class="p">,</span><span class="mi">201</span><span class="p">),(</span><span class="mi">189</span><span class="p">,</span><span class="mi">385</span><span class="p">),(</span><span class="mi">271</span><span class="p">,</span><span class="mi">390</span><span class="p">),(</span><span class="mi">225</span><span class="p">,</span><span class="mi">415</span><span class="p">),(</span><span class="mi">305</span><span class="p">,</span><span class="mi">484</span><span class="p">),(</span><span class="mi">251</span><span class="p">,</span><span class="mi">543</span><span class="p">),(</span><span class="mi">309</span><span class="p">,</span><span class="mi">545</span><span class="p">),(</span><span class="mi">257</span><span class="p">,</span><span class="mi">579</span><span class="p">),(</span><span class="mi">258</span><span class="p">,</span><span class="mi">581</span><span class="p">),(</span><span class="mi">260</span><span class="p">,</span><span class="mi">585</span><span class="p">),(</span><span class="mi">261</span><span class="p">,</span><span class="mi">588</span><span class="p">),(</span><span class="mi">279</span><span class="p">,</span><span class="mi">667</span><span class="p">);</span>
+<span class="cm">/*!40000 ALTER TABLE `alert_logs` ENABLE KEYS */</span><span class="p">;</span>
+<span class="n">UNLOCK</span> <span class="n">TABLES</span><span class="p">;</span>
+
+</code></pre></div></div>
+
+<p>這不就是 SQL 的指令嘛？ 邏輯如下:</p>
+
+<ol>
+  <li>如果 <code class="highlighter-rouge">alert_logs</code> table 已經存在，就刪除掉並使用 Dump File 內的備份指令重新建立 <code class="highlighter-rouge">alert_logs</code> table</li>
+  <li>lock 住整個 table 並加入資料。</li>
+</ol>
+
+<p>從這些步驟我們可以觀察到即使 db 內已經存在 alert_logs table 了，使用 dump.sql 還原時仍然會先刪除 alert_logs table，再使用 dump.sql 中的 schema 來重建 table。</p>
+
+<p>知道這些情報之後 partition 的 backup 與 restore 有了頭緒。</p>
+
+<h2 id="partition-backup-and-restore">Partition backup and restore</h2>
+
+<p>首先備份原先的 partition</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mysqldump</span> <span class="o">-</span><span class="n">h</span> <span class="s1">'your-my-sql-ip'</span> <span class="o">-</span><span class="n">u</span> <span class="n">your_user_name</span> <span class="o">-</span><span class="n">p</span> <span class="n">your_database_name</span> <span class="n">table_name_1</span> <span class="n">table_name_2</span> <span class="c1">--no-create-info  --ssl-ca=your_ssl.pem &gt; dump.sql</span>
+</code></pre></div></div>
+
+<p>關鍵在於: 需要加上 <code class="highlighter-rouge">--no-create-info</code> 產生的 dump.sql 不會把本來的 table 刪除，直接 insert 資料。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="n">dump</span><span class="p">.</span><span class="k">sql</span>
+<span class="c1">-- MySQL dump 10.13  Distrib 5.7.20, for osx10.11 (x86_64)</span>
+<span class="c1">--</span>
+<span class="c1">-- Host: localhost    Database: pro_devel</span>
+<span class="c1">-- ------------------------------------------------------</span>
+<span class="c1">-- Server version	5.7.20</span>
+
+<span class="cm">/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET NAMES utf8 */</span><span class="p">;</span>
+<span class="cm">/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */</span><span class="p">;</span>
+<span class="cm">/*!40103 SET TIME_ZONE='+00:00' */</span><span class="p">;</span>
+<span class="cm">/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */</span><span class="p">;</span>
+<span class="cm">/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */</span><span class="p">;</span>
+<span class="cm">/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */</span><span class="p">;</span>
+
+<span class="c1">--alert_logs</span>
+<span class="c1">-- Dumping data for table `alert_logs`</span>
+<span class="c1">--</span>
+
+<span class="k">LOCK</span> <span class="n">TABLES</span> <span class="nv">`alert_logs`</span> <span class="k">WRITE</span><span class="p">;</span>
+<span class="cm">/*!40000 ALTER TABLE `alert_logs` DISABLE KEYS */</span><span class="p">;</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`alert_logs`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="mi">49</span><span class="p">,</span><span class="mi">12</span><span class="p">),(</span><span class="mi">9</span><span class="p">,</span><span class="mi">14</span><span class="p">),(</span><span class="mi">21</span><span class="p">,</span><span class="mi">17</span><span class="p">),(</span><span class="mi">11</span><span class="p">,</span><span class="mi">57</span><span class="p">),(</span><span class="mi">71</span><span class="p">,</span><span class="mi">63</span><span class="p">),(</span><span class="mi">270</span><span class="p">,</span><span class="mi">91</span><span class="p">),(</span><span class="mi">86</span><span class="p">,</span><span class="mi">180</span><span class="p">),(</span><span class="mi">125</span><span class="p">,</span><span class="mi">193</span><span class="p">),(</span><span class="mi">99</span><span class="p">,</span><span class="mi">201</span><span class="p">),(</span><span class="mi">189</span><span class="p">,</span><span class="mi">385</span><span class="p">),(</span><span class="mi">271</span><span class="p">,</span><span class="mi">390</span><span class="p">),(</span><span class="mi">225</span><span class="p">,</span><span class="mi">415</span><span class="p">),(</span><span class="mi">305</span><span class="p">,</span><span class="mi">484</span><span class="p">),(</span><span class="mi">251</span><span class="p">,</span><span class="mi">543</span><span class="p">),(</span><span class="mi">309</span><span class="p">,</span><span class="mi">545</span><span class="p">),(</span><span class="mi">257</span><span class="p">,</span><span class="mi">579</span><span class="p">),(</span><span class="mi">258</span><span class="p">,</span><span class="mi">581</span><span class="p">),(</span><span class="mi">260</span><span class="p">,</span><span class="mi">585</span><span class="p">),(</span><span class="mi">261</span><span class="p">,</span><span class="mi">588</span><span class="p">),(</span><span class="mi">279</span><span class="p">,</span><span class="mi">667</span><span class="p">);</span>
+<span class="cm">/*!40000 ALTER TABLE `alert_logs` ENABLE KEYS */</span><span class="p">;</span>
+<span class="n">UNLOCK</span> <span class="n">TABLES</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>備份完資料後我們將原有的 database 刪除</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DROP TABLE alert_logs;
+</code></pre></div></div>
+
+<p>用新的 create partition 方法建立 table，將本來用 alert_time 做分區，改成用 created_at 做分區。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE TABLE `alert_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `alert_id` int(11) DEFAULT NULL,
+  `alert_code` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `alert_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `alert_time` datetime DEFAULT NULL,
+  `alert_status` tinyint(2) DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '2055-06-01 00:00:00',
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`,`created_at`),
+) ENGINE=InnoDB AUTO_INCREMENT=4899 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+/*!50500 PARTITION BY RANGE  COLUMNS(created_at)
+(PARTITION p001 VALUES LESS THAN ('2018-01-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p002 VALUES LESS THAN ('2018-02-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p003 VALUES LESS THAN ('2018-03-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p004 VALUES LESS THAN ('2018-04-01 00:00:00') ENGINE = InnoDB,
+ .
+ .
+ .
+ .
+ PARTITION p451 VALUES LESS THAN (MAXVALUE) ENGINE = InnoDB) */;
+/*!40101 SET character_set_client = @saved_cs_client */;
+</code></pre></div></div>
+
+<p>最後將資料還原</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql -u username -p database_name &lt; dump.sql
+</code></pre></div></div>
+
+<p>檢視一下目前的 table</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SHOW</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">alert_logs</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>確認結果是否正確
+檢視一下目前的 table</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SHOW</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">alert_logs</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>輸出</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nv">`alert_logs`</span> <span class="p">(</span>
+  <span class="nv">`id`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="nv">`alert_id`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_code`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="k">COLLATE</span> <span class="n">utf8_unicode_ci</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_name`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span> <span class="k">COLLATE</span> <span class="n">utf8_unicode_ci</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_time`</span> <span class="nb">datetime</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`alert_status`</span> <span class="nb">tinyint</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="s1">'0'</span><span class="p">,</span>
+  <span class="nv">`created_at`</span> <span class="nb">datetime</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`updated_at`</span> <span class="nb">datetime</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="nv">`id`</span><span class="p">,</span><span class="nv">`created_at`</span><span class="p">),</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">4899</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span> <span class="k">COLLATE</span><span class="o">=</span><span class="n">utf8_unicode_ci</span>
+<span class="cm">/*!50500 PARTITION BY RANGE  COLUMNS(created_at)
+(PARTITION p001 VALUES LESS THAN ('2018-01-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p002 VALUES LESS THAN ('2018-02-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p003 VALUES LESS THAN ('2018-03-01 00:00:00') ENGINE = InnoDB,
+ PARTITION p004 VALUES LESS THAN ('2018-04-01 00:00:00') ENGINE = InnoDB,
+ .
+ .
+ .
+ .
+ PARTITION p451 VALUES LESS THAN (MAXVALUE) ENGINE = InnoDB) */</span><span class="p">;</span>
+<span class="cm">/*!40101 SET character_set_client = @saved_cs_client */</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>確認建立 table 的資料無誤後，
+進入 Rails console 試試看 AlertLog 是否可以正常存取，
+這樣就完成了整個 partition 轉換並還原的流程。</p>
+
+<h3 id="地雷---created_at">地雷 - created_at</h3>
+
+<p>需要特別注意的是 - partition 中 為 key 的值一定必須是 <code class="highlighter-rouge">NOT NULL</code>，且<code class="highlighter-rouge">不要設 DEFAULT VALUE</code>，否則 Rails 不會幫你自動填入 created_at。</p>
+
+<h2 id="rails-migration">Rails Migration</h2>
+
+<p>如果你使用的是 Rails Migration，步驟是:</p>
+
+<ol>
+  <li>backup entire database</li>
+  <li>dump the partition database</li>
+  <li>rake db:rollback</li>
+  <li>modify migration of partition</li>
+  <li>rake db:migrate</li>
+  <li>restore partition database</li>
+</ol>
+
+<h2 id="參考資料">參考資料</h2>
+
+<p><a href="http://www.dbastuff.net/2014/09/mysql-dump-and-partitions.html">DBAStuff: Mysql Dump and partitions</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#database" class="page__taxonomy-item" rel="tag">Database</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#mysql" class="page__taxonomy-item" rel="tag">Mysql</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-03-04T12:50:00+00:00">March 04, 2018</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/use-aws-ruby-sdk-to-update-s3-metadata/" class="pagination--pager" title="[譯] 使用 AWS Ruby SDK v2 更新 S3 物件 Metadata
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/harbor/" class="pagination--pager" title="用 Harbor 架設 Private Docker Registry
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

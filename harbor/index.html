@@ -1,0 +1,558 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>用 Harbor 架設 Private Docker Registry - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="用 Harbor 架設一個僅供公司內網存取的 Docker Registry">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="用 Harbor 架設 Private Docker Registry">
+
+
+  <link rel="canonical" href="https://lukahuang.com/harbor/">
+  <meta property="og:url" content="https://lukahuang.com/harbor/">
+
+
+
+  <meta property="og:description" content="用 Harbor 架設一個僅供公司內網存取的 Docker Registry">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2019-12-17T10:32:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="用 Harbor 架設 Private Docker Registry">
+    <meta itemprop="description" content="用 Harbor 架設一個僅供公司內網存取的 Docker Registry">
+    <meta itemprop="datePublished" content="December 17, 2019">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">用 Harbor 架設 Private Docker Registry
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#用-harbor-架設一個僅供公司內網存取的-docker-registry">用 Harbor 架設一個僅供公司內網存取的 Docker Registry</a></li>
+  <li><a href="#什麼是-docker-registry-">什麼是 Docker Registry ？</a></li>
+  <li><a href="#為什麼要架設私有的-docker-registry">為什麼要架設私有的 Docker Registry？</a></li>
+  <li><a href="#harbor-是什麼">Harbor 是什麼？</a></li>
+  <li><a href="#harbor-在-cicd-中扮演的角色">Harbor 在 CI/CD 中扮演的角色</a></li>
+  <li><a href="#如何架設-harbor">如何架設 Harbor？</a>
+    <ul>
+      <li><a href="#harbor-的安裝方式">Harbor 的安裝方式</a></li>
+      <li><a href="#安裝-docker-與-docker-compose">安裝 Docker 與 Docker Compose</a></li>
+      <li><a href="#繼續安裝-harbor">繼續安裝 Harbor</a></li>
+    </ul>
+  </li>
+  <li><a href="#結語">結語</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="用-harbor-架設一個僅供公司內網存取的-docker-registry">用 Harbor 架設一個僅供公司內網存取的 Docker Registry</h2>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*zYNBpVXtxGID9rttcSYklQ.jpeg" alt="" /></p>
+
+<h2 id="什麼是-docker-registry-">什麼是 Docker Registry ？</h2>
+
+<p>顧名思義就是用來儲存鏡像檔 (Image) 的地方。例如：DockerHub 就是 Docker 官方提供的 Docker Registry，你可以把你自己編寫的 Dockerfile 編譯之後上傳到 Dockerhub ，讓網路上的其他人自由的下載，讓大家站在你的肩膀上寫程式。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2402/1*xCluFgOIs4GgoiAFkxIOJg.png" alt="Dockerhub 首頁" /></p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2328/1*5V65KKaQS5QlDeSEMW6Crg.png" alt="在 dockerhub 上面可以搜尋到 ubuntu 官方釋出的 docker image" /></p>
+
+<h2 id="為什麼要架設私有的-docker-registry">為什麼要架設私有的 Docker Registry？</h2>
+
+<p>在這個容器化的時代， 要使用 Kubernetes 生態系，第一步是將原本的實體機器的配置轉換成程式碼，轉換完成後變成 Dockerfile，Dockerfile 編寫著這台機器上所有的配置。</p>
+
+<p>我們需要找一個地方存放由這些 Dockerfile 建立 (build) 出來的 Docker 鏡像檔，這些鏡像檔總不能放在 Dockerhub 上給大家一覽無遺吧？因此我們需要一個私有的 Docker Registry 來放置建立的 Docker 鏡像檔。</p>
+
+<h2 id="harbor-是什麼">Harbor 是什麼？</h2>
+
+<p>Harbor 是由 VMware 發行的鏡像檔儲存倉庫，就是你自行架設一個只有公司內部可以存取到的 Dockerhub，公司內部使用的鏡像檔都上傳到上面，要使用時也都從 Harbor 中拉下來 (pull image)。</p>
+
+<p>Harbor 的管理介面如下</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/3052/1*pl2f1k9c_PdW_QWxRf1cAQ.png" alt="" /></p>
+
+<p>每一個專案可以有多個 Repository，而每個 Repository 可以上傳多個 Image</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/3078/1*l76NWolqE7O0t0rGAafk6A.png" alt="" /></p>
+
+<h2 id="harbor-在-cicd-中扮演的角色">Harbor 在 CI/CD 中扮演的角色</h2>
+
+<p>用一張圖表來說明 Docker Registry 在 CI / CD 流程中扮演的角色：</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2808/1*M69pOie1Kw6U1G36CC6sVA.png" alt="" /></p>
+
+<p>首先我們把程式碼推上 Github，觸發 CI / CD (以 Jenkins 為例) Pipeline，Pipeline 中包含跑測試、程式碼品質檢測 … 等等的步驟，依照需求自由定義。</p>
+
+<p>跑完 CI / CD Pipeline 後便會把 Docker Image 推上 Harbor。接著如果 K8S 需要取用時便會從 Harbor 拉取 (pull) 需要的版本的 Image。</p>
+
+<p>註：更安全的作法是 Github 用私有的程式碼儲存庫取代，這邊為了簡單示意，用 Github 作為程式碼儲存庫的代表。</p>
+
+<h2 id="如何架設-harbor">如何架設 Harbor？</h2>
+
+<h3 id="harbor-的安裝方式">Harbor 的安裝方式</h3>
+
+<p>在 Github 上面可以看到 Harbor 是 1 萬顆星星以上的大型開源專案</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2260/1*CH1EH9Z67Zb1Ly-yLwq9Kg.png" alt="" /></p>
+
+<p>找到 Install &amp;&amp; Run 區域的說明，上面寫著先下載 binary 檔案，然後跟著安裝手冊操作。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2126/1*B-Q22EUDNzCgm0iMguOZOA.png" alt="" /></p>
+
+<p>我們就進入到 <a href="https://github.com/goharbor/harbor/releases">Harbor Release</a> 頁面</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2264/1*ROVmxJmXqeKol5YLfjjN8w.png" alt="" /></p>
+
+<p>往下卷找到 Assets 區域</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2014/1*lNDshHJA-X-ZyF6EG_e_3g.png" alt="" /></p>
+
+<p>這時我們點選 online installler 下載，如果在 linux 主機上可以用 wget 取得。</p>
+
+<h3 id="安裝-docker-與-docker-compose">安裝 Docker 與 Docker Compose</h3>
+
+<p>接著到 <a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md">Harbor Installation and Configuration Guide</a> 觀看教學逐步完成安裝，安裝 Harbor 時需要安裝 Docker 與 Docker Compose。</p>
+
+<p>首先我們需要安裝 Docker，用 Ubuntu 18.04 來演練：參考 <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04">How To Install and Use Docker on Ubuntu 18.04</a> 逐步完成 docker 安裝。</p>
+
+<p>除了需要 Docker 以外，還需要 docker-compose，參考 <a href="https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04">How To Install Docker Compose on Ubuntu 18.04</a>。</p>
+
+<h3 id="繼續安裝-harbor">繼續安裝 Harbor</h3>
+
+<p>取得剛剛 release 畫面獲得的安裝包位置</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/goharbor/harbor/releases/download/v1.10.0/harbor-online-installer-v1.10.0.tgz
+</code></pre></div></div>
+
+<p>解壓縮之</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tar xvf harbor-online-installer-v1.10.0.tgz
+</code></pre></div></div>
+
+<p>現在你有 harbor 安裝檔資料夾</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*oucT344pLoZU6e0MUKr_Cg.png" alt="" /></p>
+
+<p>進入 harbor 資料夾，看到有幾個檔案，install.sh 就是安裝檔了，首先我們要先修改 harbor.yml</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*W2KPqrMFv2TC--85ciaIdw.png" alt="" /></p>
+
+<p>將 hostname 修改，否則直接運行 install.sh 是會發生錯誤的。除了修改 hostman 以外，修改 admin password 預設管理員密碼，可以增加安全性。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*jDUzW33Dqar1YOkZWwzgpg.png" alt="" /></p>
+
+<p>修改完成後執行 sudo ./install.sh，harbor 需要的服務就會依序被建立起來，就是這麼簡單。</p>
+
+<p>此時訪問這台機器的 ip 位置，就會出現登入畫面囉！</p>
+
+<h2 id="結語">結語</h2>
+
+<p>現在你擁有了一個可以放在公司內網的 Docker Registry，你可以在上面自由的上傳自己建立的 Docker Image，不用怕被看光光，是不是很棒呢。</p>
+
+<p>如果喜歡我寫的文章，歡迎追蹤本人帳號 <a href="https://medium.com/@LukaTw">@LukaTw</a> 與 <a href="https://medium.com/starbugs">StarBugs Weekly 星巴哥技術週刊</a> 🙂🙂🙂</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#docker" class="page__taxonomy-item" rel="tag">Docker</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#harbor" class="page__taxonomy-item" rel="tag">Harbor</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2019-12-17T10:32:00+00:00">December 17, 2019</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/modify-and-restore-mysql-partition/" class="pagination--pager" title="Mysql - 如何修改 partition 並還原資料
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/drone/" class="pagination--pager" title="從零開始學 DevOps — 那就選擇最簡單的 Drone CI 開始吧！
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

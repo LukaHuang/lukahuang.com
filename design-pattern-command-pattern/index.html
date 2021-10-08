@@ -1,0 +1,578 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Design Pattern - Command Pattern - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="定義:Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations粗分為兩部分:  把request封裝成物件。  實踐queue、日誌、以及支援復原功能。先來介紹的是沒有undo功能的Simple Command Pattern。Simple Command Pattern初步了解:老方法，用Headfirst Design Pattern的範例熟悉一下Command Pattern。這一章HeadFirst書上並沒有使用UML將範例畫出來，於是我稍作整理，以下是範例的UML:圖中有幾個主要角色:Invoker:調用者，負責調用client端需要的命令，並執行之。Command « interface »:透過這個介面Invoker可以調用各種實作這個介面的Command執行之。Reciver:接收者，reciver接收到命令後執行相符合的動作。Client:客戶端，發出命令者。public class SimpleRemoteControl {	Command slot;	public SimpleRemoteControl() {}	public void setCommand(Command command) {		slot = command;	}	public void buttonWasPressed() {		slot.execute();	}}Command:命令接收者(reciver)做出實際行動，Class名稱就是它要reciver做的事情。例如://LightOffCommand.javapublic class LightOffCommand implements Command {	Light light;	public LightOffCommand(Light light) {		this.light = light;	}	public void execute() {		light.off();	}}可以很清楚的知道，這個命令是要Light這個reciver去做開燈這件事。從這個Simple Command pattern中可以觀察到幾個特性:  原本需由Client端直接面對各種Reciver不同的API，現在只要setCommand，然後執行即可。讓Client端的程式碼更具有可讀性。  要設成Command的行為，必須要有一定的相似性，通常是輸入的變數都是同一類型。如開燈與開電視機他們都不需要輸入參數。  使用Command的行為盡量不要回傳值，或者回傳值即是需要的結果。簡化Client程式碼。##Meta Command Pattern什麼是meta command pattern?剛剛的simple command pattern，invoker使用setCommand()方法，一次可以設定一個command對吧。現在我們把command存在陣列中，最後再使用executeAll()方法一次執行所有儲存的命令。來做個比較便一目了然:// SimpleCommandInvoker.javapublic class SimpleCommandInvoker {	Command command;	public SimpleCommandInvoker() {	}	public void setCommand(Command command){		this.command = command;	}	public void execute(){		command.execute();	}}// MetaCommandInvoker.javapublic class MetaCommandInvoker {	List&lt;Command&gt; commands = new ArrayList&lt;Command&gt;();  //把command儲存在List中，由executeAll一一執行。	public MetaCommandInvoker() {		// TODO Auto-generated constructor stub	}	public void setCommand(Command command){		commands.add(command);	}	public void removeCommand(Command command){		commands.remove(command);	}	public void executeAll(){		for(Command c:commands){			c.execute();		}	}}Undo與NoCommand這部分先行跳過，擇日補上，如果對復原有需要的朋友，請參閱Head First Design Pattern一書。延伸思考:      如果我們把Command用Abstract class或是Concrete Class實作一些方法，而非interface會怎麼樣?        Command Pattern or Stragery Pattern一個情境，在登入時，能選擇google登入、facebook登入或者使用網站本身資料庫來登入，這種情形下，用Command Pattern比較好還是用Stragery Pattern比較好呢?        Command pattern與Facade Pattern同樣都是在實際執行的物件和Client中間加上一個物件來降低藕合，差別在於facade必須為所有的method命名，例如開電視。而Command要使用哪一個才調用並執行，可以看得出Command Pattern適用於大量且不一定會使用的指令，而facade是讓你很明顯的看到，我這個系統有這些功能，扮演著介面的角色。  參考資源:Head First Design Pattern搞笑談軟工 重新整理Command PatternCommand與Stragery Pattern的差異Rico 技術農場 Command Pattern">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Design Pattern - Command Pattern">
+
+
+  <link rel="canonical" href="https://lukahuang.com/design-pattern-command-pattern/">
+  <meta property="og:url" content="https://lukahuang.com/design-pattern-command-pattern/">
+
+
+
+  <meta property="og:description" content="定義:Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations粗分為兩部分:  把request封裝成物件。  實踐queue、日誌、以及支援復原功能。先來介紹的是沒有undo功能的Simple Command Pattern。Simple Command Pattern初步了解:老方法，用Headfirst Design Pattern的範例熟悉一下Command Pattern。這一章HeadFirst書上並沒有使用UML將範例畫出來，於是我稍作整理，以下是範例的UML:圖中有幾個主要角色:Invoker:調用者，負責調用client端需要的命令，並執行之。Command « interface »:透過這個介面Invoker可以調用各種實作這個介面的Command執行之。Reciver:接收者，reciver接收到命令後執行相符合的動作。Client:客戶端，發出命令者。public class SimpleRemoteControl {	Command slot;	public SimpleRemoteControl() {}	public void setCommand(Command command) {		slot = command;	}	public void buttonWasPressed() {		slot.execute();	}}Command:命令接收者(reciver)做出實際行動，Class名稱就是它要reciver做的事情。例如://LightOffCommand.javapublic class LightOffCommand implements Command {	Light light;	public LightOffCommand(Light light) {		this.light = light;	}	public void execute() {		light.off();	}}可以很清楚的知道，這個命令是要Light這個reciver去做開燈這件事。從這個Simple Command pattern中可以觀察到幾個特性:  原本需由Client端直接面對各種Reciver不同的API，現在只要setCommand，然後執行即可。讓Client端的程式碼更具有可讀性。  要設成Command的行為，必須要有一定的相似性，通常是輸入的變數都是同一類型。如開燈與開電視機他們都不需要輸入參數。  使用Command的行為盡量不要回傳值，或者回傳值即是需要的結果。簡化Client程式碼。##Meta Command Pattern什麼是meta command pattern?剛剛的simple command pattern，invoker使用setCommand()方法，一次可以設定一個command對吧。現在我們把command存在陣列中，最後再使用executeAll()方法一次執行所有儲存的命令。來做個比較便一目了然:// SimpleCommandInvoker.javapublic class SimpleCommandInvoker {	Command command;	public SimpleCommandInvoker() {	}	public void setCommand(Command command){		this.command = command;	}	public void execute(){		command.execute();	}}// MetaCommandInvoker.javapublic class MetaCommandInvoker {	List&lt;Command&gt; commands = new ArrayList&lt;Command&gt;();  //把command儲存在List中，由executeAll一一執行。	public MetaCommandInvoker() {		// TODO Auto-generated constructor stub	}	public void setCommand(Command command){		commands.add(command);	}	public void removeCommand(Command command){		commands.remove(command);	}	public void executeAll(){		for(Command c:commands){			c.execute();		}	}}Undo與NoCommand這部分先行跳過，擇日補上，如果對復原有需要的朋友，請參閱Head First Design Pattern一書。延伸思考:      如果我們把Command用Abstract class或是Concrete Class實作一些方法，而非interface會怎麼樣?        Command Pattern or Stragery Pattern一個情境，在登入時，能選擇google登入、facebook登入或者使用網站本身資料庫來登入，這種情形下，用Command Pattern比較好還是用Stragery Pattern比較好呢?        Command pattern與Facade Pattern同樣都是在實際執行的物件和Client中間加上一個物件來降低藕合，差別在於facade必須為所有的method命名，例如開電視。而Command要使用哪一個才調用並執行，可以看得出Command Pattern適用於大量且不一定會使用的指令，而facade是讓你很明顯的看到，我這個系統有這些功能，扮演著介面的角色。  參考資源:Head First Design Pattern搞笑談軟工 重新整理Command PatternCommand與Stragery Pattern的差異Rico 技術農場 Command Pattern">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-02-08T19:33:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Design Pattern - Command Pattern">
+    <meta itemprop="description" content="定義:Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations粗分為兩部分:  把request封裝成物件。  實踐queue、日誌、以及支援復原功能。先來介紹的是沒有undo功能的Simple Command Pattern。Simple Command Pattern初步了解:老方法，用Headfirst Design Pattern的範例熟悉一下Command Pattern。這一章HeadFirst書上並沒有使用UML將範例畫出來，於是我稍作整理，以下是範例的UML:圖中有幾個主要角色:Invoker:調用者，負責調用client端需要的命令，並執行之。Command « interface »:透過這個介面Invoker可以調用各種實作這個介面的Command執行之。Reciver:接收者，reciver接收到命令後執行相符合的動作。Client:客戶端，發出命令者。public class SimpleRemoteControl {	Command slot;	public SimpleRemoteControl() {}	public void setCommand(Command command) {		slot = command;	}	public void buttonWasPressed() {		slot.execute();	}}Command:命令接收者(reciver)做出實際行動，Class名稱就是它要reciver做的事情。例如://LightOffCommand.javapublic class LightOffCommand implements Command {	Light light;	public LightOffCommand(Light light) {		this.light = light;	}	public void execute() {		light.off();	}}可以很清楚的知道，這個命令是要Light這個reciver去做開燈這件事。從這個Simple Command pattern中可以觀察到幾個特性:  原本需由Client端直接面對各種Reciver不同的API，現在只要setCommand，然後執行即可。讓Client端的程式碼更具有可讀性。  要設成Command的行為，必須要有一定的相似性，通常是輸入的變數都是同一類型。如開燈與開電視機他們都不需要輸入參數。  使用Command的行為盡量不要回傳值，或者回傳值即是需要的結果。簡化Client程式碼。##Meta Command Pattern什麼是meta command pattern?剛剛的simple command pattern，invoker使用setCommand()方法，一次可以設定一個command對吧。現在我們把command存在陣列中，最後再使用executeAll()方法一次執行所有儲存的命令。來做個比較便一目了然:// SimpleCommandInvoker.javapublic class SimpleCommandInvoker {	Command command;	public SimpleCommandInvoker() {	}	public void setCommand(Command command){		this.command = command;	}	public void execute(){		command.execute();	}}// MetaCommandInvoker.javapublic class MetaCommandInvoker {	List&lt;Command&gt; commands = new ArrayList&lt;Command&gt;();  //把command儲存在List中，由executeAll一一執行。	public MetaCommandInvoker() {		// TODO Auto-generated constructor stub	}	public void setCommand(Command command){		commands.add(command);	}	public void removeCommand(Command command){		commands.remove(command);	}	public void executeAll(){		for(Command c:commands){			c.execute();		}	}}Undo與NoCommand這部分先行跳過，擇日補上，如果對復原有需要的朋友，請參閱Head First Design Pattern一書。延伸思考:      如果我們把Command用Abstract class或是Concrete Class實作一些方法，而非interface會怎麼樣?        Command Pattern or Stragery Pattern一個情境，在登入時，能選擇google登入、facebook登入或者使用網站本身資料庫來登入，這種情形下，用Command Pattern比較好還是用Stragery Pattern比較好呢?        Command pattern與Facade Pattern同樣都是在實際執行的物件和Client中間加上一個物件來降低藕合，差別在於facade必須為所有的method命名，例如開電視。而Command要使用哪一個才調用並執行，可以看得出Command Pattern適用於大量且不一定會使用的指令，而facade是讓你很明顯的看到，我這個系統有這些功能，扮演著介面的角色。  參考資源:Head First Design Pattern搞笑談軟工 重新整理Command PatternCommand與Stragery Pattern的差異Rico 技術農場 Command Pattern">
+    <meta itemprop="datePublished" content="February 08, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Design Pattern - Command Pattern
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#simple-command-pattern">Simple Command Pattern</a></li>
+  <li><a href="#undo與nocommand">Undo與NoCommand</a></li>
+  <li><a href="#延伸思考">延伸思考:</a></li>
+  <li><a href="#參考資源">參考資源:</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>定義:</p>
+
+<p>Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations</p>
+
+<p>粗分為兩部分:</p>
+<ol>
+  <li>把request封裝成物件。</li>
+  <li>實踐queue、日誌、以及支援復原功能。
+先來介紹的是沒有undo功能的Simple Command Pattern。</li>
+</ol>
+
+<h2 id="simple-command-pattern">Simple Command Pattern</h2>
+
+<p>初步了解:
+老方法，用Headfirst Design Pattern的範例熟悉一下Command Pattern。
+這一章HeadFirst書上並沒有使用UML將範例畫出來，於是我稍作整理，以下是範例的UML:
+<img src="http://user-image.logdown.io/user/6619/blog/6590/post/178686/oGDG35GWRPmuif65ChcF_2014-02-13_095001.jpg" alt="2014-02-13_095001.jpg" />
+圖中有幾個主要角色:
+Invoker:調用者，負責調用client端需要的命令，並執行之。
+Command « interface »:透過這個介面Invoker可以調用各種實作這個介面的Command執行之。
+Reciver:接收者，reciver接收到命令後執行相符合的動作。
+Client:客戶端，發出命令者。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleRemoteControl</span> <span class="o">{</span>
+	<span class="nc">Command</span> <span class="n">slot</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">SimpleRemoteControl</span><span class="o">()</span> <span class="o">{}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCommand</span><span class="o">(</span><span class="nc">Command</span> <span class="n">command</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">slot</span> <span class="o">=</span> <span class="n">command</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">buttonWasPressed</span><span class="o">()</span> <span class="o">{</span>
+		<span class="n">slot</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Command:
+命令接收者(reciver)做出實際行動，Class名稱就是它要reciver做的事情。例如:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//LightOffCommand.java</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LightOffCommand</span> <span class="kd">implements</span> <span class="nc">Command</span> <span class="o">{</span>
+	<span class="nc">Light</span> <span class="n">light</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">LightOffCommand</span><span class="o">(</span><span class="nc">Light</span> <span class="n">light</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">light</span> <span class="o">=</span> <span class="n">light</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">()</span> <span class="o">{</span>
+		<span class="n">light</span><span class="o">.</span><span class="na">off</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>可以很清楚的知道，這個命令是要Light這個reciver去做開燈這件事。</p>
+
+<p>從這個Simple Command pattern中可以觀察到幾個特性:</p>
+<ol>
+  <li>原本需由Client端直接面對各種Reciver不同的API，現在只要setCommand，然後執行即可。讓Client端的程式碼更具有可讀性。</li>
+  <li>要設成Command的行為，必須要有一定的相似性，通常是輸入的變數都是同一類型。如開燈與開電視機他們都不需要輸入參數。</li>
+  <li>使用Command的行為盡量不要回傳值，或者回傳值即是需要的結果。簡化Client程式碼。</li>
+</ol>
+
+<p>##Meta Command Pattern
+什麼是meta command pattern?
+剛剛的simple command pattern，invoker使用setCommand()方法，一次可以設定一個command對吧。
+現在我們把command存在陣列中，最後再使用executeAll()方法一次執行所有儲存的命令。
+來做個比較便一目了然:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// SimpleCommandInvoker.java</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleCommandInvoker</span> <span class="o">{</span>
+
+	<span class="nc">Command</span> <span class="n">command</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="nf">SimpleCommandInvoker</span><span class="o">()</span> <span class="o">{</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCommand</span><span class="o">(</span><span class="nc">Command</span> <span class="n">command</span><span class="o">){</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">command</span> <span class="o">=</span> <span class="n">command</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(){</span>
+		<span class="n">command</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// MetaCommandInvoker.java</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MetaCommandInvoker</span> <span class="o">{</span>
+
+	<span class="nc">List</span><span class="o">&lt;</span><span class="nc">Command</span><span class="o">&gt;</span> <span class="n">commands</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Command</span><span class="o">&gt;();</span>
+  <span class="c1">//把command儲存在List中，由executeAll一一執行。</span>
+
+	<span class="kd">public</span> <span class="nf">MetaCommandInvoker</span><span class="o">()</span> <span class="o">{</span>
+		<span class="c1">// TODO Auto-generated constructor stub</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCommand</span><span class="o">(</span><span class="nc">Command</span> <span class="n">command</span><span class="o">){</span>
+		<span class="n">commands</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">removeCommand</span><span class="o">(</span><span class="nc">Command</span> <span class="n">command</span><span class="o">){</span>
+		<span class="n">commands</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">executeAll</span><span class="o">(){</span>
+		<span class="k">for</span><span class="o">(</span><span class="nc">Command</span> <span class="nl">c:</span><span class="n">commands</span><span class="o">){</span>
+			<span class="n">c</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+<h2 id="undo與nocommand">Undo與NoCommand</h2>
+<p>這部分先行跳過，擇日補上，如果對復原有需要的朋友，請參閱Head First Design Pattern一書。</p>
+
+<h2 id="延伸思考">延伸思考:</h2>
+
+<ol>
+  <li>
+    <p>如果我們把Command用Abstract class或是Concrete Class實作一些方法，而非interface會怎麼樣?</p>
+  </li>
+  <li>
+    <p>Command Pattern or Stragery Pattern
+一個情境，在登入時，能選擇google登入、facebook登入或者使用網站本身資料庫來登入，這種情形下，用Command Pattern比較好還是用Stragery Pattern比較好呢?</p>
+  </li>
+  <li>
+    <p>Command pattern與Facade Pattern
+同樣都是在實際執行的物件和Client中間加上一個物件來降低藕合，差別在於facade必須為所有的method命名，例如開電視。而Command要使用哪一個才調用並執行，可以看得出Command Pattern適用於大量且不一定會使用的指令，而facade是讓你很明顯的看到，我這個系統有這些功能，扮演著介面的角色。</p>
+  </li>
+</ol>
+
+<h2 id="參考資源">參考資源:</h2>
+<p>Head First Design Pattern
+<a href="http://teddy-chen-tw.blogspot.tw/2013/08/command-pattern.html">搞笑談軟工 重新整理Command Pattern</a>
+<a href="http://rettamkrad.blogspot.tw/2013/06/commandstrategypattern.html">Command與Stragery Pattern的差異</a>
+<a href="http://www.dotblogs.com.tw/ricochen/archive/2012/08/03/73801.aspx">Rico 技術農場 Command Pattern</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#design-pattern" class="page__taxonomy-item" rel="tag">Design Pattern</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-02-08T19:33:00+00:00">February 08, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/design-pattern-resources/" class="pagination--pager" title="Design Pattern - 資源總整理
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/uml-class-diagram/" class="pagination--pager" title="UML - Class Diagram
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

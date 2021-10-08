@@ -1,0 +1,552 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>ActiveRecord - 更新大量資料 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="前言本文使用的兩種方法，實際上都是用一個 sql 插入或更新所有的資料。原因是使用其他的方法都沒有使用一個sql插入快。如果插入的筆數過多，需要調整 sql buffer 的大小。本例子的情景是一次更新100筆資料，資料量不大，所以不會遇到這個問題。方法一：純 SQL  因為欄位很多，我要傳送的欄位又是完整的一個不少，所以我用 Model.attribute_names 來組合要傳入的欄位名稱。  然後將要更新的 Hash 組成 VALUES (x1, y1, z1, ...), (x2, y2, z2, ...), ...字串  最後將要更新的欄位組成 flag_string=VALUES(flag_string) 這種格式想要組出的 sql    ActiveRecord::Base.connection.execute(&quot;      INSERT INTO linkouts (#{linkouts_attr_names_string})        VALUES #{query_string}        ON DUPLICATE KEY UPDATE #{equal_val_string}    &quot;)組出來的結果query string 這邊比較難處理，因為是 raw sql，如果在 integer 型態的欄位塞入 &#39;&#39;，或是在字串的欄位沒有用引號括起來都會噴錯。這也是使用 raw sql 撰寫的缺點。[1] pry(#&lt;MastersController&gt;)&gt; linkouts_attr_names_string=&gt; &quot;id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status&quot;[2] pry(#&lt;MastersController&gt;)&gt; query_string=&gt; &quot;(22442,&#39;0&#39;,8,126,&#39;https://www.etungo.com.tw/inside/413/419/608/20711.html&#39;,&#39;【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)&#39;,1580,1/1,&#39;2016-08-01 17:31:20&#39;,&#39;2016-08-01 18:01:52&#39;,2)&quot;[3] pry(#&lt;MastersController&gt;)&gt; equal_val_string=&gt; &quot;kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)&quot;完整程式碼：linkouts_attr_names = Linkout.attribute_names    linkouts_attr_names_string = linkouts_attr_names.join(&quot;,&quot;)    string_arr = []    bm[:linkout_list].each_with_index do |l, i|      l[&quot;status&quot;] = 2      l[&quot;flag_string&quot;] = nil      l[&quot;flag_at&quot;] = nil      if i == 0 # 這邊只拿出一組來組合sql，以免sql太亂難除錯        current_arr = []        l.each_pair do |k, v|          if k == &quot;created_at&quot; || k == &quot;updated_at&quot;            current_arr &lt;&lt; + &quot;&#39;&quot; + v.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;) + &quot;&#39;&quot;          elsif v.class == &#39;boolean&#39;            &quot;#{v}&quot;          elsif v.to_i &gt; 0            current_arr &lt;&lt; &quot;#{v}&quot;          elsif v != nil            current_arr &lt;&lt; &quot;&#39;#{v}&#39;&quot;          end        end        string_arr &lt;&lt; &quot;(&quot; + current_arr.join(&quot;,&quot;) + &quot;)&quot;      end    end    query_string = string_arr.join(&quot;,&quot;)    linkouts_attr_names.delete(&quot;id&quot;)    equal_val_string = linkouts_attr_names.inject([]) do |result, attr|      result &lt;&lt; &quot;#{attr}=VALUES(#{attr})&quot;    end    equal_val_string = equal_val_string.join(&quot;,&quot;)    ActiveRecord::Base.connection.execute(&quot;      INSERT INTO linkouts (#{linkouts_attr_names_string})        VALUES #{query_string}        ON DUPLICATE KEY UPDATE #{equal_val_string}    &quot;)這樣組出的 SQL 結果如下INSERT INTO linkouts (id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status)        VALUES (22442,&#39;0&#39;,8,126,&#39;https://www.etungo.com.tw/inside/413/419/608/20711.html&#39;,&#39;【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)&#39;,1580,1/1,&#39;2016-08-01 17:31:20&#39;,&#39;2016-08-01 18:01:52&#39;,2)        ON DUPLICATE KEY UPDATE kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)    )方法二：使用 AcitveRecord-importAcitveRecord Import 是一個專門用來批次新增或是修改資料的 gem。用法很簡單，在原本的 Model 後面加上要新的陣列，並指定要更新的欄位即可。要更新的欄位也支援使用 sql 語句。Model.import array_to_be_update, on_duplicate_key_update: [:title]Model.import [book1, book2], on_duplicate_key_update: &quot;author = values(author)&quot;結論組 Sql 不需要先把資料包成物件，效能會比較好。不過相對來說需要多花一些時間處理資料欄位型態的問題，而本例中的 mysql 因為是一個指令加上要更新的欄位可能很多，所以 debug 的難度比較高。這時候就看取捨了，如果初期趕著功能上線可以先用 activeRecord-import 來寫，當遇到效能需要最佳化的時候再改成純 sql 會是比較好的處理方式。">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="ActiveRecord - 更新大量資料">
+
+
+  <link rel="canonical" href="https://lukahuang.com/active-record-batch-update/">
+  <meta property="og:url" content="https://lukahuang.com/active-record-batch-update/">
+
+
+
+  <meta property="og:description" content="前言本文使用的兩種方法，實際上都是用一個 sql 插入或更新所有的資料。原因是使用其他的方法都沒有使用一個sql插入快。如果插入的筆數過多，需要調整 sql buffer 的大小。本例子的情景是一次更新100筆資料，資料量不大，所以不會遇到這個問題。方法一：純 SQL  因為欄位很多，我要傳送的欄位又是完整的一個不少，所以我用 Model.attribute_names 來組合要傳入的欄位名稱。  然後將要更新的 Hash 組成 VALUES (x1, y1, z1, ...), (x2, y2, z2, ...), ...字串  最後將要更新的欄位組成 flag_string=VALUES(flag_string) 這種格式想要組出的 sql    ActiveRecord::Base.connection.execute(&quot;      INSERT INTO linkouts (#{linkouts_attr_names_string})        VALUES #{query_string}        ON DUPLICATE KEY UPDATE #{equal_val_string}    &quot;)組出來的結果query string 這邊比較難處理，因為是 raw sql，如果在 integer 型態的欄位塞入 &#39;&#39;，或是在字串的欄位沒有用引號括起來都會噴錯。這也是使用 raw sql 撰寫的缺點。[1] pry(#&lt;MastersController&gt;)&gt; linkouts_attr_names_string=&gt; &quot;id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status&quot;[2] pry(#&lt;MastersController&gt;)&gt; query_string=&gt; &quot;(22442,&#39;0&#39;,8,126,&#39;https://www.etungo.com.tw/inside/413/419/608/20711.html&#39;,&#39;【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)&#39;,1580,1/1,&#39;2016-08-01 17:31:20&#39;,&#39;2016-08-01 18:01:52&#39;,2)&quot;[3] pry(#&lt;MastersController&gt;)&gt; equal_val_string=&gt; &quot;kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)&quot;完整程式碼：linkouts_attr_names = Linkout.attribute_names    linkouts_attr_names_string = linkouts_attr_names.join(&quot;,&quot;)    string_arr = []    bm[:linkout_list].each_with_index do |l, i|      l[&quot;status&quot;] = 2      l[&quot;flag_string&quot;] = nil      l[&quot;flag_at&quot;] = nil      if i == 0 # 這邊只拿出一組來組合sql，以免sql太亂難除錯        current_arr = []        l.each_pair do |k, v|          if k == &quot;created_at&quot; || k == &quot;updated_at&quot;            current_arr &lt;&lt; + &quot;&#39;&quot; + v.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;) + &quot;&#39;&quot;          elsif v.class == &#39;boolean&#39;            &quot;#{v}&quot;          elsif v.to_i &gt; 0            current_arr &lt;&lt; &quot;#{v}&quot;          elsif v != nil            current_arr &lt;&lt; &quot;&#39;#{v}&#39;&quot;          end        end        string_arr &lt;&lt; &quot;(&quot; + current_arr.join(&quot;,&quot;) + &quot;)&quot;      end    end    query_string = string_arr.join(&quot;,&quot;)    linkouts_attr_names.delete(&quot;id&quot;)    equal_val_string = linkouts_attr_names.inject([]) do |result, attr|      result &lt;&lt; &quot;#{attr}=VALUES(#{attr})&quot;    end    equal_val_string = equal_val_string.join(&quot;,&quot;)    ActiveRecord::Base.connection.execute(&quot;      INSERT INTO linkouts (#{linkouts_attr_names_string})        VALUES #{query_string}        ON DUPLICATE KEY UPDATE #{equal_val_string}    &quot;)這樣組出的 SQL 結果如下INSERT INTO linkouts (id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status)        VALUES (22442,&#39;0&#39;,8,126,&#39;https://www.etungo.com.tw/inside/413/419/608/20711.html&#39;,&#39;【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)&#39;,1580,1/1,&#39;2016-08-01 17:31:20&#39;,&#39;2016-08-01 18:01:52&#39;,2)        ON DUPLICATE KEY UPDATE kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)    )方法二：使用 AcitveRecord-importAcitveRecord Import 是一個專門用來批次新增或是修改資料的 gem。用法很簡單，在原本的 Model 後面加上要新的陣列，並指定要更新的欄位即可。要更新的欄位也支援使用 sql 語句。Model.import array_to_be_update, on_duplicate_key_update: [:title]Model.import [book1, book2], on_duplicate_key_update: &quot;author = values(author)&quot;結論組 Sql 不需要先把資料包成物件，效能會比較好。不過相對來說需要多花一些時間處理資料欄位型態的問題，而本例中的 mysql 因為是一個指令加上要更新的欄位可能很多，所以 debug 的難度比較高。這時候就看取捨了，如果初期趕著功能上線可以先用 activeRecord-import 來寫，當遇到效能需要最佳化的時候再改成純 sql 會是比較好的處理方式。">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2016-08-03T02:46:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="ActiveRecord - 更新大量資料">
+    <meta itemprop="description" content="前言本文使用的兩種方法，實際上都是用一個 sql 插入或更新所有的資料。原因是使用其他的方法都沒有使用一個sql插入快。如果插入的筆數過多，需要調整 sql buffer 的大小。本例子的情景是一次更新100筆資料，資料量不大，所以不會遇到這個問題。方法一：純 SQL  因為欄位很多，我要傳送的欄位又是完整的一個不少，所以我用 Model.attribute_names 來組合要傳入的欄位名稱。  然後將要更新的 Hash 組成 VALUES (x1, y1, z1, ...), (x2, y2, z2, ...), ...字串  最後將要更新的欄位組成 flag_string=VALUES(flag_string) 這種格式想要組出的 sql    ActiveRecord::Base.connection.execute(&quot;      INSERT INTO linkouts (#{linkouts_attr_names_string})        VALUES #{query_string}        ON DUPLICATE KEY UPDATE #{equal_val_string}    &quot;)組出來的結果query string 這邊比較難處理，因為是 raw sql，如果在 integer 型態的欄位塞入 &#39;&#39;，或是在字串的欄位沒有用引號括起來都會噴錯。這也是使用 raw sql 撰寫的缺點。[1] pry(#&lt;MastersController&gt;)&gt; linkouts_attr_names_string=&gt; &quot;id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status&quot;[2] pry(#&lt;MastersController&gt;)&gt; query_string=&gt; &quot;(22442,&#39;0&#39;,8,126,&#39;https://www.etungo.com.tw/inside/413/419/608/20711.html&#39;,&#39;【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)&#39;,1580,1/1,&#39;2016-08-01 17:31:20&#39;,&#39;2016-08-01 18:01:52&#39;,2)&quot;[3] pry(#&lt;MastersController&gt;)&gt; equal_val_string=&gt; &quot;kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)&quot;完整程式碼：linkouts_attr_names = Linkout.attribute_names    linkouts_attr_names_string = linkouts_attr_names.join(&quot;,&quot;)    string_arr = []    bm[:linkout_list].each_with_index do |l, i|      l[&quot;status&quot;] = 2      l[&quot;flag_string&quot;] = nil      l[&quot;flag_at&quot;] = nil      if i == 0 # 這邊只拿出一組來組合sql，以免sql太亂難除錯        current_arr = []        l.each_pair do |k, v|          if k == &quot;created_at&quot; || k == &quot;updated_at&quot;            current_arr &lt;&lt; + &quot;&#39;&quot; + v.strftime(&#39;%Y-%m-%d %H:%M:%S&#39;) + &quot;&#39;&quot;          elsif v.class == &#39;boolean&#39;            &quot;#{v}&quot;          elsif v.to_i &gt; 0            current_arr &lt;&lt; &quot;#{v}&quot;          elsif v != nil            current_arr &lt;&lt; &quot;&#39;#{v}&#39;&quot;          end        end        string_arr &lt;&lt; &quot;(&quot; + current_arr.join(&quot;,&quot;) + &quot;)&quot;      end    end    query_string = string_arr.join(&quot;,&quot;)    linkouts_attr_names.delete(&quot;id&quot;)    equal_val_string = linkouts_attr_names.inject([]) do |result, attr|      result &lt;&lt; &quot;#{attr}=VALUES(#{attr})&quot;    end    equal_val_string = equal_val_string.join(&quot;,&quot;)    ActiveRecord::Base.connection.execute(&quot;      INSERT INTO linkouts (#{linkouts_attr_names_string})        VALUES #{query_string}        ON DUPLICATE KEY UPDATE #{equal_val_string}    &quot;)這樣組出的 SQL 結果如下INSERT INTO linkouts (id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status)        VALUES (22442,&#39;0&#39;,8,126,&#39;https://www.etungo.com.tw/inside/413/419/608/20711.html&#39;,&#39;【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)&#39;,1580,1/1,&#39;2016-08-01 17:31:20&#39;,&#39;2016-08-01 18:01:52&#39;,2)        ON DUPLICATE KEY UPDATE kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)    )方法二：使用 AcitveRecord-importAcitveRecord Import 是一個專門用來批次新增或是修改資料的 gem。用法很簡單，在原本的 Model 後面加上要新的陣列，並指定要更新的欄位即可。要更新的欄位也支援使用 sql 語句。Model.import array_to_be_update, on_duplicate_key_update: [:title]Model.import [book1, book2], on_duplicate_key_update: &quot;author = values(author)&quot;結論組 Sql 不需要先把資料包成物件，效能會比較好。不過相對來說需要多花一些時間處理資料欄位型態的問題，而本例中的 mysql 因為是一個指令加上要更新的欄位可能很多，所以 debug 的難度比較高。這時候就看取捨了，如果初期趕著功能上線可以先用 activeRecord-import 來寫，當遇到效能需要最佳化的時候再改成純 sql 會是比較好的處理方式。">
+    <meta itemprop="datePublished" content="August 03, 2016">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">ActiveRecord - 更新大量資料
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#前言">前言</a></li>
+  <li><a href="#方法一純-sql">方法一：純 SQL</a></li>
+  <li><a href="#方法二使用-acitverecord-import">方法二：使用 AcitveRecord-import</a></li>
+  <li><a href="#結論">結論</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h3 id="前言">前言</h3>
+
+<p>本文使用的兩種方法，實際上都是用一個 sql 插入或更新所有的資料。
+原因是使用其他的方法都沒有使用一個sql插入快。
+如果插入的筆數過多，需要調整 sql buffer 的大小。
+本例子的情景是一次更新100筆資料，資料量不大，所以不會遇到這個問題。</p>
+
+<h3 id="方法一純-sql">方法一：純 SQL</h3>
+
+<ol>
+  <li>因為欄位很多，我要傳送的欄位又是完整的一個不少，所以我用 <code class="highlighter-rouge">Model.attribute_names</code> 來組合要傳入的欄位名稱。</li>
+  <li>然後將要更新的 Hash 組成 <code class="highlighter-rouge">VALUES (x1, y1, z1, ...), (x2, y2, z2, ...), ...</code>字串</li>
+  <li>最後將要更新的欄位組成 <code class="highlighter-rouge">flag_string=VALUES(flag_string)</code> 這種格式</li>
+</ol>
+
+<p>想要組出的 sql</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="s2">"
+      INSERT INTO linkouts (</span><span class="si">#{</span><span class="n">linkouts_attr_names_string</span><span class="si">}</span><span class="s2">)
+        VALUES </span><span class="si">#{</span><span class="n">query_string</span><span class="si">}</span><span class="s2">
+        ON DUPLICATE KEY UPDATE </span><span class="si">#{</span><span class="n">equal_val_string</span><span class="si">}</span><span class="s2">
+    "</span><span class="p">)</span>
+</code></pre></div></div>
+<p>組出來的結果</p>
+
+<p>query string 這邊比較難處理，因為是 raw sql，如果在 integer 型態的欄位塞入 <code class="highlighter-rouge">''</code>，或是在字串的欄位沒有用引號括起來都會噴錯。這也是使用 raw sql 撰寫的缺點。</p>
+
+<div class="language-terminal highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">
+</span><span class="gp">[1] pry(#</span>&lt;MastersController&gt;<span class="o">)&gt;</span> linkouts_attr_names_string
+<span class="gp">=&gt;</span><span class="w"> </span><span class="s2">"id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status"</span>
+<span class="go">
+</span><span class="gp">[2] pry(#</span>&lt;MastersController&gt;<span class="o">)&gt;</span> query_string
+<span class="gp">=&gt;</span><span class="w"> </span><span class="s2">"(22442,'0',8,126,'https://www.etungo.com.tw/inside/413/419/608/20711.html','【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)',1580,1/1,'2016-08-01 17:31:20','2016-08-01 18:01:52',2)"</span>
+<span class="go">
+</span><span class="gp">[3] pry(#</span>&lt;MastersController&gt;<span class="o">)&gt;</span> equal_val_string
+<span class="gp">=&gt;</span><span class="w"> </span><span class="s2">"kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)"</span>
+</code></pre></div></div>
+
+<p>完整程式碼：</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">linkouts_attr_names</span> <span class="o">=</span> <span class="no">Linkout</span><span class="p">.</span><span class="nf">attribute_names</span>
+    <span class="n">linkouts_attr_names_string</span> <span class="o">=</span> <span class="n">linkouts_attr_names</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
+    <span class="n">string_arr</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">bm</span><span class="p">[</span><span class="ss">:linkout_list</span><span class="p">].</span><span class="nf">each_with_index</span> <span class="k">do</span> <span class="o">|</span><span class="n">l</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span>
+
+      <span class="n">l</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+      <span class="n">l</span><span class="p">[</span><span class="s2">"flag_string"</span><span class="p">]</span> <span class="o">=</span> <span class="kp">nil</span>
+      <span class="n">l</span><span class="p">[</span><span class="s2">"flag_at"</span><span class="p">]</span> <span class="o">=</span> <span class="kp">nil</span>
+
+      <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="c1"># 這邊只拿出一組來組合sql，以免sql太亂難除錯</span>
+        <span class="n">current_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">l</span><span class="p">.</span><span class="nf">each_pair</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span>
+          <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">"created_at"</span> <span class="o">||</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">"updated_at"</span>
+            <span class="n">current_arr</span> <span class="o">&lt;&lt;</span> <span class="o">+</span> <span class="s2">"'"</span> <span class="o">+</span> <span class="n">v</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-%d %H:%M:%S'</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"'"</span>
+          <span class="k">elsif</span> <span class="n">v</span><span class="p">.</span><span class="nf">class</span> <span class="o">==</span> <span class="s1">'boolean'</span>
+            <span class="s2">"</span><span class="si">#{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span>
+          <span class="k">elsif</span> <span class="n">v</span><span class="p">.</span><span class="nf">to_i</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">current_arr</span> <span class="o">&lt;&lt;</span> <span class="s2">"</span><span class="si">#{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span>
+          <span class="k">elsif</span> <span class="n">v</span> <span class="o">!=</span> <span class="kp">nil</span>
+            <span class="n">current_arr</span> <span class="o">&lt;&lt;</span> <span class="s2">"'</span><span class="si">#{</span><span class="n">v</span><span class="si">}</span><span class="s2">'"</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+        <span class="n">string_arr</span> <span class="o">&lt;&lt;</span> <span class="s2">"("</span> <span class="o">+</span> <span class="n">current_arr</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span> <span class="o">+</span> <span class="s2">")"</span>
+
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">query_string</span> <span class="o">=</span> <span class="n">string_arr</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
+    <span class="n">linkouts_attr_names</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
+    <span class="n">equal_val_string</span> <span class="o">=</span> <span class="n">linkouts_attr_names</span><span class="p">.</span><span class="nf">inject</span><span class="p">([])</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="p">,</span> <span class="kp">attr</span><span class="o">|</span>
+      <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="s2">"</span><span class="si">#{</span><span class="kp">attr</span><span class="si">}</span><span class="s2">=VALUES(</span><span class="si">#{</span><span class="kp">attr</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="k">end</span>
+    <span class="n">equal_val_string</span> <span class="o">=</span> <span class="n">equal_val_string</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="s2">"
+      INSERT INTO linkouts (</span><span class="si">#{</span><span class="n">linkouts_attr_names_string</span><span class="si">}</span><span class="s2">)
+        VALUES </span><span class="si">#{</span><span class="n">query_string</span><span class="si">}</span><span class="s2">
+        ON DUPLICATE KEY UPDATE </span><span class="si">#{</span><span class="n">equal_val_string</span><span class="si">}</span><span class="s2">
+    "</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>這樣組出的 SQL 結果如下</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INSERT INTO linkouts (id,kind,report_id,keyword_id,ezpd_id,url,name,price,full_match,created_at,updated_at,merchant_price,price_check,status,merchant_id,remark,out_of_stock,flag_at,flag_string,remark_status)
+        VALUES (22442,'0',8,126,'https://www.etungo.com.tw/inside/413/419/608/20711.html','【CLENSURE可蘭秀】美容離子導入儀 (SNOWY)',1580,1/1,'2016-08-01 17:31:20','2016-08-01 18:01:52',2)
+        ON DUPLICATE KEY UPDATE kind=VALUES(kind),report_id=VALUES(report_id),keyword_id=VALUES(keyword_id),ezpd_id=VALUES(ezpd_id),url=VALUES(url),name=VALUES(name),price=VALUES(price),full_match=VALUES(full_match),created_at=VALUES(created_at),updated_at=VALUES(updated_at),merchant_price=VALUES(merchant_price),price_check=VALUES(price_check),status=VALUES(status),merchant_id=VALUES(merchant_id),remark=VALUES(remark),out_of_stock=VALUES(out_of_stock),flag_at=VALUES(flag_at),flag_string=VALUES(flag_string),remark_status=VALUES(remark_status)
+    )
+</code></pre></div></div>
+
+<h3 id="方法二使用-acitverecord-import">方法二：使用 AcitveRecord-import</h3>
+
+<p>AcitveRecord Import 是一個專門用來批次新增或是修改資料的 gem。
+用法很簡單，在原本的 Model 後面加上要新的陣列，並指定要更新的欄位即可。
+要更新的欄位也支援使用 sql 語句。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Model</span><span class="p">.</span><span class="nf">import</span> <span class="n">array_to_be_update</span><span class="p">,</span> <span class="ss">on_duplicate_key_update: </span><span class="p">[</span><span class="ss">:title</span><span class="p">]</span>
+<span class="no">Model</span><span class="p">.</span><span class="nf">import</span> <span class="p">[</span><span class="n">book1</span><span class="p">,</span> <span class="n">book2</span><span class="p">],</span> <span class="ss">on_duplicate_key_update: </span><span class="s2">"author = values(author)"</span>
+</code></pre></div></div>
+
+<h3 id="結論">結論</h3>
+
+<p>組 Sql 不需要先把資料包成物件，效能會比較好。
+不過相對來說需要多花一些時間處理資料欄位型態的問題，
+而本例中的 mysql 因為是一個指令加上要更新的欄位可能很多，
+所以 debug 的難度比較高。
+這時候就看取捨了，如果初期趕著功能上線可以先用 activeRecord-import 來寫，
+當遇到效能需要最佳化的時候再改成純 sql 會是比較好的處理方式。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#activerecord" class="page__taxonomy-item" rel="tag">ActiveRecord</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#rails" class="page__taxonomy-item" rel="tag">Rails</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2016-08-03T02:46:00+00:00">August 03, 2016</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/linux-how-to-check-os/" class="pagination--pager" title="Linux - 如何查詢 OS 版本
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/a-ruby-tip-html-entity-encode/" class="pagination--pager" title="Ruby 爬蟲小技巧 - 處理 Html Entity
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

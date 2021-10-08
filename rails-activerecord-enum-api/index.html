@@ -1,0 +1,520 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Rails 筆記 - 使用 ActiveRecord::Enum 設定狀態 - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="使用 Array 表達狀態class Order	KIND = [ [&#39;未付款&#39;, 0], [&#39;已付款&#39;, 1], [&#39;已出貨&#39;,2] ]end代表 orders 這張表中的 kind 欄位如果是 1 ，則此訂單狀態是未付款的。寫成這樣的好處是在使用 select view helper 的時候可以直接丟進去&lt;%= select_tag &quot;訂單狀態&quot;, options_for_select( Order::KIND ) %&gt;把 KIND 打成這樣是 OK 的，但是我想把它打的好看一點。今天發現了有 ActiveRecord Enum 可以讓他變得有趣點。而且是只要有 ActiveRecord 就可以用，不需要裝其他的 gem。ActiveRecord::Enum 介紹首先需要宣告對應 DB 裡面的值，第一個就代表對應 0 , 第二個就代表對應 1。class Conversation &lt; ActiveRecord::Base  enum status: [ :active, :archived ]end除了可以用文字表示原本是數字的 conversation 的狀態以外，也加了 active! 和 active? 這種方便的方法，active!用來改變 conversation 的狀態為 active ，而 active? 則用來辨識 conversation 狀態是否為 active。這樣寫語意上更棒，更好讀。# conversation.update! status: 0conversation.active!conversation.active? # =&gt; trueconversation.status  # =&gt; &quot;active&quot;# conversation.update! status: 1conversation.archived!conversation.archived? # =&gt; trueconversation.status    # =&gt; &quot;archived&quot;當然你也可以直接指定值給 conversation.status# conversation.status = 1conversation.status = &quot;archived&quot;conversation.status = nilconversation.status.nil? # =&gt; trueconversation.status      # =&gt; nil用 Hash 儲存 enum宣告成 hash 型態的話，我們可以用 status 的複數型態 statuses 來取得這個 Hash，之後的取值也從 Conversation.active 變成了 Conversation.statuses[:active]，兩個得到的結果是一樣的。不過使用 Hash 時可以明確知道我現在在修改的是 status，屬性一多的時候不會造成混淆。class Conversation &lt; ActiveRecord::Base  enum status: { active: 0, archived: 1 }endConversation.statuses[:active]    # =&gt; 0Conversation.statuses[&quot;archived&quot;] # =&gt; 1取得 options_for_select 所需的陣列這樣宣告後，使用 status 的複數型態 statuses 可以取得剛剛輸入的陣列[5] pry(main)&gt; Conversation.statuses=&gt; {&quot;active&quot;=&gt;0, &quot;archived&quot;=&gt;1}OK 現在要的東西很接近我們要的了，再做一點加工。[11] pry(main)&gt; Conversation.statuses.invert.to_a=&gt; [[0, &quot;active&quot;], [1, &quot;archived&quot;]]done! 現在用 enum 也可以製作 options_for_select 專屬的陣列了。參考資料ActiveRecord::EnumWhat’s new in edge Rails: Active Record enums">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Rails 筆記 - 使用 ActiveRecord::Enum 設定狀態">
+
+
+  <link rel="canonical" href="https://lukahuang.com/rails-activerecord-enum-api/">
+  <meta property="og:url" content="https://lukahuang.com/rails-activerecord-enum-api/">
+
+
+
+  <meta property="og:description" content="使用 Array 表達狀態class Order	KIND = [ [&#39;未付款&#39;, 0], [&#39;已付款&#39;, 1], [&#39;已出貨&#39;,2] ]end代表 orders 這張表中的 kind 欄位如果是 1 ，則此訂單狀態是未付款的。寫成這樣的好處是在使用 select view helper 的時候可以直接丟進去&lt;%= select_tag &quot;訂單狀態&quot;, options_for_select( Order::KIND ) %&gt;把 KIND 打成這樣是 OK 的，但是我想把它打的好看一點。今天發現了有 ActiveRecord Enum 可以讓他變得有趣點。而且是只要有 ActiveRecord 就可以用，不需要裝其他的 gem。ActiveRecord::Enum 介紹首先需要宣告對應 DB 裡面的值，第一個就代表對應 0 , 第二個就代表對應 1。class Conversation &lt; ActiveRecord::Base  enum status: [ :active, :archived ]end除了可以用文字表示原本是數字的 conversation 的狀態以外，也加了 active! 和 active? 這種方便的方法，active!用來改變 conversation 的狀態為 active ，而 active? 則用來辨識 conversation 狀態是否為 active。這樣寫語意上更棒，更好讀。# conversation.update! status: 0conversation.active!conversation.active? # =&gt; trueconversation.status  # =&gt; &quot;active&quot;# conversation.update! status: 1conversation.archived!conversation.archived? # =&gt; trueconversation.status    # =&gt; &quot;archived&quot;當然你也可以直接指定值給 conversation.status# conversation.status = 1conversation.status = &quot;archived&quot;conversation.status = nilconversation.status.nil? # =&gt; trueconversation.status      # =&gt; nil用 Hash 儲存 enum宣告成 hash 型態的話，我們可以用 status 的複數型態 statuses 來取得這個 Hash，之後的取值也從 Conversation.active 變成了 Conversation.statuses[:active]，兩個得到的結果是一樣的。不過使用 Hash 時可以明確知道我現在在修改的是 status，屬性一多的時候不會造成混淆。class Conversation &lt; ActiveRecord::Base  enum status: { active: 0, archived: 1 }endConversation.statuses[:active]    # =&gt; 0Conversation.statuses[&quot;archived&quot;] # =&gt; 1取得 options_for_select 所需的陣列這樣宣告後，使用 status 的複數型態 statuses 可以取得剛剛輸入的陣列[5] pry(main)&gt; Conversation.statuses=&gt; {&quot;active&quot;=&gt;0, &quot;archived&quot;=&gt;1}OK 現在要的東西很接近我們要的了，再做一點加工。[11] pry(main)&gt; Conversation.statuses.invert.to_a=&gt; [[0, &quot;active&quot;], [1, &quot;archived&quot;]]done! 現在用 enum 也可以製作 options_for_select 專屬的陣列了。參考資料ActiveRecord::EnumWhat’s new in edge Rails: Active Record enums">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2016-05-01T12:05:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Rails 筆記 - 使用 ActiveRecord::Enum 設定狀態">
+    <meta itemprop="description" content="使用 Array 表達狀態class Order	KIND = [ [&#39;未付款&#39;, 0], [&#39;已付款&#39;, 1], [&#39;已出貨&#39;,2] ]end代表 orders 這張表中的 kind 欄位如果是 1 ，則此訂單狀態是未付款的。寫成這樣的好處是在使用 select view helper 的時候可以直接丟進去&lt;%= select_tag &quot;訂單狀態&quot;, options_for_select( Order::KIND ) %&gt;把 KIND 打成這樣是 OK 的，但是我想把它打的好看一點。今天發現了有 ActiveRecord Enum 可以讓他變得有趣點。而且是只要有 ActiveRecord 就可以用，不需要裝其他的 gem。ActiveRecord::Enum 介紹首先需要宣告對應 DB 裡面的值，第一個就代表對應 0 , 第二個就代表對應 1。class Conversation &lt; ActiveRecord::Base  enum status: [ :active, :archived ]end除了可以用文字表示原本是數字的 conversation 的狀態以外，也加了 active! 和 active? 這種方便的方法，active!用來改變 conversation 的狀態為 active ，而 active? 則用來辨識 conversation 狀態是否為 active。這樣寫語意上更棒，更好讀。# conversation.update! status: 0conversation.active!conversation.active? # =&gt; trueconversation.status  # =&gt; &quot;active&quot;# conversation.update! status: 1conversation.archived!conversation.archived? # =&gt; trueconversation.status    # =&gt; &quot;archived&quot;當然你也可以直接指定值給 conversation.status# conversation.status = 1conversation.status = &quot;archived&quot;conversation.status = nilconversation.status.nil? # =&gt; trueconversation.status      # =&gt; nil用 Hash 儲存 enum宣告成 hash 型態的話，我們可以用 status 的複數型態 statuses 來取得這個 Hash，之後的取值也從 Conversation.active 變成了 Conversation.statuses[:active]，兩個得到的結果是一樣的。不過使用 Hash 時可以明確知道我現在在修改的是 status，屬性一多的時候不會造成混淆。class Conversation &lt; ActiveRecord::Base  enum status: { active: 0, archived: 1 }endConversation.statuses[:active]    # =&gt; 0Conversation.statuses[&quot;archived&quot;] # =&gt; 1取得 options_for_select 所需的陣列這樣宣告後，使用 status 的複數型態 statuses 可以取得剛剛輸入的陣列[5] pry(main)&gt; Conversation.statuses=&gt; {&quot;active&quot;=&gt;0, &quot;archived&quot;=&gt;1}OK 現在要的東西很接近我們要的了，再做一點加工。[11] pry(main)&gt; Conversation.statuses.invert.to_a=&gt; [[0, &quot;active&quot;], [1, &quot;archived&quot;]]done! 現在用 enum 也可以製作 options_for_select 專屬的陣列了。參考資料ActiveRecord::EnumWhat’s new in edge Rails: Active Record enums">
+    <meta itemprop="datePublished" content="May 01, 2016">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Rails 筆記 - 使用 ActiveRecord::Enum 設定狀態
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#使用-array-表達狀態">使用 Array 表達狀態</a></li>
+  <li><a href="#activerecordenum-介紹">ActiveRecord::Enum 介紹</a></li>
+  <li><a href="#用-hash-儲存-enum">用 Hash 儲存 enum</a></li>
+  <li><a href="#取得-options_for_select-所需的陣列">取得 options_for_select 所需的陣列</a></li>
+  <li><a href="#參考資料">參考資料</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="使用-array-表達狀態">使用 Array 表達狀態</h2>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Order</span>
+	<span class="no">KIND</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="s1">'未付款'</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s1">'已付款'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="s1">'已出貨'</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="p">]</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>代表 orders 這張表中的 kind 欄位如果是 1 ，則此訂單狀態是未付款的。
+寫成這樣的好處是在使用 select view helper 的時候可以直接丟進去</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">select_tag</span> <span class="s2">"訂單狀態"</span><span class="p">,</span> <span class="n">options_for_select</span><span class="p">(</span> <span class="no">Order</span><span class="o">::</span><span class="no">KIND</span> <span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>把 KIND 打成這樣是 OK 的，但是我想把它打的好看一點。今天發現了有 ActiveRecord Enum 可以讓他變得有趣點。而且是只要有 ActiveRecord 就可以用，不需要裝其他的 gem。</p>
+
+<h2 id="activerecordenum-介紹">ActiveRecord::Enum 介紹</h2>
+
+<p>首先需要宣告對應 DB 裡面的值，第一個就代表對應 0 , 第二個就代表對應 1。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Conversation</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">enum</span> <span class="ss">status: </span><span class="p">[</span> <span class="ss">:active</span><span class="p">,</span> <span class="ss">:archived</span> <span class="p">]</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>除了可以用文字表示原本是數字的 conversation 的狀態以外，也加了 <code class="highlighter-rouge">active!</code> 和 <code class="highlighter-rouge">active? </code>這種方便的方法，<code class="highlighter-rouge">active!</code>用來改變 conversation 的狀態為 active ，而 <code class="highlighter-rouge">active?</code> 則用來辨識 conversation 狀態是否為 active。這樣寫語意上更棒，更好讀。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="c1"># conversation.update! status: 0</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">active!</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">active?</span> <span class="c1"># =&gt; true</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">status</span>  <span class="c1"># =&gt; "active"</span>
+
+<span class="c1"># conversation.update! status: 1</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">archived!</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">archived?</span> <span class="c1"># =&gt; true</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">status</span>    <span class="c1"># =&gt; "archived"</span>
+</code></pre></div></div>
+
+<p>當然你也可以直接指定值給 <code class="highlighter-rouge">conversation.status</code></p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># conversation.status = 1</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s2">"archived"</span>
+
+<span class="n">conversation</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="kp">nil</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">status</span><span class="p">.</span><span class="nf">nil?</span> <span class="c1"># =&gt; true</span>
+<span class="n">conversation</span><span class="p">.</span><span class="nf">status</span>      <span class="c1"># =&gt; nil</span>
+</code></pre></div></div>
+
+<h2 id="用-hash-儲存-enum">用 Hash 儲存 enum</h2>
+
+<p>宣告成 hash 型態的話，我們可以用 status 的複數型態 statuses 來取得這個 Hash，之後的取值也從 Conversation.active 變成了 Conversation.statuses[:active]，兩個得到的結果是一樣的。不過使用 Hash 時可以明確知道我現在在修改的是 status，屬性一多的時候不會造成混淆。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Conversation</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">enum</span> <span class="ss">status: </span><span class="p">{</span> <span class="ss">active: </span><span class="mi">0</span><span class="p">,</span> <span class="ss">archived: </span><span class="mi">1</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="no">Conversation</span><span class="p">.</span><span class="nf">statuses</span><span class="p">[</span><span class="ss">:active</span><span class="p">]</span>    <span class="c1"># =&gt; 0</span>
+<span class="no">Conversation</span><span class="p">.</span><span class="nf">statuses</span><span class="p">[</span><span class="s2">"archived"</span><span class="p">]</span> <span class="c1"># =&gt; 1</span>
+</code></pre></div></div>
+
+<h2 id="取得-options_for_select-所需的陣列">取得 options_for_select 所需的陣列</h2>
+
+<p>這樣宣告後，使用 status 的複數型態 <code class="highlighter-rouge">statuses</code> 可以取得剛剛輸入的陣列</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[5] pry(main)&gt; Conversation.statuses
+=&gt; {"active"=&gt;0, "archived"=&gt;1}
+</code></pre></div></div>
+
+<p>OK 現在要的東西很接近我們要的了，再做一點加工。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[11] pry(main)&gt; Conversation.statuses.invert.to_a
+=&gt; [[0, "active"], [1, "archived"]]
+</code></pre></div></div>
+
+<p>done! 現在用 enum 也可以製作 options_for_select 專屬的陣列了。</p>
+
+<h2 id="參考資料">參考資料</h2>
+<p><a href="http://edgeapi.rubyonrails.org/classes/ActiveRecord/Enum.html">ActiveRecord::Enum</a>
+<a href="https://robots.thoughtbot.com/whats-new-in-edge-rails-active-record-enum">What’s new in edge Rails: Active Record enums</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#rails" class="page__taxonomy-item" rel="tag">Rails</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2016-05-01T12:05:00+00:00">May 01, 2016</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/deploy-redmine-to-vps-by-rails-way-in-ubuntu-14-04/" class="pagination--pager" title="Deploy Redmine to VPS by Rails way in Ubuntu 14.04
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/jquery-notes-get-last-element/" class="pagination--pager" title="jQuery vs Ruby - 取得倒數的元素並組成字串
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

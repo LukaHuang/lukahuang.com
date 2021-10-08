@@ -1,0 +1,630 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Web 基本功 - Cookie 與 Session - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="Cookie1.1 什麼是 Cookie ?Cookie 在使用者第一次進入網站的時候產生。Browser 記錄一些隱私性較低的資料。例如: 使用者第一次進入網站的時候會跳出教學視窗。當使用者點擊[關閉]後，Cookie內記錄使用者已經看過教學了。使用者在下次登入的時候因為 Cookie 內記錄著使用者已經看過教學，所以就不會跳出教學視窗。1.2 Cookie 的特性  每個網站的 Cookie 是分開的, 例如: www.google.com 無法取得 www.yahoo.com 的 cookie。  能夠設定失效的時間。比如說過一段時間你就需要重新登入，就是由設定 Cookie Expired Time 來完成。有時候為了方便，也可能將 Cookie 設定為永久不失效。1.3 Server 端如何讓 Browser 儲存 Cookie  Client 請求 Server 給予頁面  Server 回 Response 給 Browser 的時候，HTTP Header 帶上 Set-Cookie。Browser 接收到 Set-Cookie 指令時，會將 Cookie 的名稱和值儲存在 Browser 的 Cookie。1.4 Browser 在每次 Request 的時候會帶上 CookieBrowser 在每次對 Server 發出 Request 的時候會帶上 Cookie 的 Header，讓 Server 能夠正確的存取當前 Cookie。Session2.1 什麼是 SessionSession 就像你進入一個遊樂園，手上先蓋個章，下次進入的時候就知道你是誰。遊樂園就好比是 Server，你就好比是 Client (Browser)。Client 要怎麼儲存這個章呢? 有兩種方法:  使用 Cookie (set cookie)  使用 html 儲存，例如: hidden input。拿章去 Server 換資料也有兩種方法:  使用 Cookie  Query string/POST因為實作上的方便程度與效能考量，大部分的網站採用 Cookie 來完成 Session 的實作。2.2 Cookie-based Session 與 Session StorageCookie-based Session 指的 Session 儲存的方式不同，而不是拿章去 Server 換資料的時候有沒有使用 Cookie。常見的 Session Storage 有這幾種:  Database  Memcached  Cookie2.3 比較 Cookie-based Session 與 Memcached Store Session來比較一下這兩者的優缺點。 Cookie-based Session 的優點:  對伺服器的效能負擔很低  方便使用缺點:  大小最多存4Kb。  資料存放在瀏覽器上如果 config/secrets.yml 外流可能存在被破解的風險 (詳見 Rails CookieStore 的安全議題)。Memcached Store Session 的優點:  memcached 使用記憶體來儲存，讀取速度快。  可以實現集中式管理。  不會受到 cookie 4kb 大小的限制。缺點：  儲存方式用記憶體，持久化有疑慮。  在追求高性能高併發的情景下，cookies 的表現更好，因此很多大網站採用 cookies 作為 session store.2.4 Session 傳值Session 傳值指的是利用 Session 儲存資料的機制，讓不同頁面間可以互相傳遞資料。  使用 Query String 或是 POST 把資料往 Server 傳  Server 將收到的資料存到 Session 中。  在不同頁面的時候因為你的章是同一個，可以讀取 Session 中儲存的資料也是同一份，達到傳值的目的。Rails 中的 Cookie-based Session 安全性問題Rails 3 以前 cookie-based session 如果不特別設定，可以輕易的被解開:require &#39;base64&#39;session_cookie = &#39;your session cookie&#39;Marshal.load(Base64.decode64(sesson_cookie.split(&#39;--&#39;).first))解開後會像這個樣子{        &quot;session_id&quot; =&gt; &quot;3223668cb4b04296c006e190ce2b1a17&quot;,    &quot;user_return_to&quot; =&gt; &quot;/&quot;,             &quot;flash&quot; =&gt; #&lt;ActionDispatch::Flash::FlashHash:0x007f80d1090250 @used=#&lt;Set: {:alert}&gt;, @closed=false, @flashes={:alert=&gt;&quot;You need to sign in or sign up before continuing.&quot;, :warning=&gt;nil, :error=&gt;nil, :notice=&gt;nil}, @now=nil&gt;,       &quot;_csrf_token&quot; =&gt; &quot;BxX8rLulhq2v2YSKrLxIIkYeV4IYNTNceT2ib1BrO08=&quot;}Rails 4 以後的 Cookie-based Session 會經過 Secret 加密。好好保護你的 config/secret.yml 能夠讓 Session 中的隱密資料不會被解開，從下面 code 可以看出要解開的話需要不少的麻煩:require &#39;rubygems&#39;require &#39;cgi&#39;require &#39;active_support&#39;def decrypt_session_cookie(cookie, key)  cookie = CGI::unescape(cookie)  # Default values for Rails 4 apps  key_iter_num = 1000  key_size     = 64  salt         = &quot;encrypted cookie&quot;  signed_salt  = &quot;signed encrypted cookie&quot;  key_generator = ActiveSupport::KeyGenerator.new(key, iterations: key_iter_num)  secret = key_generator.generate_key(salt)  sign_secret = key_generator.generate_key(signed_salt)  encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret)  puts encryptor.decrypt_and_verify(cookie)end# Time to test ... (With data from Arbeit327)cookie = &#39;WVFQVTFtbmNxWWJPODZNb3NUMVZzZGtDVjZQNXpMYStFMWdiZlJPMkdjRFRBOGZ5T3pOTzBPKzk3NWxvQUJvTlRRU2t4MXZmdG8rT0I0R2M3Ulh0YXpxRVhNMll5UW1xUHhvVXBLbXozZ3ZyNjB4VDU4dWRIUkxBWjBXbDJhci93YkYrZWswUHdFL0hUNDJaUHo2cEpxbXFvdlFZMjJWVU9KTWhHb3NyalFwTkphd0pUQVZSTXRHbkVqRlFnSGpNVTNFQlVxYlRmT3pWbXNjK0JuQ3FydzQvODRhbmtuU29haGNRbXQ4T3o1ZjhqMk53WTRMa0pVd1hPb2NHTVFQY3dvanE2ZElqUk1Mc21HS0k2SHVuZEZ3OWhjdzZPQnRSMEdVVkQwL2IxSVh5QzNSWVlJZms5c1JJV0lzUE1Zb1NHbEtqYm5nTGRKd1ZSdGpOQ1RZZWthR1A2anRFMEluaTcyWTNaNHJBR1N0dklzMkg1RjVmVmY4azEzV3o0N2Z2LS1wQlowRUZ6cjI3SVFQU0F5bGlYSDNnPT0%3D--19650cc5c3e2599fb43b7235ab4de5a1ce8a46ac&#39;key = &#39;aeb977de013ade650b97e0aa5246813591104017871a7753fe186e9634c9129b367306606878985c759ca4fddd17d955207011bb855ef01ed414398b4ac8317b&#39;decrypt_session_cookie(cookie, key)references介紹 Session 及 Cookie 兩者的差別說明FRED - Web 技術中的 Session 是什麼？Rails CookieStore 的安全議題 - Shaolin.TWThe Will Will Web - 解釋 Cookie 的特性A simple script to decode Rails 4 session cookies">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Web 基本功 - Cookie 與 Session">
+
+
+  <link rel="canonical" href="https://lukahuang.com/web-foundation-the-different-of-cookie-and-session/">
+  <meta property="og:url" content="https://lukahuang.com/web-foundation-the-different-of-cookie-and-session/">
+
+
+
+  <meta property="og:description" content="Cookie1.1 什麼是 Cookie ?Cookie 在使用者第一次進入網站的時候產生。Browser 記錄一些隱私性較低的資料。例如: 使用者第一次進入網站的時候會跳出教學視窗。當使用者點擊[關閉]後，Cookie內記錄使用者已經看過教學了。使用者在下次登入的時候因為 Cookie 內記錄著使用者已經看過教學，所以就不會跳出教學視窗。1.2 Cookie 的特性  每個網站的 Cookie 是分開的, 例如: www.google.com 無法取得 www.yahoo.com 的 cookie。  能夠設定失效的時間。比如說過一段時間你就需要重新登入，就是由設定 Cookie Expired Time 來完成。有時候為了方便，也可能將 Cookie 設定為永久不失效。1.3 Server 端如何讓 Browser 儲存 Cookie  Client 請求 Server 給予頁面  Server 回 Response 給 Browser 的時候，HTTP Header 帶上 Set-Cookie。Browser 接收到 Set-Cookie 指令時，會將 Cookie 的名稱和值儲存在 Browser 的 Cookie。1.4 Browser 在每次 Request 的時候會帶上 CookieBrowser 在每次對 Server 發出 Request 的時候會帶上 Cookie 的 Header，讓 Server 能夠正確的存取當前 Cookie。Session2.1 什麼是 SessionSession 就像你進入一個遊樂園，手上先蓋個章，下次進入的時候就知道你是誰。遊樂園就好比是 Server，你就好比是 Client (Browser)。Client 要怎麼儲存這個章呢? 有兩種方法:  使用 Cookie (set cookie)  使用 html 儲存，例如: hidden input。拿章去 Server 換資料也有兩種方法:  使用 Cookie  Query string/POST因為實作上的方便程度與效能考量，大部分的網站採用 Cookie 來完成 Session 的實作。2.2 Cookie-based Session 與 Session StorageCookie-based Session 指的 Session 儲存的方式不同，而不是拿章去 Server 換資料的時候有沒有使用 Cookie。常見的 Session Storage 有這幾種:  Database  Memcached  Cookie2.3 比較 Cookie-based Session 與 Memcached Store Session來比較一下這兩者的優缺點。 Cookie-based Session 的優點:  對伺服器的效能負擔很低  方便使用缺點:  大小最多存4Kb。  資料存放在瀏覽器上如果 config/secrets.yml 外流可能存在被破解的風險 (詳見 Rails CookieStore 的安全議題)。Memcached Store Session 的優點:  memcached 使用記憶體來儲存，讀取速度快。  可以實現集中式管理。  不會受到 cookie 4kb 大小的限制。缺點：  儲存方式用記憶體，持久化有疑慮。  在追求高性能高併發的情景下，cookies 的表現更好，因此很多大網站採用 cookies 作為 session store.2.4 Session 傳值Session 傳值指的是利用 Session 儲存資料的機制，讓不同頁面間可以互相傳遞資料。  使用 Query String 或是 POST 把資料往 Server 傳  Server 將收到的資料存到 Session 中。  在不同頁面的時候因為你的章是同一個，可以讀取 Session 中儲存的資料也是同一份，達到傳值的目的。Rails 中的 Cookie-based Session 安全性問題Rails 3 以前 cookie-based session 如果不特別設定，可以輕易的被解開:require &#39;base64&#39;session_cookie = &#39;your session cookie&#39;Marshal.load(Base64.decode64(sesson_cookie.split(&#39;--&#39;).first))解開後會像這個樣子{        &quot;session_id&quot; =&gt; &quot;3223668cb4b04296c006e190ce2b1a17&quot;,    &quot;user_return_to&quot; =&gt; &quot;/&quot;,             &quot;flash&quot; =&gt; #&lt;ActionDispatch::Flash::FlashHash:0x007f80d1090250 @used=#&lt;Set: {:alert}&gt;, @closed=false, @flashes={:alert=&gt;&quot;You need to sign in or sign up before continuing.&quot;, :warning=&gt;nil, :error=&gt;nil, :notice=&gt;nil}, @now=nil&gt;,       &quot;_csrf_token&quot; =&gt; &quot;BxX8rLulhq2v2YSKrLxIIkYeV4IYNTNceT2ib1BrO08=&quot;}Rails 4 以後的 Cookie-based Session 會經過 Secret 加密。好好保護你的 config/secret.yml 能夠讓 Session 中的隱密資料不會被解開，從下面 code 可以看出要解開的話需要不少的麻煩:require &#39;rubygems&#39;require &#39;cgi&#39;require &#39;active_support&#39;def decrypt_session_cookie(cookie, key)  cookie = CGI::unescape(cookie)  # Default values for Rails 4 apps  key_iter_num = 1000  key_size     = 64  salt         = &quot;encrypted cookie&quot;  signed_salt  = &quot;signed encrypted cookie&quot;  key_generator = ActiveSupport::KeyGenerator.new(key, iterations: key_iter_num)  secret = key_generator.generate_key(salt)  sign_secret = key_generator.generate_key(signed_salt)  encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret)  puts encryptor.decrypt_and_verify(cookie)end# Time to test ... (With data from Arbeit327)cookie = &#39;WVFQVTFtbmNxWWJPODZNb3NUMVZzZGtDVjZQNXpMYStFMWdiZlJPMkdjRFRBOGZ5T3pOTzBPKzk3NWxvQUJvTlRRU2t4MXZmdG8rT0I0R2M3Ulh0YXpxRVhNMll5UW1xUHhvVXBLbXozZ3ZyNjB4VDU4dWRIUkxBWjBXbDJhci93YkYrZWswUHdFL0hUNDJaUHo2cEpxbXFvdlFZMjJWVU9KTWhHb3NyalFwTkphd0pUQVZSTXRHbkVqRlFnSGpNVTNFQlVxYlRmT3pWbXNjK0JuQ3FydzQvODRhbmtuU29haGNRbXQ4T3o1ZjhqMk53WTRMa0pVd1hPb2NHTVFQY3dvanE2ZElqUk1Mc21HS0k2SHVuZEZ3OWhjdzZPQnRSMEdVVkQwL2IxSVh5QzNSWVlJZms5c1JJV0lzUE1Zb1NHbEtqYm5nTGRKd1ZSdGpOQ1RZZWthR1A2anRFMEluaTcyWTNaNHJBR1N0dklzMkg1RjVmVmY4azEzV3o0N2Z2LS1wQlowRUZ6cjI3SVFQU0F5bGlYSDNnPT0%3D--19650cc5c3e2599fb43b7235ab4de5a1ce8a46ac&#39;key = &#39;aeb977de013ade650b97e0aa5246813591104017871a7753fe186e9634c9129b367306606878985c759ca4fddd17d955207011bb855ef01ed414398b4ac8317b&#39;decrypt_session_cookie(cookie, key)references介紹 Session 及 Cookie 兩者的差別說明FRED - Web 技術中的 Session 是什麼？Rails CookieStore 的安全議題 - Shaolin.TWThe Will Will Web - 解釋 Cookie 的特性A simple script to decode Rails 4 session cookies">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2017-12-22T14:11:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Web 基本功 - Cookie 與 Session">
+    <meta itemprop="description" content="Cookie1.1 什麼是 Cookie ?Cookie 在使用者第一次進入網站的時候產生。Browser 記錄一些隱私性較低的資料。例如: 使用者第一次進入網站的時候會跳出教學視窗。當使用者點擊[關閉]後，Cookie內記錄使用者已經看過教學了。使用者在下次登入的時候因為 Cookie 內記錄著使用者已經看過教學，所以就不會跳出教學視窗。1.2 Cookie 的特性  每個網站的 Cookie 是分開的, 例如: www.google.com 無法取得 www.yahoo.com 的 cookie。  能夠設定失效的時間。比如說過一段時間你就需要重新登入，就是由設定 Cookie Expired Time 來完成。有時候為了方便，也可能將 Cookie 設定為永久不失效。1.3 Server 端如何讓 Browser 儲存 Cookie  Client 請求 Server 給予頁面  Server 回 Response 給 Browser 的時候，HTTP Header 帶上 Set-Cookie。Browser 接收到 Set-Cookie 指令時，會將 Cookie 的名稱和值儲存在 Browser 的 Cookie。1.4 Browser 在每次 Request 的時候會帶上 CookieBrowser 在每次對 Server 發出 Request 的時候會帶上 Cookie 的 Header，讓 Server 能夠正確的存取當前 Cookie。Session2.1 什麼是 SessionSession 就像你進入一個遊樂園，手上先蓋個章，下次進入的時候就知道你是誰。遊樂園就好比是 Server，你就好比是 Client (Browser)。Client 要怎麼儲存這個章呢? 有兩種方法:  使用 Cookie (set cookie)  使用 html 儲存，例如: hidden input。拿章去 Server 換資料也有兩種方法:  使用 Cookie  Query string/POST因為實作上的方便程度與效能考量，大部分的網站採用 Cookie 來完成 Session 的實作。2.2 Cookie-based Session 與 Session StorageCookie-based Session 指的 Session 儲存的方式不同，而不是拿章去 Server 換資料的時候有沒有使用 Cookie。常見的 Session Storage 有這幾種:  Database  Memcached  Cookie2.3 比較 Cookie-based Session 與 Memcached Store Session來比較一下這兩者的優缺點。 Cookie-based Session 的優點:  對伺服器的效能負擔很低  方便使用缺點:  大小最多存4Kb。  資料存放在瀏覽器上如果 config/secrets.yml 外流可能存在被破解的風險 (詳見 Rails CookieStore 的安全議題)。Memcached Store Session 的優點:  memcached 使用記憶體來儲存，讀取速度快。  可以實現集中式管理。  不會受到 cookie 4kb 大小的限制。缺點：  儲存方式用記憶體，持久化有疑慮。  在追求高性能高併發的情景下，cookies 的表現更好，因此很多大網站採用 cookies 作為 session store.2.4 Session 傳值Session 傳值指的是利用 Session 儲存資料的機制，讓不同頁面間可以互相傳遞資料。  使用 Query String 或是 POST 把資料往 Server 傳  Server 將收到的資料存到 Session 中。  在不同頁面的時候因為你的章是同一個，可以讀取 Session 中儲存的資料也是同一份，達到傳值的目的。Rails 中的 Cookie-based Session 安全性問題Rails 3 以前 cookie-based session 如果不特別設定，可以輕易的被解開:require &#39;base64&#39;session_cookie = &#39;your session cookie&#39;Marshal.load(Base64.decode64(sesson_cookie.split(&#39;--&#39;).first))解開後會像這個樣子{        &quot;session_id&quot; =&gt; &quot;3223668cb4b04296c006e190ce2b1a17&quot;,    &quot;user_return_to&quot; =&gt; &quot;/&quot;,             &quot;flash&quot; =&gt; #&lt;ActionDispatch::Flash::FlashHash:0x007f80d1090250 @used=#&lt;Set: {:alert}&gt;, @closed=false, @flashes={:alert=&gt;&quot;You need to sign in or sign up before continuing.&quot;, :warning=&gt;nil, :error=&gt;nil, :notice=&gt;nil}, @now=nil&gt;,       &quot;_csrf_token&quot; =&gt; &quot;BxX8rLulhq2v2YSKrLxIIkYeV4IYNTNceT2ib1BrO08=&quot;}Rails 4 以後的 Cookie-based Session 會經過 Secret 加密。好好保護你的 config/secret.yml 能夠讓 Session 中的隱密資料不會被解開，從下面 code 可以看出要解開的話需要不少的麻煩:require &#39;rubygems&#39;require &#39;cgi&#39;require &#39;active_support&#39;def decrypt_session_cookie(cookie, key)  cookie = CGI::unescape(cookie)  # Default values for Rails 4 apps  key_iter_num = 1000  key_size     = 64  salt         = &quot;encrypted cookie&quot;  signed_salt  = &quot;signed encrypted cookie&quot;  key_generator = ActiveSupport::KeyGenerator.new(key, iterations: key_iter_num)  secret = key_generator.generate_key(salt)  sign_secret = key_generator.generate_key(signed_salt)  encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret)  puts encryptor.decrypt_and_verify(cookie)end# Time to test ... (With data from Arbeit327)cookie = &#39;WVFQVTFtbmNxWWJPODZNb3NUMVZzZGtDVjZQNXpMYStFMWdiZlJPMkdjRFRBOGZ5T3pOTzBPKzk3NWxvQUJvTlRRU2t4MXZmdG8rT0I0R2M3Ulh0YXpxRVhNMll5UW1xUHhvVXBLbXozZ3ZyNjB4VDU4dWRIUkxBWjBXbDJhci93YkYrZWswUHdFL0hUNDJaUHo2cEpxbXFvdlFZMjJWVU9KTWhHb3NyalFwTkphd0pUQVZSTXRHbkVqRlFnSGpNVTNFQlVxYlRmT3pWbXNjK0JuQ3FydzQvODRhbmtuU29haGNRbXQ4T3o1ZjhqMk53WTRMa0pVd1hPb2NHTVFQY3dvanE2ZElqUk1Mc21HS0k2SHVuZEZ3OWhjdzZPQnRSMEdVVkQwL2IxSVh5QzNSWVlJZms5c1JJV0lzUE1Zb1NHbEtqYm5nTGRKd1ZSdGpOQ1RZZWthR1A2anRFMEluaTcyWTNaNHJBR1N0dklzMkg1RjVmVmY4azEzV3o0N2Z2LS1wQlowRUZ6cjI3SVFQU0F5bGlYSDNnPT0%3D--19650cc5c3e2599fb43b7235ab4de5a1ce8a46ac&#39;key = &#39;aeb977de013ade650b97e0aa5246813591104017871a7753fe186e9634c9129b367306606878985c759ca4fddd17d955207011bb855ef01ed414398b4ac8317b&#39;decrypt_session_cookie(cookie, key)references介紹 Session 及 Cookie 兩者的差別說明FRED - Web 技術中的 Session 是什麼？Rails CookieStore 的安全議題 - Shaolin.TWThe Will Will Web - 解釋 Cookie 的特性A simple script to decode Rails 4 session cookies">
+    <meta itemprop="datePublished" content="December 22, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Web 基本功 - Cookie 與 Session
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#cookie">Cookie</a>
+    <ul>
+      <li><a href="#11-什麼是-cookie-">1.1 什麼是 Cookie ?</a></li>
+      <li><a href="#12-cookie-的特性">1.2 Cookie 的特性</a></li>
+      <li><a href="#13-server-端如何讓-browser-儲存-cookie">1.3 Server 端如何讓 Browser 儲存 Cookie</a></li>
+      <li><a href="#14-browser-在每次-request-的時候會帶上-cookie">1.4 Browser 在每次 Request 的時候會帶上 Cookie</a></li>
+    </ul>
+  </li>
+  <li><a href="#session">Session</a>
+    <ul>
+      <li><a href="#21-什麼是-session">2.1 什麼是 Session</a></li>
+      <li><a href="#22-cookie-based-session-與-session-storage">2.2 Cookie-based Session 與 Session Storage</a></li>
+      <li><a href="#23-比較-cookie-based-session-與-memcached-store-session">2.3 比較 Cookie-based Session 與 Memcached Store Session</a></li>
+      <li><a href="#24-session-傳值">2.4 Session 傳值</a></li>
+    </ul>
+  </li>
+  <li><a href="#rails-中的-cookie-based-session-安全性問題">Rails 中的 Cookie-based Session 安全性問題</a></li>
+  <li><a href="#references">references</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <h2 id="cookie">Cookie</h2>
+
+<h3 id="11-什麼是-cookie-">1.1 什麼是 Cookie ?</h3>
+
+<p>Cookie 在使用者第一次進入網站的時候產生。Browser 記錄一些隱私性較低的資料。
+例如: 使用者第一次進入網站的時候會跳出教學視窗。當使用者點擊[關閉]後，Cookie
+內記錄使用者已經看過教學了。使用者在下次登入的時候因為 Cookie 內記錄著使用者
+已經看過教學，所以就不會跳出教學視窗。</p>
+
+<h3 id="12-cookie-的特性">1.2 Cookie 的特性</h3>
+
+<ul>
+  <li>每個網站的 Cookie 是分開的, 例如: www.google.com 無法取得 www.yahoo.com 的 cookie。</li>
+  <li>能夠設定失效的時間。比如說過一段時間你就需要重新登入，就是由設定 Cookie Expired Time 來完成。有時候為了方便，也可能將 Cookie 設定為永久不失效。</li>
+</ul>
+
+<h3 id="13-server-端如何讓-browser-儲存-cookie">1.3 Server 端如何讓 Browser 儲存 Cookie</h3>
+
+<ol>
+  <li>Client 請求 Server 給予頁面</li>
+  <li>Server 回 Response 給 Browser 的時候，HTTP Header 帶上 <code class="highlighter-rouge">Set-Cookie</code>。Browser 接收到 Set-Cookie 指令時，會將 Cookie 的名稱和值儲存在 Browser 的 Cookie。</li>
+</ol>
+
+<p><img src="https://lh3.googleusercontent.com/-ivTQRwbrQzs/WjyiAfiRepI/AAAAAAAAK7Y/8pjRBORXGEIKxyP7bjFTiEHjPYroooXQwCHMYCw/I/15139142578413.jpg" alt="" /></p>
+
+<h3 id="14-browser-在每次-request-的時候會帶上-cookie">1.4 Browser 在每次 Request 的時候會帶上 Cookie</h3>
+
+<p>Browser 在每次對 Server 發出 Request 的時候會帶上 <code class="highlighter-rouge">Cookie</code> 的 Header，讓 Server 能夠正確的存取當前 Cookie。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-316qWgn_JFg/WjyiAwnYu4I/AAAAAAAAK7c/jUqct0G-OeIYDDq5DxyM_rR1azOAClRnwCHMYCw/I/15139133853587.jpg" alt="" /></p>
+
+<h2 id="session">Session</h2>
+
+<h3 id="21-什麼是-session">2.1 什麼是 Session</h3>
+
+<p>Session 就像你進入一個遊樂園，手上先蓋個章，下次進入的時候就知道你是誰。
+遊樂園就好比是 Server，你就好比是 Client (Browser)。
+Client 要怎麼儲存這個章呢? 有兩種方法:</p>
+
+<ol>
+  <li>使用 Cookie (set cookie)</li>
+  <li>使用 html 儲存，例如: hidden input。</li>
+</ol>
+
+<p>拿章去 Server 換資料也有兩種方法:</p>
+
+<ol>
+  <li>使用 Cookie</li>
+  <li>Query string/POST</li>
+</ol>
+
+<p>因為實作上的方便程度與效能考量，大部分的網站採用 Cookie 來完成 Session 的實作。</p>
+
+<h3 id="22-cookie-based-session-與-session-storage">2.2 Cookie-based Session 與 Session Storage</h3>
+
+<p>Cookie-based Session 指的 Session 儲存的方式不同，而不是拿章去 Server 換資料的時候有沒有使用 Cookie。</p>
+
+<p>常見的 Session Storage 有這幾種:</p>
+
+<ol>
+  <li>Database</li>
+  <li>Memcached</li>
+  <li>Cookie</li>
+</ol>
+
+<h3 id="23-比較-cookie-based-session-與-memcached-store-session">2.3 比較 Cookie-based Session 與 Memcached Store Session</h3>
+
+<p>來比較一下這兩者的優缺點。 Cookie-based Session 的優點:</p>
+
+<ul>
+  <li>對伺服器的效能負擔很低</li>
+  <li>方便使用</li>
+</ul>
+
+<p>缺點:</p>
+
+<ul>
+  <li>大小最多存4Kb。</li>
+  <li>資料存放在瀏覽器上如果 <code class="highlighter-rouge">config/secrets.yml</code> 外流可能存在被破解的風險 (詳見 <a href="http://tech.shaolin.tw/posts/2013/12/17/security-issue-of-rails-cookiestore-mechanism/">Rails CookieStore 的安全議題</a>)。</li>
+</ul>
+
+<p>Memcached Store Session 的優點:</p>
+
+<ol>
+  <li>memcached 使用記憶體來儲存，讀取速度快。</li>
+  <li>可以實現集中式管理。</li>
+  <li>不會受到 cookie 4kb 大小的限制。</li>
+</ol>
+
+<p>缺點：</p>
+
+<ol>
+  <li>儲存方式用記憶體，持久化有疑慮。</li>
+  <li>在追求高性能高併發的情景下，cookies 的表現更好，因此很多大網站採用 cookies 作為 session store.</li>
+</ol>
+
+<h3 id="24-session-傳值">2.4 Session 傳值</h3>
+
+<p>Session 傳值指的是利用 Session 儲存資料的機制，讓不同頁面間可以互相傳遞資料。</p>
+
+<ol>
+  <li>使用 Query String 或是 POST 把資料往 Server 傳</li>
+  <li>Server 將收到的資料存到 Session 中。</li>
+  <li>在不同頁面的時候因為你的章是同一個，可以讀取 Session 中儲存的資料也是同一份，達到傳值的目的。</li>
+</ol>
+
+<h2 id="rails-中的-cookie-based-session-安全性問題">Rails 中的 Cookie-based Session 安全性問題</h2>
+
+<p>Rails 3 以前 cookie-based session 如果不特別設定，可以輕易的被解開:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'base64'</span>
+<span class="n">session_cookie</span> <span class="o">=</span> <span class="s1">'your session cookie'</span>
+<span class="no">Marshal</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="no">Base64</span><span class="p">.</span><span class="nf">decode64</span><span class="p">(</span><span class="n">sesson_cookie</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'--'</span><span class="p">).</span><span class="nf">first</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>解開後會像這個樣子</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+        <span class="s2">"session_id"</span> <span class="o">=&gt;</span> <span class="s2">"3223668cb4b04296c006e190ce2b1a17"</span><span class="p">,</span>
+    <span class="s2">"user_return_to"</span> <span class="o">=&gt;</span> <span class="s2">"/"</span><span class="p">,</span>
+             <span class="s2">"flash"</span> <span class="o">=&gt;</span> <span class="c1">#&lt;ActionDispatch::Flash::FlashHash:0x007f80d1090250 @used=#&lt;Set: {:alert}&gt;, @closed=false, @flashes={:alert=&gt;"You need to sign in or sign up before continuing.", :warning=&gt;nil, :error=&gt;nil, :notice=&gt;nil}, @now=nil&gt;,</span>
+       <span class="s2">"_csrf_token"</span> <span class="o">=&gt;</span> <span class="s2">"BxX8rLulhq2v2YSKrLxIIkYeV4IYNTNceT2ib1BrO08="</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Rails 4 以後的 Cookie-based Session 會經過 Secret 加密。好好保護你的 <code class="highlighter-rouge">config/secret.yml</code> 能夠讓 Session 中的隱密資料不會被解開，從下面 code 可以看出要解開的話需要不少的麻煩:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'rubygems'</span>
+<span class="nb">require</span> <span class="s1">'cgi'</span>
+<span class="nb">require</span> <span class="s1">'active_support'</span>
+
+<span class="k">def</span> <span class="nf">decrypt_session_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+  <span class="n">cookie</span> <span class="o">=</span> <span class="no">CGI</span><span class="o">::</span><span class="n">unescape</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
+
+  <span class="c1"># Default values for Rails 4 apps</span>
+  <span class="n">key_iter_num</span> <span class="o">=</span> <span class="mi">1000</span>
+  <span class="n">key_size</span>     <span class="o">=</span> <span class="mi">64</span>
+  <span class="n">salt</span>         <span class="o">=</span> <span class="s2">"encrypted cookie"</span>
+  <span class="n">signed_salt</span>  <span class="o">=</span> <span class="s2">"signed encrypted cookie"</span>
+
+  <span class="n">key_generator</span> <span class="o">=</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">KeyGenerator</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="ss">iterations: </span><span class="n">key_iter_num</span><span class="p">)</span>
+  <span class="n">secret</span> <span class="o">=</span> <span class="n">key_generator</span><span class="p">.</span><span class="nf">generate_key</span><span class="p">(</span><span class="n">salt</span><span class="p">)</span>
+  <span class="n">sign_secret</span> <span class="o">=</span> <span class="n">key_generator</span><span class="p">.</span><span class="nf">generate_key</span><span class="p">(</span><span class="n">signed_salt</span><span class="p">)</span>
+
+  <span class="n">encryptor</span> <span class="o">=</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">MessageEncryptor</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">secret</span><span class="p">,</span> <span class="n">sign_secret</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="n">encryptor</span><span class="p">.</span><span class="nf">decrypt_and_verify</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
+<span class="k">end</span>
+
+
+<span class="c1"># Time to test ... (With data from Arbeit327)</span>
+<span class="n">cookie</span> <span class="o">=</span> <span class="s1">'WVFQVTFtbmNxWWJPODZNb3NUMVZzZGtDVjZQNXpMYStFMWdiZlJPMkdjRFRBOGZ5T3pOTzBPKzk3NWxvQUJvTlRRU2t4MXZmdG8rT0I0R2M3Ulh0YXpxRVhNMll5UW1xUHhvVXBLbXozZ3ZyNjB4VDU4dWRIUkxBWjBXbDJhci93YkYrZWswUHdFL0hUNDJaUHo2cEpxbXFvdlFZMjJWVU9KTWhHb3NyalFwTkphd0pUQVZSTXRHbkVqRlFnSGpNVTNFQlVxYlRmT3pWbXNjK0JuQ3FydzQvODRhbmtuU29haGNRbXQ4T3o1ZjhqMk53WTRMa0pVd1hPb2NHTVFQY3dvanE2ZElqUk1Mc21HS0k2SHVuZEZ3OWhjdzZPQnRSMEdVVkQwL2IxSVh5QzNSWVlJZms5c1JJV0lzUE1Zb1NHbEtqYm5nTGRKd1ZSdGpOQ1RZZWthR1A2anRFMEluaTcyWTNaNHJBR1N0dklzMkg1RjVmVmY4azEzV3o0N2Z2LS1wQlowRUZ6cjI3SVFQU0F5bGlYSDNnPT0%3D--19650cc5c3e2599fb43b7235ab4de5a1ce8a46ac'</span>
+<span class="n">key</span> <span class="o">=</span> <span class="s1">'aeb977de013ade650b97e0aa5246813591104017871a7753fe186e9634c9129b367306606878985c759ca4fddd17d955207011bb855ef01ed414398b4ac8317b'</span>
+
+<span class="n">decrypt_session_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="references">references</h2>
+
+<p><a href="http://blog.hellojcc.tw/2016/01/12/introduce-session-and-cookie/">介紹 Session 及 Cookie 兩者的差別說明</a></p>
+
+<p><a href="http://fred-zone.blogspot.tw/2014/01/web-session.html">FRED - Web 技術中的 Session 是什麼？</a></p>
+
+<p><a href="http://tech.shaolin.tw/posts/2013/12/17/security-issue-of-rails-cookiestore-mechanism/">Rails CookieStore 的安全議題 - Shaolin.TW</a></p>
+
+<p><a href="https://blog.miniasp.com/post/2008/02/22/Explain-HTTP-Cookie-in-Detail.aspx">The Will Will Web - 解釋 Cookie 的特性</a></p>
+
+<p><a href="https://gist.github.com/profh/e36e5dd0bec124fef04c">A simple script to decode Rails 4 session cookies</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#coockie" class="page__taxonomy-item" rel="tag">Coockie</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#session" class="page__taxonomy-item" rel="tag">Session</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#web-foundation" class="page__taxonomy-item" rel="tag">Web Foundation</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-12-22T14:11:00+00:00">December 22, 2017</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/git-precommit-hooks-copy/" class="pagination--pager" title="使用 GIT Precommit hooks 防止 Binding.pry 進入 Commit
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/oltp-vs-olap/" class="pagination--pager" title="OLTP 與 OLAP
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

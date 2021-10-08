@@ -1,0 +1,599 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>jQuery Return Flight Ch1 ( 1 )：Ajax Basics - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="這是之前在try jQuery做過的例子。之前我們只能顯示localhost的圖片，現在我們要從server載圖片下來，並顯示之。接下來來完成我們第一個Ajax程式。$(&#39;.confirmation&#39;).on(&#39;click&#39;, &#39;button&#39;, function(){  $.ajax(&#39;http://example.org/confirmation.html&#39;,  {     success: function(response) {       $(&#39;.ticket&#39;).html(response).slideDown();	   }	});});使用Ajax回傳的網頁並不是完整的網頁，而是只有局部更新。&lt;div&gt; ...  &lt;strong&gt;Boarding Pass: &lt;/strong&gt;  &lt;a href=&#39;#&#39; class=&#39;view-boarding-pass&#39;&gt;View Boarding Pass&lt;/a&gt;  &lt;img src=&#39;ticket.png&#39; alt=&#39;Your boarding pass&#39; class=&#39;boarding-pass&#39; /&gt;&lt;/div&gt;Aax使用的是相對網址(relative URL)$(&#39;.confirmation&#39;).on(&#39;click&#39;, &#39;button&#39;, function(){ $.ajax(&#39;confirmation.html&#39;, {     success: function(response) {    	 $(&#39;.ticket&#39;).html(response).slideDown();     } });});跟http://example.org/confirmation.html一樣的效果。使用$.get減少程式碼使用$.ajax$.ajax(&#39;confirmation.html&#39;, {	 success: function(response) {      $(&#39;.ticket&#39;).html(response).slideDown();    }});使用$.get$.get(&#39;confirmation.html&#39;, function(response) {   $(&#39;.ticket&#39;).html(response).slideDown();});兩種方法效果完全一樣，用get的寫法比較精簡。格式是$.get(url, success callback)Sending parameters with requests有兩種寫法，作用是相等的。第一種把網址填入url$.ajax(&#39;confirmation.html?confNum=1234&#39;, { success: function(response) {     $(&#39;.ticket&#39;).html(response).slideDown();   }});第二種將網址寫在data項目之下$.ajax(&#39;confirmation.html&#39;, {   success: function(response) {     $(&#39;.ticket&#39;).html(response).slideDown();   },   data: { &quot;confNum&quot;: 1234 }   }});這兩種方法都是寫死的，正常來說資料是會變動的，所以應該要用以下寫法。&lt;div class=&#39;ticket&#39; data-confNum=&#39;1234&#39;&gt;$.ajax(&#39;confirmation.html&#39;, {     success: function(response) {       $(&#39;.ticket&#39;).html(response).slideDown();     },     data: { &quot;confNum&quot;: $(&quot;.ticket&quot;).data(&quot;confNum&quot;)     }});1.6 Ajax Data原本會顯示全部的圖片，透過修改data對應的url，變成只顯示london這張圖片我的答案是這樣$(document).ready(function() {  $(&quot;#tour&quot;).on(&quot;click&quot;, &quot;button&quot;, function() {    $.ajax(&#39;/photos.html&#39;, {      data: {location:&#39;london&#39;},      success: function(response) {        $(&#39;.photos&#39;).html(response).fadeIn();      }    });  });});這時候出現了以下的錯誤因為我把值寫死了，使用data來對應是比較好的作法。$(document).ready(function() {  $(&quot;#tour&quot;).on(&quot;click&quot;, &quot;button&quot;, function() {    var el = $(&quot;#tour&quot;);    $.ajax(&#39;/photos.html&#39;, {      data: {location: el.data(&#39;location&#39;)},      success: function(response) {        $(&#39;.photos&#39;).html(response).fadeIn();      }    });  });});Ajax options使用error處理失敗的request使用beforeSend和Complete製作Loading效果使用delegation解決錯誤因為DOM在一進入頁面的時候就載入，所以如果用第一個寫法會發生錯誤，因為根本就還沒有這個物件。這時候需要delegate，在觸發事件的後面跟著設定一個selector，符合這個selector才會執行。delegate官方文件1.8 在.photos內顯示新的&lt;li&gt;&lt;div id=&quot;tour&quot; data-location=&quot;london&quot;&gt;  &lt;button&gt;Get Photos&lt;/button&gt;  &lt;ul class=&quot;photos&quot;&gt;  &lt;/ul&gt;&lt;/div&gt; $(&#39;.photos&#39;).html(&#39;&lt;li&gt;There was a problem fetching the latest photos. Please try again.&lt;/li&gt;&#39;);">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="jQuery Return Flight Ch1 ( 1 )：Ajax Basics">
+
+
+  <link rel="canonical" href="https://lukahuang.com/javascript-return-flight/">
+  <meta property="og:url" content="https://lukahuang.com/javascript-return-flight/">
+
+
+
+  <meta property="og:description" content="這是之前在try jQuery做過的例子。之前我們只能顯示localhost的圖片，現在我們要從server載圖片下來，並顯示之。接下來來完成我們第一個Ajax程式。$(&#39;.confirmation&#39;).on(&#39;click&#39;, &#39;button&#39;, function(){  $.ajax(&#39;http://example.org/confirmation.html&#39;,  {     success: function(response) {       $(&#39;.ticket&#39;).html(response).slideDown();	   }	});});使用Ajax回傳的網頁並不是完整的網頁，而是只有局部更新。&lt;div&gt; ...  &lt;strong&gt;Boarding Pass: &lt;/strong&gt;  &lt;a href=&#39;#&#39; class=&#39;view-boarding-pass&#39;&gt;View Boarding Pass&lt;/a&gt;  &lt;img src=&#39;ticket.png&#39; alt=&#39;Your boarding pass&#39; class=&#39;boarding-pass&#39; /&gt;&lt;/div&gt;Aax使用的是相對網址(relative URL)$(&#39;.confirmation&#39;).on(&#39;click&#39;, &#39;button&#39;, function(){ $.ajax(&#39;confirmation.html&#39;, {     success: function(response) {    	 $(&#39;.ticket&#39;).html(response).slideDown();     } });});跟http://example.org/confirmation.html一樣的效果。使用$.get減少程式碼使用$.ajax$.ajax(&#39;confirmation.html&#39;, {	 success: function(response) {      $(&#39;.ticket&#39;).html(response).slideDown();    }});使用$.get$.get(&#39;confirmation.html&#39;, function(response) {   $(&#39;.ticket&#39;).html(response).slideDown();});兩種方法效果完全一樣，用get的寫法比較精簡。格式是$.get(url, success callback)Sending parameters with requests有兩種寫法，作用是相等的。第一種把網址填入url$.ajax(&#39;confirmation.html?confNum=1234&#39;, { success: function(response) {     $(&#39;.ticket&#39;).html(response).slideDown();   }});第二種將網址寫在data項目之下$.ajax(&#39;confirmation.html&#39;, {   success: function(response) {     $(&#39;.ticket&#39;).html(response).slideDown();   },   data: { &quot;confNum&quot;: 1234 }   }});這兩種方法都是寫死的，正常來說資料是會變動的，所以應該要用以下寫法。&lt;div class=&#39;ticket&#39; data-confNum=&#39;1234&#39;&gt;$.ajax(&#39;confirmation.html&#39;, {     success: function(response) {       $(&#39;.ticket&#39;).html(response).slideDown();     },     data: { &quot;confNum&quot;: $(&quot;.ticket&quot;).data(&quot;confNum&quot;)     }});1.6 Ajax Data原本會顯示全部的圖片，透過修改data對應的url，變成只顯示london這張圖片我的答案是這樣$(document).ready(function() {  $(&quot;#tour&quot;).on(&quot;click&quot;, &quot;button&quot;, function() {    $.ajax(&#39;/photos.html&#39;, {      data: {location:&#39;london&#39;},      success: function(response) {        $(&#39;.photos&#39;).html(response).fadeIn();      }    });  });});這時候出現了以下的錯誤因為我把值寫死了，使用data來對應是比較好的作法。$(document).ready(function() {  $(&quot;#tour&quot;).on(&quot;click&quot;, &quot;button&quot;, function() {    var el = $(&quot;#tour&quot;);    $.ajax(&#39;/photos.html&#39;, {      data: {location: el.data(&#39;location&#39;)},      success: function(response) {        $(&#39;.photos&#39;).html(response).fadeIn();      }    });  });});Ajax options使用error處理失敗的request使用beforeSend和Complete製作Loading效果使用delegation解決錯誤因為DOM在一進入頁面的時候就載入，所以如果用第一個寫法會發生錯誤，因為根本就還沒有這個物件。這時候需要delegate，在觸發事件的後面跟著設定一個selector，符合這個selector才會執行。delegate官方文件1.8 在.photos內顯示新的&lt;li&gt;&lt;div id=&quot;tour&quot; data-location=&quot;london&quot;&gt;  &lt;button&gt;Get Photos&lt;/button&gt;  &lt;ul class=&quot;photos&quot;&gt;  &lt;/ul&gt;&lt;/div&gt; $(&#39;.photos&#39;).html(&#39;&lt;li&gt;There was a problem fetching the latest photos. Please try again.&lt;/li&gt;&#39;);">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-08-25T01:26:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="jQuery Return Flight Ch1 ( 1 )：Ajax Basics">
+    <meta itemprop="description" content="這是之前在try jQuery做過的例子。之前我們只能顯示localhost的圖片，現在我們要從server載圖片下來，並顯示之。接下來來完成我們第一個Ajax程式。$(&#39;.confirmation&#39;).on(&#39;click&#39;, &#39;button&#39;, function(){  $.ajax(&#39;http://example.org/confirmation.html&#39;,  {     success: function(response) {       $(&#39;.ticket&#39;).html(response).slideDown();	   }	});});使用Ajax回傳的網頁並不是完整的網頁，而是只有局部更新。&lt;div&gt; ...  &lt;strong&gt;Boarding Pass: &lt;/strong&gt;  &lt;a href=&#39;#&#39; class=&#39;view-boarding-pass&#39;&gt;View Boarding Pass&lt;/a&gt;  &lt;img src=&#39;ticket.png&#39; alt=&#39;Your boarding pass&#39; class=&#39;boarding-pass&#39; /&gt;&lt;/div&gt;Aax使用的是相對網址(relative URL)$(&#39;.confirmation&#39;).on(&#39;click&#39;, &#39;button&#39;, function(){ $.ajax(&#39;confirmation.html&#39;, {     success: function(response) {    	 $(&#39;.ticket&#39;).html(response).slideDown();     } });});跟http://example.org/confirmation.html一樣的效果。使用$.get減少程式碼使用$.ajax$.ajax(&#39;confirmation.html&#39;, {	 success: function(response) {      $(&#39;.ticket&#39;).html(response).slideDown();    }});使用$.get$.get(&#39;confirmation.html&#39;, function(response) {   $(&#39;.ticket&#39;).html(response).slideDown();});兩種方法效果完全一樣，用get的寫法比較精簡。格式是$.get(url, success callback)Sending parameters with requests有兩種寫法，作用是相等的。第一種把網址填入url$.ajax(&#39;confirmation.html?confNum=1234&#39;, { success: function(response) {     $(&#39;.ticket&#39;).html(response).slideDown();   }});第二種將網址寫在data項目之下$.ajax(&#39;confirmation.html&#39;, {   success: function(response) {     $(&#39;.ticket&#39;).html(response).slideDown();   },   data: { &quot;confNum&quot;: 1234 }   }});這兩種方法都是寫死的，正常來說資料是會變動的，所以應該要用以下寫法。&lt;div class=&#39;ticket&#39; data-confNum=&#39;1234&#39;&gt;$.ajax(&#39;confirmation.html&#39;, {     success: function(response) {       $(&#39;.ticket&#39;).html(response).slideDown();     },     data: { &quot;confNum&quot;: $(&quot;.ticket&quot;).data(&quot;confNum&quot;)     }});1.6 Ajax Data原本會顯示全部的圖片，透過修改data對應的url，變成只顯示london這張圖片我的答案是這樣$(document).ready(function() {  $(&quot;#tour&quot;).on(&quot;click&quot;, &quot;button&quot;, function() {    $.ajax(&#39;/photos.html&#39;, {      data: {location:&#39;london&#39;},      success: function(response) {        $(&#39;.photos&#39;).html(response).fadeIn();      }    });  });});這時候出現了以下的錯誤因為我把值寫死了，使用data來對應是比較好的作法。$(document).ready(function() {  $(&quot;#tour&quot;).on(&quot;click&quot;, &quot;button&quot;, function() {    var el = $(&quot;#tour&quot;);    $.ajax(&#39;/photos.html&#39;, {      data: {location: el.data(&#39;location&#39;)},      success: function(response) {        $(&#39;.photos&#39;).html(response).fadeIn();      }    });  });});Ajax options使用error處理失敗的request使用beforeSend和Complete製作Loading效果使用delegation解決錯誤因為DOM在一進入頁面的時候就載入，所以如果用第一個寫法會發生錯誤，因為根本就還沒有這個物件。這時候需要delegate，在觸發事件的後面跟著設定一個selector，符合這個selector才會執行。delegate官方文件1.8 在.photos內顯示新的&lt;li&gt;&lt;div id=&quot;tour&quot; data-location=&quot;london&quot;&gt;  &lt;button&gt;Get Photos&lt;/button&gt;  &lt;ul class=&quot;photos&quot;&gt;  &lt;/ul&gt;&lt;/div&gt; $(&#39;.photos&#39;).html(&#39;&lt;li&gt;There was a problem fetching the latest photos. Please try again.&lt;/li&gt;&#39;);">
+    <meta itemprop="datePublished" content="August 25, 2014">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">jQuery Return Flight Ch1 ( 1 )：Ajax Basics
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#aax使用的是相對網址relative-url">Aax使用的是相對網址(relative URL)</a></li>
+  <li><a href="#使用get減少程式碼">使用$.get減少程式碼</a></li>
+  <li><a href="#sending-parameters-with-requests">Sending parameters with requests</a>
+    <ul>
+      <li><a href="#16-ajax-data">1.6 Ajax Data</a></li>
+    </ul>
+  </li>
+  <li><a href="#使用error處理失敗的request">使用error處理失敗的request</a></li>
+  <li><a href="#使用beforesend和complete製作loading效果">使用beforeSend和Complete製作Loading效果</a></li>
+  <li><a href="#使用delegation解決錯誤">使用delegation解決錯誤</a></li>
+  <li><a href="#18-在photos內顯示新的li">1.8 在.photos內顯示新的&lt;li&gt;</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p>這是之前在try jQuery做過的例子。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-HjoupHhCEzM/U_qSn5aBcsI/AAAAAAAACxQ/tnBo1gSjLCM/w1755-h860-no/Screen%2BShot%2B2014-08-25%2Bat%2B09.33.46.png" alt="" /></p>
+
+<p>之前我們只能顯示localhost的圖片，現在我們要從server載圖片下來，並顯示之。
+接下來來完成我們第一個Ajax程式。</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.confirmation</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://example.org/confirmation.html</span><span class="dl">'</span><span class="p">,</span>  <span class="p">{</span>
+     <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.ticket</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">slideDown</span><span class="p">();</span>
+	   <span class="p">}</span>
+	<span class="p">});</span>
+<span class="p">});</span>
+
+</code></pre></div></div>
+<p>使用Ajax回傳的網頁並不是完整的網頁，而是只有局部更新。</p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div&gt;</span> ...
+  <span class="nt">&lt;strong&gt;</span>Boarding Pass: <span class="nt">&lt;/strong&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'#'</span> <span class="na">class=</span><span class="s">'view-boarding-pass'</span><span class="nt">&gt;</span>View Boarding Pass<span class="nt">&lt;/a&gt;</span>
+  <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">'ticket.png'</span> <span class="na">alt=</span><span class="s">'Your boarding pass'</span> <span class="na">class=</span><span class="s">'boarding-pass'</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<h2 id="aax使用的是相對網址relative-url">Aax使用的是相對網址(relative URL)</h2>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.confirmation</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">confirmation.html</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+     <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    	 <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.ticket</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">slideDown</span><span class="p">();</span>
+     <span class="p">}</span> <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+<p>跟http://example.org/confirmation.html一樣的效果。</p>
+
+<h2 id="使用get減少程式碼">使用$.get減少程式碼</h2>
+<p>使用$.ajax</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">confirmation.html</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+	 <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.ticket</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">slideDown</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+<p>使用$.get</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">confirmation.html</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.ticket</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">slideDown</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+<p>兩種方法效果完全一樣，用get的寫法比較精簡。格式是<code class="highlighter-rouge">$.get(url, success callback)</code></p>
+
+<h2 id="sending-parameters-with-requests">Sending parameters with requests</h2>
+
+<p>有兩種寫法，作用是相等的。
+第一種把網址填入url</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">confirmation.html?confNum=1234</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+     <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.ticket</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">slideDown</span><span class="p">();</span>
+   <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>第二種將網址寫在data項目之下</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">confirmation.html</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+   <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+     <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.ticket</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">slideDown</span><span class="p">();</span>
+   <span class="p">},</span>
+   <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="dl">"</span><span class="s2">confNum</span><span class="dl">"</span><span class="p">:</span> <span class="mi">1234</span> <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>這兩種方法都是寫死的，正常來說資料是會變動的，所以應該要用以下寫法。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">'ticket'</span> <span class="na">data-confNum=</span><span class="s">'1234'</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">confirmation.html</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+     <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.ticket</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">slideDown</span><span class="p">();</span>
+     <span class="p">},</span>
+     <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="dl">"</span><span class="s2">confNum</span><span class="dl">"</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">.ticket</span><span class="dl">"</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="dl">"</span><span class="s2">confNum</span><span class="dl">"</span><span class="p">)</span>
+     <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="16-ajax-data">1.6 Ajax Data</h3>
+
+<p>原本會顯示全部的圖片，透過修改data對應的url，變成只顯示london這張圖片
+我的答案是這樣</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#tour</span><span class="dl">"</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">click</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">button</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">/photos.html</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span><span class="na">location</span><span class="p">:</span><span class="dl">'</span><span class="s1">london</span><span class="dl">'</span><span class="p">},</span>
+      <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.photos</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">fadeIn</span><span class="p">();</span>
+      <span class="p">}</span>
+
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>這時候出現了以下的錯誤
+<img src="https://lh6.googleusercontent.com/zmzYKG0zPFrQtQuetAmUASzkGppMbCiTAMpblaBAhcY=w1748-h223-no" alt="" /></p>
+
+<p>因為我把值寫死了，使用data來對應是比較好的作法。</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#tour</span><span class="dl">"</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">"</span><span class="s2">click</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">button</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#tour</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="dl">'</span><span class="s1">/photos.html</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span><span class="na">location</span><span class="p">:</span> <span class="nx">el</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="dl">'</span><span class="s1">location</span><span class="dl">'</span><span class="p">)},</span>
+      <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.photos</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">response</span><span class="p">).</span><span class="nx">fadeIn</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h1 id="ajax-options">Ajax options</h1>
+<h2 id="使用error處理失敗的request">使用error處理失敗的request</h2>
+<p><img src="https://lh5.googleusercontent.com/-Ho8DXLjqFms/U_qfnpPOAOI/AAAAAAAACyU/0Bm0X2lg8zI/w1755-h885-no/Screen%2BShot%2B2014-08-25%2Bat%2B10.24.28.png" alt="" /></p>
+<h2 id="使用beforesend和complete製作loading效果">使用beforeSend和Complete製作Loading效果</h2>
+<p><img src="https://lh6.googleusercontent.com/-CiUYsr6XJpg/U_qfny5n5vI/AAAAAAAACyk/pxPMu-k_URk/w1755-h925-no/Screen%2BShot%2B2014-08-25%2Bat%2B10.23.49.png" alt="" /></p>
+
+<h2 id="使用delegation解決錯誤">使用delegation解決錯誤</h2>
+<p>因為DOM在一進入頁面的時候就載入，所以如果用第一個寫法會發生錯誤，因為根本就還沒有這個物件。
+<img src="https://lh4.googleusercontent.com/-F0Ta3-SweHU/U_qfowcrybI/AAAAAAAACys/nwHPzkl773c/w1755-h875-no/Screen%2BShot%2B2014-08-25%2Bat%2B10.28.02.png" alt="" />
+這時候需要delegate，在觸發事件的後面跟著設定一個selector，符合這個selector才會執行。
+<img src="https://lh4.googleusercontent.com/-U03mkyStXcs/U_qfpEdT5FI/AAAAAAAACyo/pth2HCRfKFM/w1753-h423-no/Screen%2BShot%2B2014-08-25%2Bat%2B10.28.33.png" alt="" />
+<a href="http://api.jquery.com/delegate/">delegate官方文件</a></p>
+
+<h2 id="18-在photos內顯示新的li">1.8 在.photos內顯示新的<code class="highlighter-rouge">&lt;li&gt;</code></h2>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"tour"</span> <span class="na">data-location=</span><span class="s">"london"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;button&gt;</span>Get Photos<span class="nt">&lt;/button&gt;</span>
+  <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"photos"</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.photos</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;li&gt;There was a problem fetching the latest photos. Please try again.&lt;/li&gt;</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#ajax" class="page__taxonomy-item" rel="tag">Ajax</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#javascript" class="page__taxonomy-item" rel="tag">javascript</a><span class="sep">, </span>
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#jquery" class="page__taxonomy-item" rel="tag">jQuery</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2014-08-25T01:26:00+00:00">August 25, 2014</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/sitcon-git-workshop/" class="pagination--pager" title="Sitcon workshop：Git 入門到進階與實務經驗談
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/ruby-bits-1-expression/" class="pagination--pager" title="Ruby bits ( 1 ) : Expression
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/lens-the-ide-for-kubernetes/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      Kubernetes IDE - Lens 用圖形化介面管理 K8S
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

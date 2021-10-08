@@ -1,0 +1,504 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.7.1 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Kubernetes IDE - Lens 用圖形化介面管理 K8S - LukaHuang.com</title>
+
+
+
+
+<meta name="description" content="">
+
+
+
+
+<meta name="author" content="Luka">
+
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="LukaHuang.com">
+<meta property="og:title" content="Kubernetes IDE - Lens 用圖形化介面管理 K8S">
+
+
+  <link rel="canonical" href="https://lukahuang.com/lens-the-ide-for-kubernetes/">
+  <meta property="og:url" content="https://lukahuang.com/lens-the-ide-for-kubernetes/">
+
+
+
+  <meta property="og:description" content="">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-06-30T17:01:00+00:00">
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "Person",
+      "name" : "Luka Huang",
+      "url" : "https://lukahuang.com",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end SEO -->
+
+
+<link href="https://lukahuang.com/feed.xml" type="application/atom+xml" rel="alternate" title="LukaHuang.com Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="https://lukahuang.com/assets/css/main.css">
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+  <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+
+
+
+  <script>
+  window['_fs_debug'] = false;
+  window['_fs_host'] = 'fullstory.com';
+  window['_fs_org'] = '99AG5';
+  window['_fs_namespace'] = 'FS';
+  (function(m,n,e,t,l,o,g,y){
+      if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+      g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+      o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+      y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+      g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){g(l,v)};
+      g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+      g.clearUserCookie=function(c,d,i){if(!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')){
+      d=n.domain;while(1){n.cookie='fs_uid=;domain='+d+
+      ';path=/;expires='+new Date(0).toUTCString();i=d.indexOf('.');if(i<0)break;d=d.slice(i+1)}}};
+  })(window,document,window['_fs_namespace'],'script','user');
+</script>
+</head>
+
+<body class="layout--single">
+
+  <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+  <div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <a class="site-title" href="https://lukahuang.com/">LukaHuang.com</a>
+        <ul class="visible-links">
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/archives/">Archives</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/tags/">Tags</a></li>
+          
+            
+            <li class="masthead__menu-item"><a href="https://lukahuang.com/search/">Search</a></li>
+          
+        </ul>
+        <button type="button">
+          <span class="visually-hidden">Toggle Menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+<div id="main" role="main">
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes IDE - Lens 用圖形化介面管理 K8S">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="June 30, 2020">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Kubernetes IDE - Lens 用圖形化介面管理 K8S
+</h1>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Outline</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#lens-有哪些殺手級功能">Lens 有哪些殺手級功能</a></li>
+  <li><a href="#1-實時監控-pod-的狀態-realtime-monitoring">1. 實時監控 pod 的狀態 (realtime monitoring)</a></li>
+  <li><a href="#2-快速查看-pod-的-cpu-記憶體用量">2. 快速查看 Pod 的 CPU 、記憶體用量</a></li>
+  <li><a href="#3-快速觀看-node-的狀態">3. 快速觀看 Node 的狀態</a></li>
+  <li><a href="#4-event-列表能夠即時知道-k8s-集群發生了什麼事">4. Event 列表，能夠即時知道 K8S 集群發生了什麼事</a></li>
+  <li><a href="#5-pod---terminal-一鍵搞定">5. Pod -&gt; Terminal 一鍵搞定</a></li>
+  <li><a href="#為什麼-kubernetes-能夠有一款-ide">為什麼 Kubernetes 能夠有一款 IDE？</a></li>
+  <li><a href="#結語">結語</a></li>
+</ul>
+            </nav>
+          </aside>
+        
+        <p><img src="https://cdn-images-1.medium.com/max/2400/0*P3QeV7d9iPBNeOCr.png" alt="https://k8slens.dev" /></p>
+
+<p>以往我們在管理 Kubernetes 集群的時候，需要大量的命令列操作，需要去四處找尋需要的資訊，例如你想看 Node 的狀態你可能需要在 AWS Console 上面看，如果你用的是 GKE 的話你就需要到的 GCP 的後台上看。你想要進入 Pod 你需要先下 kubectl get pods取得 pod 列表，接著再下 kubectl exec -it pod/xxxpod – bash 進入。</p>
+
+<p>這些功能現在 Lens 全部幫你整合進去了。它能夠讓你快速的瀏覽你的 K8S 集群狀況，並且即時反應 K8S 集群的狀態讓你可以做相對應的反應。我們就來看看 Lens 有哪些殺手級的功能吧！</p>
+
+<h2 id="lens-有哪些殺手級功能">Lens 有哪些殺手級功能</h2>
+
+<h2 id="1-實時監控-pod-的狀態-realtime-monitoring">1. 實時監控 pod 的狀態 (realtime monitoring)</h2>
+
+<p>可以實時監控 pod 的狀態，不需要手動刷新，這個功能我覺得滿方便的。一般來說你想要重複獲取 pod 的狀態需要在終端機中輸入 kubectl get pods，用終端機下指令的方式只能知道下指令的「當下的狀態」，如果你想要獲得你想要的狀態，你必須不斷下指令。而現在使用 Lens 你只需要瞄一下螢幕，就可以知道 pod 就緒了沒，因為 Lens 會告訴你最即時的 Pod 狀態。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*ce7US7IAR0EPDvYlQIrhBQ.png" alt="為了不透漏機密資訊我使用 Lens 官方網站的圖片 ([https://k8slens.dev/](https://k8slens.dev/))" /></p>
+
+<h2 id="2-快速查看-pod-的-cpu-記憶體用量">2. 快速查看 Pod 的 CPU 、記憶體用量</h2>
+
+<p>我覺得這是令人滿驚艷的功能，Newrelic 針對 K8S 推出的監控工具操作起來都沒有那麼直覺。因此目前的監控方案用 Newrelic 來看吞吐量與 request 的消耗時間，方便做一些效能調校。而觀看 Kubernetes 整體的狀態則是使用 Lens 為主。能夠快速找到想要的資訊並能夠反應實時(realtime)的狀態真的挺重要。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*Jv4voRbrXD7vFogoFwBskg.png" alt="image from [https://k8slens.dev/](https://k8slens.dev/)" /></p>
+
+<h2 id="3-快速觀看-node-的狀態">3. 快速觀看 Node 的狀態</h2>
+
+<p>Pod 是 Kubernetes 中的最小單位，但最後他還是會跑在某一台實體機器，也就是 Node 上面，所以我們可以快速的看到 Node 的狀態也是很重要的。</p>
+
+<p>沒錯，Lens 就是那麼的威，可以快速的看到 K8S 中 Node 的 CPU、記憶體用量，還有 Node 上跑了哪些 Pod，運行了哪些資源。</p>
+
+<p>我覺得根本整合度極高。偏愛用終端機的我，目前也離不開 Lens 的方便。</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/3340/1*XGv9gmMz73ZKZjw_bEb_ww.png" alt="" /></p>
+
+<h2 id="4-event-列表能夠即時知道-k8s-集群發生了什麼事">4. Event 列表，能夠即時知道 K8S 集群發生了什麼事</h2>
+
+<p>例如：一個 pod 中的 readiness probe 告訴你：你的 pod 還沒有準備好啦！Lens 就有這個功能，可以即時知道 K8S Cluster 的事件。不然很有可能 Kubernetes 發生了一些事情，但是你沒有察覺。</p>
+
+<h2 id="5-pod---terminal-一鍵搞定">5. Pod -&gt; Terminal 一鍵搞定</h2>
+
+<p>平常要進入某 Pod 的時候先 k get pods，然後複製貼上 pod 的名稱，輸入 k exec -it pod/your-pod-name – /bin/bash 每次做真的有點煩。Lens 直接列出所有 Pod，你只需要點選有問題的 Pod，或是你想要進去的 Pod，點擊終端機鍵，即可連進 Pod 裡面。真～是～太～方～便～啦～！</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2790/1*yGkNYU4kdqJ85C7u-Aq0Og.png" alt="" /></p>
+
+<h2 id="為什麼-kubernetes-能夠有一款-ide">為什麼 Kubernetes 能夠有一款 IDE？</h2>
+
+<p>最後來聊一聊為什麼 Kubernetes 能夠出一款 IDE？一般來說 IDE 是基於語言設計出的 IDE，例如：java 有 Eclipse，c# 有 visual studio，Python 有 Pycharm，PHP 有 Phpstorm… 等等。</p>
+
+<p>這些以語言為基礎的 IDE 可以提供語言為基礎的一些好用方法。例如方法的自動完成、原始碼的快速查找，或是提取方法、提取參數 … 等等重構的功能。基於每個語言的特性，IDE 提供不同的特性。</p>
+
+<p>Kubernetes 的 IDE 是怎麼回事呢？各家提供雲服務的平台紛紛推出相對應 K8S 的服務。例如：Google 有 GKE，AWS 有 EKS，或是也可以自行架設 Kubernetes 集群。</p>
+
+<p>這些 Kubernetes 服務都遵循著相同的 Kubernetes 規範，聽起來好像有點繞，如果不是因為有 Kubernetes 這樣明確的規範，就不可能有 IDE 產生。</p>
+
+<p>例如：Google 的雲端平台 GCP 上如果你想要開機器，跟 AWS 平台上你想要開機器，那麼你是無法用一套 IDE 來監控或是控制兩者的機器狀態的。因為 Google 和 AWS 機器呼叫的規格各自有各自的定義，無法共通。</p>
+
+<p>而 Kubernetes 大家都是透過 kubectl 來跟 Kubenetes Control Panel 溝通。Kubenetes 中的元件，例如：Pod、Service、Deployment … 等等，在各家雲服務商也都是遵照相同規範實作，因此可以使用一款 IDE，就能夠監控各家的 Kubernetes 集群。</p>
+
+<h2 id="結語"><strong>結語</strong></h2>
+
+<p>Lens 的出現讓我用最少的力氣就可以快速的看到想看的資訊。而 Newrelic 的方式比較像是以往的 APM 的監控法。跟以前只有機器的時代，多了一層 Kubernetes 多了滿多思考點。另外警報(Alert)又是另一套系統了。如何在問題出現的時候，快速定位問題，在使用者察覺前解決掉，是一個有趣的挑戰。</p>
+<blockquote>
+  <p>最後不免俗的感謝大家觀看，喜歡我的文章請訂閱 Starbugs 星巴哥技術專欄，每週推送原創好文😀😀😀</p>
+</blockquote>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="https://lukahuang.com/tags/#kubernetes" class="page__taxonomy-item" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Updated:</strong> <time datetime="2020-06-30T17:01:00+00:00">June 30, 2020</time></p>
+        
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="https://lukahuang.com/tmp-let-your-tmux-better/" class="pagination--pager" title="TPM — 套件管理工具 ，讓你的 TMUX 更好用
+">Previous</a>
+    
+    
+      <a href="https://lukahuang.com/tldr/" class="pagination--pager" title="TLDR 命令列神兵｜Linux 入門必裝
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You May Also Enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-gitops-via-argocd/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/kubernetes.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      ArgoCD - 透過 ArgoCD 認識 GitOps
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/introduction-to-open-source-guild/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      從 Github 開源指南｜學習如何貢獻開源專案
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tldr/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TLDR 命令列神兵｜Linux 入門必裝
+
+    </div>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a class="archive__item" href="https://lukahuang.com/tmp-let-your-tmux-better/" rel="permalink">
+  
+    <img class="archive__item-image" src=
+      
+        
+          "/assets/images/icon/cat.png"
+        
+      
+    alt="">
+
+    <div class="archive__item-title">
+      TPM — 套件管理工具 ，讓你的 TMUX 更好用
+
+    </div>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+
+  <div class="page__footer">
+    <footer>
+      <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+      <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+    
+    
+    
+      <li><a href="https://github.com/lukahuang"><i class="fa fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    <li><a href="https://lukahuang.com/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Luka Huang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+    </footer>
+  </div>
+
+  <script src="https://lukahuang.com/assets/js/jquery.min.js"></script>
+
+  <script src="https://lukahuang.com/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123551558-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+
+</html>
