@@ -9,11 +9,11 @@ minimal_mistakes_skin    : "contrast" # "air", "aqua", "contrast", "dark", "dirt
 
 # Site Settings
 locale                   : "en"
-title                    : "Luka's notes"
+title                    : "LukaHuang.com"
 title_separator          : "-"
 name                     : "Luka Huang"
-description              : "Problem Solver, also a Back-End Developer"
-url                      : "https://codingluka.com"
+description              : "a Ruby Lover"
+url                      : "https://lukahuang.com"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
@@ -85,7 +85,7 @@ analytics:
 author:
   name             : Luka Huang
   avatar           : "/assets/images/luka.jpg"
-  bio              : "Problem Solver, also a Back-End Developer"
+  bio              : "Ruby Lover."
   location         :
   email            : codingluka@gmail.com
   uri              :
